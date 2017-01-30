@@ -46,6 +46,3 @@ bower install
 ```
 
 Finally, run `npm start` to run the Sass compiler. It will re-run every time you save a Sass file.
-=======
-# no-news-is-bad-news
-Master's thesis project at UNC-Chapel Hill
