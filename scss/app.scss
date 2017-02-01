@@ -49,3 +49,54 @@
 
 @include motion-ui-transitions;
 @include motion-ui-animations;
+
+// font styles
+$serif-font: 'Merriweather', serif;
+$sans-serif-font: 'Open Sans', sans-serif;
+
+// colors
+$black: #323232;
+$teal: #52908b;
+$purple: #5d3548;
+$red: #e7472e;
+$gray: #e5e2ca;
+
+// misc
+@mixin centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body, p {
+  font-family: $serif-font;
+  color: $black;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $serif-font;
+  color: $black;
+}
+
+#header {
+  text-align: center;
+  @include centered;
+}
+
+.container {
+  padding: 0;
+  @include breakpoint(medium) {
+    padding: 0 5%;
+  }
+  @include breakpoint(large) {
+    padding: 0 10%;
+  }
+  overflow: scroll;
+  max-width: 1024px;
+  @include centered;
+}
+
+p {
+  font-weight: 300;
+  max-width: 560px;
+  @include centered;
+}
