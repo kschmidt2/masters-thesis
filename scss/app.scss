@@ -67,6 +67,12 @@ $gray: #e5e2ca;
   margin-right: auto;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body, p {
   font-family: $serif-font;
   color: $black;
@@ -77,26 +83,89 @@ h1, h2, h3, h4, h5, h6 {
   color: $black;
 }
 
+h1 {
+  font-size: 4rem;
+  line-height: 4rem;
+  margin-top: 1rem;
+  @include breakpoint(large) {
+    font-size: 5rem;
+  }
+}
+
+h2 {
+  font-size: 1.2rem;
+  @include breakpoint(large) {
+    font-size: 1.5rem;
+  }
+}
+
 #header {
   text-align: center;
   @include centered;
 }
 
 .container {
-  padding: 0;
-  @include breakpoint(medium) {
-    padding: 0 5%;
-  }
+  padding: 0 5%;
   @include breakpoint(large) {
     padding: 0 10%;
   }
   overflow: scroll;
-  max-width: 1024px;
   @include centered;
+}
+
+section {
+  max-width: 560px;
+  margin: auto;
+  margin-bottom: 50vh;
+  padding-top: 5vh;
+}
+
+section:last-of-type {
+  margin-bottom: 75vh;
+}
+
+#header {
+  max-width: 1048px;
 }
 
 p {
   font-weight: 300;
   max-width: 560px;
   @include centered;
+}
+
+img {
+  max-width: 560px;
+}
+
+.vis-container {
+  display: flex;
+  justify-content: center;
+}
+
+#vis {
+  position: fixed;
+  bottom: 0vh;
+  z-index: 1;
+  height: 65vh;
+  bottom: 5vh;
+  width: 780px;
+  background-color: #fff;
+}
+
+#interactive-footer {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  background-color: $teal;
+  color: white;
+  p {
+    color: white;
+  }
+  footer {
+    font-family: $sans-serif-font;
+    font-size: 12px;
+    border-top: 1px solid white;
+    padding: 10px 0;
+  }
 }
