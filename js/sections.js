@@ -1,4 +1,3 @@
-
 /**
  * scrollVis - encapsulates
  * all the code for the visualization
@@ -8,7 +7,7 @@
 var scrollVis = function() {
   // constants to define the size
   // and margins of the vis area.
-  var width = 600;
+  var width = 1000;
   var height = 400;
   var margin = {top:0, left:20, bottom:40, right:10};
 
@@ -154,36 +153,31 @@ var scrollVis = function() {
     g.select(".x.axis").style("opacity", 0);
 
     // count openvis title
-    g.append("text")
-      .attr("class", "title openvis-title")
-      .attr("x", width / 2)
-      .attr("y", height / 3)
-      .text("2013");
-
-    g.append("text")
-      .attr("class", "sub-title openvis-title")
-      .attr("x", width / 2)
-      .attr("y", (height / 3) + (height / 5) )
-      .text("OpenVis Conf");
-
-    g.selectAll(".openvis-title")
-      .attr("opacity", 0);
+    // g.append("g")
+    //   .attr("class", "title openvis-title")
+    //   .append("use")
+    //   .style("width", "100vw")
+    //   .style("height", "auto")
+    //   .attr("xlink:href","#bridge_illo")
+    //   .attr("opacity", 0);
 
     // count filler word count title
-    g.append("text")
-      .attr("class", "title count-title highlight")
-      .attr("x", width / 2)
-      .attr("y", height / 3)
-      .text("180");
-
-    g.append("text")
-      .attr("class", "sub-title count-title")
-      .attr("x", width / 2)
-      .attr("y", (height / 3) + (height / 5) )
-      .text("Filler Words");
-
-    g.selectAll(".count-title")
-      .attr("opacity", 0);
+    // g.append("text")
+    //   .attr("class", "title count-title highlight")
+    //   .attr("x", width / 1.6)
+    //   .attr("y", height / 4)
+    //   .attr("text-anchor", "middle")
+    //   .text('"Time for some traffic problems in Fort Lee."');
+    //
+    // g.append("text")
+    //   .attr("class", "sub-title count-title")
+    //   .attr("x", width / 1.6)
+    //   .attr("y", (height / 4) + (height / 10) )
+    //   .attr("text-anchor", "middle")
+    //   .text("Bridget Anne Kelly, deputy chief of staff in Christie's office in an email to Port Authority executive David Wildstein.");
+    //
+    // g.selectAll(".count-title")
+    //   .attr("opacity", 0);
 
     // square grid
     var squares = g.selectAll(".square").data(wordData);
@@ -273,10 +267,10 @@ var scrollVis = function() {
   setupSections = function() {
     // activateFunctions are called each
     // time the active section changes
-    activateFunctions[0] = showTitle;
-    activateFunctions[1] = showFillerTitle;
-    activateFunctions[2] = showGrid;
-    activateFunctions[3] = highlightGrid;
+    activateFunctions[0] = showBridge;
+    activateFunctions[1] = showBridgeQuote;
+    activateFunctions[2] = showBridgeQuote2;
+    activateFunctions[3] = showRecord;
     activateFunctions[4] = showBar;
     activateFunctions[5] = showHistPart;
     activateFunctions[6] = showHistAll;
@@ -318,16 +312,10 @@ var scrollVis = function() {
    * shows: intro title
    *
    */
-  function showTitle() {
-    g.selectAll(".count-title")
-      .transition()
-      .duration(0)
-      .attr("opacity", 0);
-
-    g.selectAll(".openvis-title")
-      .transition()
-      .duration(600)
-      .attr("opacity", 1.0);
+  function showBridge() {
+    $('#bridge-text').fadeTo(500,0).css("display", "none");
+    $('.fa-circle-o').css('color', '#323232');
+    $('#circle-1').css('color', '#e7472e');
   }
 
   /**
@@ -338,21 +326,14 @@ var scrollVis = function() {
    * shows: filler count title
    *
    */
-  function showFillerTitle() {
-    g.selectAll(".openvis-title")
-      .transition()
-      .duration(0)
-      .attr("opacity", 0);
+  function showBridgeQuote() {
+    $('.fa-circle-o').css('color', '#323232');
+    $('#circle-2').css('color', '#e7472e');
 
-    g.selectAll(".square")
-      .transition()
-      .duration(0)
-      .attr("opacity", 0);
-
-    g.selectAll(".count-title")
-      .transition()
-      .duration(600)
-      .attr("opacity", 1.0);
+    $('#bridge-text').show();
+    $('#bridge-text').fadeTo(500,1);
+    $('.bridge-quote').hide().html('"Time for some traffic problems in Fort Lee."').fadeIn(1000);
+    $('.bridge-attrib').hide().html("Bridget Anne Kelly, deputy chief of staff in Christie's office in an email to Port Authority executive David Wildstein.").fadeIn(1000);
   }
 
   /**
@@ -363,20 +344,23 @@ var scrollVis = function() {
    * shows: square grid
    *
    */
-  function showGrid() {
-    g.selectAll(".count-title")
-      .transition()
-      .duration(0)
-      .attr("opacity", 0);
+  function showBridgeQuote2() {
+    $('.fa-circle-o').css('color', '#323232');
+    $('#circle-3').css('color', '#e7472e');
+
+    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').fadeIn(1000);
+    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').fadeIn(1000);
+
+    $('#bridge_illo').fadeTo(500,1);
+    $('#bridge-text').show();
+    $('#bridge-text').fadeTo(500,1);
+
+    $('#vis').css("height", "80vh");
 
     g.selectAll(".square")
       .transition()
-      .duration(600)
-      .delay(function(d,i) {
-        return 5 * d.row;
-      })
-      .attr("opacity", 1.0)
-      .attr("fill", "#ddd");
+      .duration(0)
+      .attr("opacity", 0.0);
   }
 
   /**
@@ -387,7 +371,10 @@ var scrollVis = function() {
    *  filler words. also ensures squares
    *  are moved back to their place in the grid
    */
-  function highlightGrid() {
+  function showRecord() {
+    $('.fa-circle-o').css('color', '#323232');
+    $('#circle-4').css('color', '#e7472e');
+
     hideAxis();
     g.selectAll(".bar")
       .transition()
@@ -399,6 +386,10 @@ var scrollVis = function() {
       .duration(0)
       .attr("opacity", 0);
 
+    $('#bridge-text').fadeTo(500,0).css("display", "none");
+    $('#bridge_illo').fadeTo(500,0);
+
+    $('#vis').css("height", "65vh");
 
     g.selectAll(".square")
       .transition()
@@ -759,7 +750,9 @@ function display(data) {
   scroll.on('active', function(index) {
     // highlight current step text
     d3.selectAll('.step')
-      .style('opacity',  function(d,i) { return i == index ? 1 : 0.1; });
+      .transition()
+      .duration(100)
+      .style('opacity',  function(d,i) { return i == index ? 1 : 0; });
 
     // activate current section
     plot.activate(index);

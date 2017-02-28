@@ -7,6 +7,7 @@
     <title>Foundation for Sites</title>
     <link rel="stylesheet" href="css/app.css">
     <link href="https://fonts.googleapis.com/css?family=Merriweather:300,400,700|Open+Sans:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   </head>
   <body>
     <div class="container">
@@ -208,12 +209,29 @@
         </div>  <!-- closes sections -->
       </div> <!-- closes graphic -->
 
-      <div class="vis-container">
-        <div id='vis'>
-        </div>
-      </div>
-
     </div> <!-- closes container -->
+
+    <div class="vis-container">
+      <div id='vis'>
+        <div class="bridge-container">
+          <object data="images/bridge.svg" id="bridge_illo">
+            <a href="images/bridge.svg">
+          </object>
+        </div>
+        <div id="bridge-text">
+          <div class="bridge-quote"></div>
+          <div class="bridge-attrib"></div>
+        </div>
+        <!-- <div id="bridge-text-2">
+          <div class="bridge-quote">
+            "Chris Christie Drops Out of Presidential Race After New Hampshire Flop"
+          </div>
+          <div class="bridge-attrib">
+            Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.
+          </div>
+        </div> -->
+      </div>
+    </div>
 
     <div id="interactive-footer">
       <div class="container">
@@ -223,10 +241,17 @@
           <p><i>[newspapers by state interactive] </i></p>
         </section>
         <footer>
-          Researched, written, designed and developed by Kiersten Schmidt as a thesis project for completion of the Masters program in the School of Media and Journalism at the University of North Carolina at Chapel Hill.
+          <p>Researched, written, designed and developed by Kiersten Schmidt as a thesis project for completion of the Masters program in the School of Media and Journalism at the University of North Carolina at Chapel Hill.</p>
+          <p>Credits will go here.</p>
         </footer>
       </div>
     </div>
+
+    <div id="dots-container">
+      <div id="dots">
+      </div>
+    </div>
+
 
 
     <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -236,5 +261,15 @@
     <!-- <script src="js/queue.js"></script> -->
     <script src="js/scroller.js"></script>
     <script src="js/sections.js"></script>
+    <script>
+    var sections = $('.step').length;
+
+    var addDots = "";
+    for (var i=0; i < sections; i++) {
+      addDots += '<i class="fa fa-circle-o fa-sm" id="circle-' + (i+1) + '" aria-hidden="true"></i>'
+    };
+    $('#dots').html(addDots);
+
+    </script>
   </body>
 </html>
