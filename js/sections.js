@@ -314,8 +314,8 @@ var scrollVis = function() {
    */
   function showBridge() {
     $('#bridge-text').fadeTo(500,0).css("display", "none");
-    $('.fa-circle-o').css('color', '#323232');
-    $('#circle-1').css('color', '#e7472e');
+    $('.active-circle').removeClass('active-circle');
+    $('#circle-1').addClass('active-circle');
   }
 
   /**
@@ -327,8 +327,8 @@ var scrollVis = function() {
    *
    */
   function showBridgeQuote() {
-    $('.fa-circle-o').css('color', '#323232');
-    $('#circle-2').css('color', '#e7472e');
+    $('.active-circle').removeClass('active-circle');
+    $('#circle-2').addClass('active-circle');
 
     $('#bridge-text').show();
     $('#bridge-text').fadeTo(500,1);
@@ -345,8 +345,8 @@ var scrollVis = function() {
    *
    */
   function showBridgeQuote2() {
-    $('.fa-circle-o').css('color', '#323232');
-    $('#circle-3').css('color', '#e7472e');
+    $('.active-circle').removeClass('active-circle');
+    $('#circle-3').addClass('active-circle');
 
     $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').fadeIn(1000);
     $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').fadeIn(1000);
@@ -372,8 +372,8 @@ var scrollVis = function() {
    *  are moved back to their place in the grid
    */
   function showRecord() {
-    $('.fa-circle-o').css('color', '#323232');
-    $('#circle-4').css('color', '#e7472e');
+    $('.active-circle').removeClass('active-circle');
+    $('#circle-4').addClass('active-circle');
 
     hideAxis();
     g.selectAll(".bar")

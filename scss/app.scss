@@ -238,9 +238,17 @@ img {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center;
+  width: 1rem;
 }
 
 .fa-sm {
   font-size: .5rem !important;
-  // line-height: .5rem !important;
+  opacity: 0.5;
+}
+
+.active-circle {
+  // color: $red;
+  opacity: 1;
+  font-size: .9rem !important;
 }
