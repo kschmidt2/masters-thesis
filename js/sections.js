@@ -20,8 +20,8 @@ var scrollVis = function() {
   var activeIndex = 0;
 
   // Sizing for the grid visualization
-  var squareSize = 6;
-  var squarePad = 2;
+  var squareSize = 17;
+  var squarePad = 3;
   var numPerRow = width / (squareSize + squarePad);
 
   // main svg used for visualization
@@ -60,9 +60,9 @@ var scrollVis = function() {
   // scale to convert the progress
   // through the section into a
   // color value.
-  var coughColorScale = d3.scale.linear()
-    .domain([0,1.0])
-    .range(["#008080", "red"]);
+  var squareColorScale = d3.scale.linear()
+    .domain([0,0.4])
+    .range(["#5d3548", "#e5e2ca"]);
 
   // You could probably get fancy and
   // use just one axis, modifying the
@@ -101,12 +101,13 @@ var scrollVis = function() {
       .append("div")
       .classed("svg-container", true) //container class to make it responsive
       .selectAll("svg")
-      .data([wordData]);
+      .data([squareData]);
       svg.enter().append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", "0 0 885 600")
         .classed("svg-content-responsive", true) //class to make it responsive
-        .append("g");
+        .append("g")
+        .classed("main-g", true);
 
       // this group element will be used to contain all
       // other elements.
@@ -114,24 +115,25 @@ var scrollVis = function() {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       // perform some preprocessing on raw data
-      var wordData = getWords(rawData);
+      var squareData = getSquares(rawData);
       // filter to just include filler words
-      var fillerWords = getFillerWords(wordData);
+      // var fillerWords = getFillerWords(wordData);
 
       // get the counts of filler words for the
       // bar chart display
-      var fillerCounts = groupByWord(fillerWords);
+      // var fillerCounts = groupByWord(fillerWords);
       // set the bar scale's domain
-      var countMax = d3.max(fillerCounts, function(d) { return d.values;});
-      xBarScale.domain([0,countMax]);
+      // var countMax = d3.max(fillerCounts, function(d) { return d.values;});
+      // xBarScale.domain([0,countMax]);
 
       // get aggregated histogram data
-      var histData = getHistogram(fillerWords);
-      // set histogram's domain
-      var histMax = d3.max(histData, function(d) { return d.y; });
-      yHistScale.domain([0, histMax]);
+      // var histData = getHistogram(fillerWords);
 
-      setupVis(wordData, fillerCounts, histData);
+      // set histogram's domain
+      // var histMax = d3.max(histData, function(d) { return d.y; });
+      // yHistScale.domain([0, histMax]);
+
+      setupVis(squareData);
 
       setupSections();
 
@@ -148,7 +150,7 @@ var scrollVis = function() {
    *  element for each filler word type.
    * @param histData - binned histogram data
    */
-  setupVis = function(wordData, fillerCounts, histData) {
+  setupVis = function(squareData) {
     // axis
     g.append("g")
       .attr("class", "x axis")
@@ -157,81 +159,83 @@ var scrollVis = function() {
     g.select(".x.axis").style("opacity", 0);
 
     // square grid
-    var squares = g.selectAll(".square").data(wordData);
+    var squares = g.selectAll(".square").data(squareData);
     squares.enter()
       .append("rect")
       .attr("width", squareSize)
       .attr("height", squareSize)
-      .attr("fill", "#fff")
+      .attr("fill", "#5d3548")
       .classed("square", true)
-      .classed("fill-square", function(d) { return d.filler; })
+      .classed("record-before", function(d) { return d.record_before; })
+      .classed("record-after", function(d) { return d.record_after; })
+      .classed("national-after", function(d) { return d.national_after; })
       .attr("x", function(d) { return d.x;})
       .attr("y", function(d) { return d.y;})
       .attr("opacity", 0);
 
     // barchart
-    var bars = g.selectAll(".bar").data(fillerCounts);
-    bars.enter()
-      .append("rect")
-      .attr("class", "bar")
-      .attr("x", 0)
-      .attr("y", function(d,i) { return yBarScale(i);})
-      .attr("fill", function(d,i) { return barColors[i]; })
-      .attr("width", 0)
-      .attr("height", yBarScale.rangeBand());
-
-    var barText = g.selectAll(".bar-text").data(fillerCounts);
-    barText.enter()
-      .append("text")
-      .attr("class", "bar-text")
-      .text(function(d) { return d.key + "…"; })
-      .attr("x", 0)
-      .attr("dx", 15)
-      .attr("y", function(d,i) { return yBarScale(i);})
-      .attr("dy", yBarScale.rangeBand() / 1.2)
-      .style("font-size", "110px")
-      .attr("fill", "white")
-      .attr("opacity", 0);
-
-    // histogram
-    var hist = g.selectAll(".hist").data(histData);
-    hist.enter().append("rect")
-      .attr("class", "hist")
-      .attr("x", function(d) { return xHistScale(d.x); })
-      .attr("y", height)
-      .attr("height", 0)
-      .attr("width", xHistScale(histData[0].dx) - 1)
-      .attr("fill", barColors[0])
-      .attr("opacity", 0);
-
-    // cough title
-    g.append("text")
-      .attr("class", "sub-title cough cough-title")
-      .attr("x", width / 2)
-      .attr("y", 60)
-      .text("cough")
-      .attr("opacity", 0);
-
-    // arrowhead from
-    // http://logogin.blogspot.com/2013/02/d3js-arrowhead-markers.html
-    svg.append("defs").append("marker")
-      .attr("id", "arrowhead")
-      .attr("refY", 2)
-      .attr("markerWidth", 6)
-      .attr("markerHeight", 4)
-      .attr("orient", "auto")
-      .append("path")
-      .attr("d", "M 0,0 V 4 L6,2 Z");
-
-    g.append("path")
-      .attr("class", "cough cough-arrow")
-      .attr("marker-end", "url(#arrowhead)")
-      .attr("d", function() {
-        var line = "M " + ((width / 2) - 10) + " " + 80;
-        line += " l 0 " + 230;
-        return line;
-      })
-      .attr("opacity", 0);
+    // var bars = g.selectAll(".bar").data(fillerCounts);
+    // bars.enter()
+    //   .append("rect")
+    //   .attr("class", "bar")
+    //   .attr("x", 0)
+    //   .attr("y", function(d,i) { return yBarScale(i);})
+    //   .attr("fill", function(d,i) { return barColors[i]; })
+    //   .attr("width", 0)
+    //   .attr("height", yBarScale.rangeBand());
+    //
+    // var barText = g.selectAll(".bar-text").data(fillerCounts);
+    // barText.enter()
+    //   .append("text")
+    //   .attr("class", "bar-text")
+    //   .text(function(d) { return d.key + "…"; })
+    //   .attr("x", 0)
+    //   .attr("dx", 15)
+    //   .attr("y", function(d,i) { return yBarScale(i);})
+    //   .attr("dy", yBarScale.rangeBand() / 1.2)
+    //   .style("font-size", "110px")
+    //   .attr("fill", "white")
+    //   .attr("opacity", 0);
+    //
+    // // histogram
+    // var hist = g.selectAll(".hist").data(histData);
+    // hist.enter().append("rect")
+    //   .attr("class", "hist")
+    //   .attr("x", function(d) { return xHistScale(d.x); })
+    //   .attr("y", height)
+    //   .attr("height", 0)
+    //   .attr("width", xHistScale(histData[0].dx) - 1)
+    //   .attr("fill", barColors[0])
+    //   .attr("opacity", 0);
+    //
+    // // cough title
+    // g.append("text")
+    //   .attr("class", "sub-title cough cough-title")
+    //   .attr("x", width / 2)
+    //   .attr("y", 60)
+    //   .text("cough")
+    //   .attr("opacity", 0);
+    //
+    // // arrowhead from
+    // // http://logogin.blogspot.com/2013/02/d3js-arrowhead-markers.html
+    // svg.append("defs").append("marker")
+    //   .attr("id", "arrowhead")
+    //   .attr("refY", 2)
+    //   .attr("markerWidth", 6)
+    //   .attr("markerHeight", 4)
+    //   .attr("orient", "auto")
+    //   .append("path")
+    //   .attr("d", "M 0,0 V 4 L6,2 Z");
+    //
+    // g.append("path")
+    //   .attr("class", "cough cough-arrow")
+    //   .attr("marker-end", "url(#arrowhead)")
+    //   .attr("d", function() {
+    //     var line = "M " + ((width / 2) - 10) + " " + 80;
+    //     line += " l 0 " + 230;
+    //     return line;
+    //   })
+    //   .attr("opacity", 0);
   };
 
   /**
@@ -248,8 +252,8 @@ var scrollVis = function() {
     activateFunctions[1] = showBridgeQuote;
     activateFunctions[2] = showBridgeQuote2;
     activateFunctions[3] = showRecord;
-    activateFunctions[4] = showBar;
-    activateFunctions[5] = showHistPart;
+    activateFunctions[4] = showNational;
+    activateFunctions[5] = showNationalTrend;
     activateFunctions[6] = showNewspaper;
     activateFunctions[7] = showCough;
     // activateFunctions[8] = showHistAll;
@@ -263,6 +267,8 @@ var scrollVis = function() {
     for(var i = 0; i < 9; i++) {
       updateFunctions[i] = function() {};
     }
+    updateFunctions[3] = updateRecord;
+    updateFunctions[4] = updateNational;
     updateFunctions[6] = updateNewspaper;
   };
 
@@ -352,48 +358,19 @@ var scrollVis = function() {
   function showRecord() {
     $('.active-circle').removeClass('active-circle');
     $('#circle-4').addClass('active-circle');
-    $('#vis').addClass('vis-small-container');
-
-    hideAxis();
-    g.selectAll(".bar")
-      .transition()
-      .duration(600)
-      .attr("width", 0);
-
-    g.selectAll(".bar-text")
-      .transition()
-      .duration(0)
-      .attr("opacity", 0);
 
     $('#bridge-text').fadeTo(500,0).css("display", "none");
-    $('#bridge_illo').fadeTo(500,0);
+    $('#bridge_illo').hide();
+    $('#vis').addClass('vis-small-container');
 
     $('#vis').css("height", "65vh");
 
-    g.selectAll(".square")
+    g.selectAll(".record-before")
       .transition()
-      .duration(0)
+      .duration(600)
       .attr("opacity", 1.0)
-      .attr("fill", "#ddd");
+      .style("fill", "#5d3548");
 
-    // use named transition to ensure
-    // move happens even if other
-    // transitions are interrupted.
-    g.selectAll(".fill-square")
-      .transition("move-fills")
-      .duration(800)
-      .attr("x", function(d,i) {
-        return d.x;
-      })
-      .attr("y", function(d,i) {
-        return d.y;
-      });
-
-    g.selectAll(".fill-square")
-      .transition()
-      .duration(800)
-      .attr("opacity", 1.0)
-      .attr("fill", function(d) { return d.filler ? '#008080' : '#ddd'; });
   }
 
   /**
@@ -404,47 +381,20 @@ var scrollVis = function() {
    * shows: barchart
    *
    */
-  function showBar() {
+  function showNational() {
     $('.active-circle').removeClass('active-circle');
     $('#circle-5').addClass('active-circle');
 
-    // ensure bar axis is set
-    showAxis(xAxisBar);
+    g.selectAll(".record-before")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
 
     g.selectAll(".square")
       .transition()
-      .duration(800)
-      .attr("opacity", 0);
-
-    g.selectAll(".fill-square")
-      .transition()
-      .duration(800)
-      .attr("x", 0)
-      .attr("y", function(d,i) {
-        return yBarScale(i % 3) + yBarScale.rangeBand() / 2;
-      })
-      .transition()
-      .duration(0)
-      .attr("opacity", 0);
-
-    g.selectAll(".hist")
-      .transition()
       .duration(600)
-      .attr("height", function(d) { return  0; })
-      .attr("y", function(d) { return  height; })
-      .style("opacity", 0);
-
-    g.selectAll(".bar")
-      .transition()
-      .delay(function(d,i) { return 300 * (i + 1);})
-      .duration(600)
-      .attr("width", function(d) { return xBarScale(d.values); });
-
-    g.selectAll(".bar-text")
-      .transition()
-      .duration(600)
-      .delay(1200)
-      .attr("opacity", 1);
+      .attr("opacity", 1.0)
+      .style("fill", "#5d3548");
   }
 
   /**
@@ -456,7 +406,7 @@ var scrollVis = function() {
    * shows: first half of histogram
    *
    */
-  function showHistPart() {
+  function showNationalTrend() {
     $('.active-circle').removeClass('active-circle');
     $('#circle-6').addClass('active-circle');
     // switch the axis to histogram one
@@ -473,6 +423,7 @@ var scrollVis = function() {
       .attr("width", 0);
 
     $('#newspaper_illo').fadeTo(500,0).hide();
+    $('#header').removeClass('fixed');
 
     // here we only show a bar if
     // it is before the 15 minute mark
@@ -527,7 +478,8 @@ var scrollVis = function() {
    */
   function showCough() {
     $('#newspaper_illo').fadeTo(500,0).hide();
-    
+    $('#header').removeClass('fixed');
+
     // ensure the axis to histogram one
     showAxis(xAxisHist);
 
@@ -583,12 +535,30 @@ var scrollVis = function() {
    * @param progress - 0.0 - 1.0 -
    *  how far user has scrolled in section
    */
-  function updateNewspaper(progress) {
 
-    var negativeProgress = 1-(progress);
-    console.log(negativeProgress);
-    $('#newspaper_illo').css('transform', 'scale('+ negativeProgress + ')');
-  }
+   function updateRecord(progress) {
+     if (progress <= 0.4) {
+       g.selectAll(".record-after")
+         .transition("record")
+         .duration(0)
+         .style("fill", squareColorScale(progress));
+     }
+   }
+
+   function updateNational(progress) {
+     if (progress <= 0.4) {
+       g.selectAll(".national-after")
+         .transition("national")
+         .duration(0)
+         .style("fill", squareColorScale(progress));
+     }
+   }
+
+    function updateNewspaper(progress) {
+      var negativeProgress = 1-(progress);
+      $('#newspaper_illo').css('transform', 'scale('+ negativeProgress + ')');
+      $('#header').addClass('fixed');
+    }
 
   /**
    * DATA FUNCTIONS
@@ -609,15 +579,11 @@ var scrollVis = function() {
    *
    * @param rawData - data read in from file
    */
-  function getWords(rawData) {
+  function getSquares(rawData) {
     return rawData.map(function(d,i) {
-      // is this word a filler word?
-      d.filler = (d.filler === "1") ? true : false;
-      // time in seconds word was spoken
-      d.time = +d.time;
-      // time in minutes word was spoken
-      d.min = Math.floor(d.time / 60);
-
+      d.record_before = (d.record_before === "1") ? true : false;
+      d.record_after = (d.record_after === "1") ? true : false;
+      d.national_after = (d.national_after === "1") ? true : false;
       // positioning for square visual
       // stored here to make it easier
       // to keep track of.
@@ -718,6 +684,8 @@ function display(data) {
     .datum(data)
     .call(plot);
 
+    console.log(data);
+
   // setup scroll functionality
   var scroll = scroller()
     .container(d3.select('#graphic'));
@@ -743,4 +711,6 @@ function display(data) {
 }
 
 // load data and display
-d3.tsv("data/words.tsv", display);
+// d3.tsv("data/words.tsv", display);
+
+d3.csv("data/employees_intro.csv", display)

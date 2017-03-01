@@ -104,6 +104,15 @@ h2 {
   @include centered;
 }
 
+.fixed {
+  position: fixed;
+  top: 0;
+}
+
+.blank_space {
+  height: 30vh;
+}
+
 .container {
   padding: 0 5%;
   @include breakpoint(large) {
@@ -116,10 +125,10 @@ h2 {
 #graphic section {
   max-width: 560px;
   margin: auto;
-  margin-bottom: 30vh;
+  margin-bottom: 40vh;
   margin-top: 15vh;
   opacity: 0;
-  background-color: white;
+  background-color: rgba(255,255,255,0.6);
   padding: 0 5px;
 }
 
