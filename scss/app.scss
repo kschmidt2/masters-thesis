@@ -119,6 +119,8 @@ h2 {
   margin-bottom: 30vh;
   margin-top: 15vh;
   opacity: 0;
+  background-color: white;
+  padding: 0 5px;
 }
 
 #graphic section:last-of-type {
@@ -149,14 +151,21 @@ img {
   position: fixed;
   bottom: 0vh;
   z-index: -1;
-  height: 80vh;
+  height: 60vh;
   width: 100vw;
-  // background-color: $gray;
-  // background-image: url(../images/bridge.svg);
-  // background-size: cover;
-  // background-position: bottom;
+  @include breakpoint(medium) {
+    height: 80vh;
+  }
   & > svg {
     @include centered;
+  }
+}
+
+.vis-small-container {
+  max-width: 560px !important;
+  @include centered;
+  @include breakpoint(medium) {
+    max-width: 780px !important;
   }
 }
 
@@ -173,6 +182,10 @@ img {
   @include breakpoint(medium) {
     align-self: flex-end;
   }
+}
+
+#newspaper_illo {
+  display: none;
 }
 
 #bridge-text {
@@ -251,4 +264,21 @@ img {
   // color: $red;
   opacity: 1;
   font-size: .9rem !important;
+}
+
+/*styles to make the svg responsive*/
+.svg-content-responsive {
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  @include centered;
+}
+.svg-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 80%; /* aspect ratio */
+  vertical-align: top;
+  overflow: hidden;
+  @include centered;
 }

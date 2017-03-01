@@ -7,9 +7,9 @@
 var scrollVis = function() {
   // constants to define the size
   // and margins of the vis area.
-  var width = 1000;
+  var width = 800;
   var height = 400;
-  var margin = {top:0, left:20, bottom:40, right:10};
+  var margin = {top:0, left:40, bottom:0, right:40};
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -97,12 +97,16 @@ var scrollVis = function() {
   var chart = function(selection) {
     selection.each(function(rawData) {
       // create svg and give it a width and height
-      svg = d3.select(this).selectAll("svg").data([wordData]);
-      svg.enter().append("svg").append("g");
-
-      svg.attr("width", width + margin.left + margin.right);
-      svg.attr("height", height + margin.top + margin.bottom);
-
+    svg = d3.select(this)
+      .append("div")
+      .classed("svg-container", true) //container class to make it responsive
+      .selectAll("svg")
+      .data([wordData]);
+      svg.enter().append("svg")
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 885 600")
+        .classed("svg-content-responsive", true) //class to make it responsive
+        .append("g");
 
       // this group element will be used to contain all
       // other elements.
@@ -151,33 +155,6 @@ var scrollVis = function() {
       .attr("transform", "translate(0," + height + ")")
       .call(xAxisBar);
     g.select(".x.axis").style("opacity", 0);
-
-    // count openvis title
-    // g.append("g")
-    //   .attr("class", "title openvis-title")
-    //   .append("use")
-    //   .style("width", "100vw")
-    //   .style("height", "auto")
-    //   .attr("xlink:href","#bridge_illo")
-    //   .attr("opacity", 0);
-
-    // count filler word count title
-    // g.append("text")
-    //   .attr("class", "title count-title highlight")
-    //   .attr("x", width / 1.6)
-    //   .attr("y", height / 4)
-    //   .attr("text-anchor", "middle")
-    //   .text('"Time for some traffic problems in Fort Lee."');
-    //
-    // g.append("text")
-    //   .attr("class", "sub-title count-title")
-    //   .attr("x", width / 1.6)
-    //   .attr("y", (height / 4) + (height / 10) )
-    //   .attr("text-anchor", "middle")
-    //   .text("Bridget Anne Kelly, deputy chief of staff in Christie's office in an email to Port Authority executive David Wildstein.");
-    //
-    // g.selectAll(".count-title")
-    //   .attr("opacity", 0);
 
     // square grid
     var squares = g.selectAll(".square").data(wordData);
@@ -273,9 +250,9 @@ var scrollVis = function() {
     activateFunctions[3] = showRecord;
     activateFunctions[4] = showBar;
     activateFunctions[5] = showHistPart;
-    activateFunctions[6] = showHistAll;
+    activateFunctions[6] = showNewspaper;
     activateFunctions[7] = showCough;
-    activateFunctions[8] = showHistAll;
+    // activateFunctions[8] = showHistAll;
 
     // updateFunctions are called while
     // in a particular section to update
@@ -286,7 +263,7 @@ var scrollVis = function() {
     for(var i = 0; i < 9; i++) {
       updateFunctions[i] = function() {};
     }
-    updateFunctions[7] = updateCough;
+    updateFunctions[6] = updateNewspaper;
   };
 
   /**
@@ -347,6 +324,7 @@ var scrollVis = function() {
   function showBridgeQuote2() {
     $('.active-circle').removeClass('active-circle');
     $('#circle-3').addClass('active-circle');
+    $('#vis').removeClass('vis-small-container');
 
     $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').fadeIn(1000);
     $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').fadeIn(1000);
@@ -374,6 +352,7 @@ var scrollVis = function() {
   function showRecord() {
     $('.active-circle').removeClass('active-circle');
     $('#circle-4').addClass('active-circle');
+    $('#vis').addClass('vis-small-container');
 
     hideAxis();
     g.selectAll(".bar")
@@ -426,6 +405,9 @@ var scrollVis = function() {
    *
    */
   function showBar() {
+    $('.active-circle').removeClass('active-circle');
+    $('#circle-5').addClass('active-circle');
+
     // ensure bar axis is set
     showAxis(xAxisBar);
 
@@ -475,6 +457,8 @@ var scrollVis = function() {
    *
    */
   function showHistPart() {
+    $('.active-circle').removeClass('active-circle');
+    $('#circle-6').addClass('active-circle');
     // switch the axis to histogram one
     showAxis(xAxisHist);
 
@@ -487,6 +471,8 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("width", 0);
+
+    $('#newspaper_illo').fadeTo(500,0).hide();
 
     // here we only show a bar if
     // it is before the 15 minute mark
@@ -508,28 +494,26 @@ var scrollVis = function() {
    * shows: all histogram bars
    *
    */
-  function showHistAll() {
-    // ensure the axis to histogram one
-    showAxis(xAxisHist);
+  function showNewspaper() {
+    $('.active-circle').removeClass('active-circle');
+    $('#circle-7').addClass('active-circle');
+
+    hideAxis();
+
+    g.selectAll(".hist")
+      .transition()
+      .duration(600)
+      .attr("height", function(d) { return  0; })
+      .attr("y", function(d) { return  height; })
+      .style("opacity", 0);
 
     g.selectAll(".cough")
       .transition()
       .duration(0)
       .attr("opacity", 0);
 
-    // named transition to ensure
-    // color change is not clobbered
-    g.selectAll(".hist")
-      .transition("color")
-      .duration(500)
-      .style("fill", "#008080");
+    $('#newspaper_illo').show().fadeTo(500,1);
 
-    g.selectAll(".hist")
-      .transition()
-      .duration(1200)
-      .attr("y", function(d) { return yHistScale(d.y); })
-      .attr("height", function(d) { return  height - yHistScale(d.y);  })
-      .style("opacity", 1.0);
   }
 
   /**
@@ -542,6 +526,8 @@ var scrollVis = function() {
    *
    */
   function showCough() {
+    $('#newspaper_illo').fadeTo(500,0).hide();
+    
     // ensure the axis to histogram one
     showAxis(xAxisHist);
 
@@ -597,18 +583,11 @@ var scrollVis = function() {
    * @param progress - 0.0 - 1.0 -
    *  how far user has scrolled in section
    */
-  function updateCough(progress) {
-    g.selectAll(".cough")
-      .transition()
-      .duration(0)
-      .attr("opacity", progress);
+  function updateNewspaper(progress) {
 
-    g.selectAll(".hist")
-      .transition("cough")
-      .duration(0)
-      .style("fill", function(d,i) {
-        return (d.x >= 14) ? coughColorScale(progress) : "#008080";
-      });
+    var negativeProgress = 1-(progress);
+    console.log(negativeProgress);
+    $('#newspaper_illo').css('transform', 'scale('+ negativeProgress + ')');
   }
 
   /**
