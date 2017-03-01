@@ -290,4 +290,9 @@ img {
   vertical-align: top;
   overflow: hidden;
   @include centered;
+  font-family: $sans-serif-font;
+}
+
+.square-key {
+  float: left;
 }

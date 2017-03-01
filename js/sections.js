@@ -9,7 +9,7 @@ var scrollVis = function() {
   // and margins of the vis area.
   var width = 800;
   var height = 400;
-  var margin = {top:0, left:40, bottom:0, right:40};
+  var margin = {top:50, left:40, bottom:0, right:40};
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -158,7 +158,8 @@ var scrollVis = function() {
       .call(xAxisBar);
     g.select(".x.axis").style("opacity", 0);
 
-    // square grid
+
+
     var squares = g.selectAll(".square").data(squareData);
     squares.enter()
       .append("rect")
@@ -172,6 +173,28 @@ var scrollVis = function() {
       .attr("x", function(d) { return d.x;})
       .attr("y", function(d) { return d.y;})
       .attr("opacity", 0);
+
+    var squareText = g.append("text")
+        .attr("class", "square-key square-hed")
+        .attr("x", 0)
+        .attr("y", -15)
+        .text("Bergen Record employees, before and after 2016 layoffs")
+        .style("font-weight", 700)
+        .attr("opacity", 0);
+      g.append("rect")
+        .attr("width", squareSize)
+        .attr("height", squareSize)
+        .attr("fill", "#5d3548")
+        .attr("x", 645)
+        .attr("y", -30)
+        .attr("class", "square-key")
+        .attr("opacity", 0);
+      g.append("text")
+        .attr("class", "square-key employee-count")
+        .attr("x", 670)
+        .attr("y", -15)
+        .text("= 1 employee")
+        .attr("opacity", 0);
 
     // barchart
     // var bars = g.selectAll(".bar").data(fillerCounts);
@@ -345,6 +368,11 @@ var scrollVis = function() {
       .transition()
       .duration(0)
       .attr("opacity", 0.0);
+
+    g.selectAll(".square-key")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
   }
 
   /**
@@ -365,11 +393,26 @@ var scrollVis = function() {
 
     $('#vis').css("height", "65vh");
 
+    g.selectAll(".square-key")
+      .transition()
+      .duration(600)
+      .attr("opacity", 1.0);
+
     g.selectAll(".record-before")
       .transition()
       .duration(600)
       .attr("opacity", 1.0)
       .style("fill", "#5d3548");
+
+    // g.selectAll(".square-hed")
+    //   .transition()
+    //   .duration(600)
+    //   .text("Bergen Record employees, before and after 2016 layoffs");
+    //
+    // g.selectAll(".employee-count")
+    //   .transition()
+    //   .duration(600)
+    //   .text("= 1 employee");
 
   }
 
@@ -395,6 +438,16 @@ var scrollVis = function() {
       .duration(600)
       .attr("opacity", 1.0)
       .style("fill", "#5d3548");
+
+    g.selectAll(".square-hed")
+      .transition()
+      .duration(600)
+      .text("National newspaper employees, 2000 and 2014");
+
+    g.selectAll(".employee-count")
+      .transition()
+      .duration(600)
+      .text("= 100 employees");
   }
 
   /**
@@ -411,6 +464,16 @@ var scrollVis = function() {
     $('#circle-6').addClass('active-circle');
     // switch the axis to histogram one
     showAxis(xAxisHist);
+
+    g.selectAll(".square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
+
+    g.selectAll(".square-key")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
 
     g.selectAll(".bar-text")
       .transition()
@@ -537,20 +600,20 @@ var scrollVis = function() {
    */
 
    function updateRecord(progress) {
-     if (progress <= 0.4) {
+     if (progress > 0.3) {
        g.selectAll(".record-after")
          .transition("record")
-         .duration(0)
-         .style("fill", squareColorScale(progress));
+         .duration(500)
+         .style("fill", "#e5e2ca");
      }
    }
 
    function updateNational(progress) {
-     if (progress <= 0.4) {
+     if (progress > 0.3) {
        g.selectAll(".national-after")
          .transition("national")
-         .duration(0)
-         .style("fill", squareColorScale(progress));
+         .duration(500)
+         .style("fill", "#e5e2ca");
      }
    }
 
