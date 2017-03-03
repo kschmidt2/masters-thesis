@@ -62,7 +62,7 @@ var scrollVis = function() {
   // color value.
   var squareColorScale = d3.scale.linear()
     .domain([0,0.4])
-    .range(["#5d3548", "#e5e2ca"]);
+    .range(["#e7472e", "#e5e2ca"]);
 
   // You could probably get fancy and
   // use just one axis, modifying the
@@ -165,7 +165,7 @@ var scrollVis = function() {
       .append("rect")
       .attr("width", squareSize)
       .attr("height", squareSize)
-      .attr("fill", "#5d3548")
+      .attr("fill", "#e7472e")
       .classed("square", true)
       .classed("record-before", function(d) { return d.record_before; })
       .classed("record-after", function(d) { return d.record_after; })
@@ -184,7 +184,7 @@ var scrollVis = function() {
       g.append("rect")
         .attr("width", squareSize)
         .attr("height", squareSize)
-        .attr("fill", "#5d3548")
+        .attr("fill", "#e7472e")
         .attr("x", 645)
         .attr("y", -30)
         .attr("class", "square-key")
@@ -393,6 +393,11 @@ var scrollVis = function() {
 
     $('#vis').css("height", "65vh");
 
+    g.selectAll(".square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0);
+
     g.selectAll(".square-key")
       .transition()
       .duration(600)
@@ -402,7 +407,7 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 1.0)
-      .style("fill", "#5d3548");
+      .style("fill", "#e7472e");
 
     // g.selectAll(".square-hed")
     //   .transition()
@@ -437,7 +442,7 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 1.0)
-      .style("fill", "#5d3548");
+      .style("fill", "#e7472e");
 
     g.selectAll(".square-hed")
       .transition()
@@ -603,8 +608,8 @@ var scrollVis = function() {
      if (progress > 0.3) {
        g.selectAll(".record-after")
          .transition("record")
-         .duration(500)
-         .style("fill", "#e5e2ca");
+         .duration(0)
+         .style("fill", "#7a3a30");
      }
    }
 
@@ -612,8 +617,8 @@ var scrollVis = function() {
      if (progress > 0.3) {
        g.selectAll(".national-after")
          .transition("national")
-         .duration(500)
-         .style("fill", "#e5e2ca");
+         .duration(0)
+         .style("fill", "#7a3a30");
      }
    }
 
@@ -777,3 +782,4 @@ function display(data) {
 // d3.tsv("data/words.tsv", display);
 
 d3.csv("data/employees_intro.csv", display)
+// d3.csv("data/national_employees_intro.csv", display)

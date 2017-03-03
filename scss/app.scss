@@ -75,12 +75,13 @@ html, body {
 
 body {
   font-family: $serif-font;
-  color: $black;
+  color: white;
+  background-color: $black;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: $serif-font;
-  color: $black;
+  color: white;
 }
 
 h1 {
@@ -128,7 +129,7 @@ h2 {
   margin-bottom: 40vh;
   margin-top: 15vh;
   opacity: 0;
-  background-color: rgba(255,255,255,0.6);
+  background-color: rgba(50,50,50,0.6);
   padding: 0 5px;
 }
 
@@ -208,7 +209,7 @@ img {
 }
 
 .bridge-quote {
-  background-color: $purple;
+  background-color: $red;
   padding: 10px;
   font-size: 2rem;
   color: white;
@@ -291,8 +292,8 @@ img {
   overflow: hidden;
   @include centered;
   font-family: $sans-serif-font;
-}
-
-.square-key {
-  float: left;
+  & text {
+    fill: white;
+  }
+  color: white;
 }
