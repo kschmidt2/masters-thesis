@@ -96,12 +96,13 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
+      console.log(rawData);
       // create svg and give it a width and height
     svg = d3.select(this)
       .append("div")
       .classed("svg-container", true) //container class to make it responsive
       .selectAll("svg")
-      .data([squareData]);
+      .data([getSquares]);
       svg.enter().append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", "0 0 885 600")
@@ -151,14 +152,13 @@ var scrollVis = function() {
    * @param histData - binned histogram data
    */
   setupVis = function(squareData) {
+
     // axis
     g.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxisBar);
     g.select(".x.axis").style("opacity", 0);
-
-
 
     var squares = g.selectAll(".square").data(squareData);
     squares.enter()
@@ -195,70 +195,6 @@ var scrollVis = function() {
         .attr("y", -15)
         .text("= 1 employee")
         .attr("opacity", 0);
-
-    // barchart
-    // var bars = g.selectAll(".bar").data(fillerCounts);
-    // bars.enter()
-    //   .append("rect")
-    //   .attr("class", "bar")
-    //   .attr("x", 0)
-    //   .attr("y", function(d,i) { return yBarScale(i);})
-    //   .attr("fill", function(d,i) { return barColors[i]; })
-    //   .attr("width", 0)
-    //   .attr("height", yBarScale.rangeBand());
-    //
-    // var barText = g.selectAll(".bar-text").data(fillerCounts);
-    // barText.enter()
-    //   .append("text")
-    //   .attr("class", "bar-text")
-    //   .text(function(d) { return d.key + "…"; })
-    //   .attr("x", 0)
-    //   .attr("dx", 15)
-    //   .attr("y", function(d,i) { return yBarScale(i);})
-    //   .attr("dy", yBarScale.rangeBand() / 1.2)
-    //   .style("font-size", "110px")
-    //   .attr("fill", "white")
-    //   .attr("opacity", 0);
-    //
-    // // histogram
-    // var hist = g.selectAll(".hist").data(histData);
-    // hist.enter().append("rect")
-    //   .attr("class", "hist")
-    //   .attr("x", function(d) { return xHistScale(d.x); })
-    //   .attr("y", height)
-    //   .attr("height", 0)
-    //   .attr("width", xHistScale(histData[0].dx) - 1)
-    //   .attr("fill", barColors[0])
-    //   .attr("opacity", 0);
-    //
-    // // cough title
-    // g.append("text")
-    //   .attr("class", "sub-title cough cough-title")
-    //   .attr("x", width / 2)
-    //   .attr("y", 60)
-    //   .text("cough")
-    //   .attr("opacity", 0);
-    //
-    // // arrowhead from
-    // // http://logogin.blogspot.com/2013/02/d3js-arrowhead-markers.html
-    // svg.append("defs").append("marker")
-    //   .attr("id", "arrowhead")
-    //   .attr("refY", 2)
-    //   .attr("markerWidth", 6)
-    //   .attr("markerHeight", 4)
-    //   .attr("orient", "auto")
-    //   .append("path")
-    //   .attr("d", "M 0,0 V 4 L6,2 Z");
-    //
-    // g.append("path")
-    //   .attr("class", "cough cough-arrow")
-    //   .attr("marker-end", "url(#arrowhead)")
-    //   .attr("d", function() {
-    //     var line = "M " + ((width / 2) - 10) + " " + 80;
-    //     line += " l 0 " + 230;
-    //     return line;
-    //   })
-    //   .attr("opacity", 0);
   };
 
   /**
@@ -453,6 +389,11 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .text("= 100 employees");
+
+    g.selectAll(".square-key")
+      .transition()
+      .duration(0)
+      .attr("opacity", 1);
   }
 
   /**
@@ -744,15 +685,14 @@ var scrollVis = function() {
  *
  * @param data - loaded tsv data
  */
-function display(data) {
+function display(error, employeeSquares, employeeLine) {
+  console.log(employeeSquares, employeeLine);
   // create a new plot and
   // display it
   var plot = scrollVis();
   d3.select("#vis")
-    .datum(data)
+    .datum(employeeSquares, employeeLine)
     .call(plot);
-
-    console.log(data);
 
   // setup scroll functionality
   var scroll = scroller()
@@ -778,8 +718,22 @@ function display(data) {
   });
 }
 
+// function display1(data) {
+//   // create a new plot and
+//   // display it
+//   var plot = scrollVis();
+//   d3.select("#vis")
+//     .datum(data)
+//     .call(plot);
+// }
+
 // load data and display
 // d3.tsv("data/words.tsv", display);
 
-d3.csv("data/employees_intro.csv", display)
-// d3.csv("data/national_employees_intro.csv", display)
+// d3.csv("data/employees_intro.csv", display)
+// d3.csv("data/national_employees_intro.csv", display1)
+
+queue()
+.defer(d3.csv, "data/employees_intro.csv")
+.defer(d3.csv, "data/national_employees_intro.csv")
+.await(display);
