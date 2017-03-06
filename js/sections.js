@@ -203,7 +203,34 @@ var scrollVis = function() {
     activateFunctions[5] = showNationalTrend;
     activateFunctions[6] = showNewspaper;
     activateFunctions[7] = hideNewspaper;
-    // activateFunctions[8] = showHistAll;
+    activateFunctions[8] = blankSlide;
+    // activateFunctions[9] = blankSlide1;
+    // activateFunctions[10] = blankSlide;
+    // activateFunctions[11] = blankSlide;
+    // activateFunctions[12] = blankSlide;
+    // activateFunctions[13] = blankSlide;
+    // activateFunctions[14] = blankSlide;
+    // activateFunctions[15] = blankSlide;
+    // activateFunctions[16] = blankSlide;
+    // activateFunctions[17] = blankSlide;
+    // activateFunctions[18] = blankSlide;
+    // activateFunctions[19] = blankSlide;
+    // activateFunctions[20] = blankSlide;
+    // activateFunctions[21] = blankSlide;
+    // activateFunctions[22] = blankSlide;
+    // activateFunctions[23] = blankSlide;
+    // activateFunctions[24] = blankSlide;
+    // activateFunctions[25] = blankSlide;
+    // activateFunctions[26] = blankSlide;
+    // activateFunctions[27] = blankSlide;
+    // activateFunctions[28] = blankSlide;
+    // activateFunctions[29] = blankSlide;
+    // activateFunctions[30] = blankSlide;
+    // activateFunctions[31] = blankSlide;
+    // activateFunctions[32] = blankSlide;
+    // activateFunctions[33] = blankSlide;
+    // activateFunctions[34] = blankSlide;
+
 
     // updateFunctions are called while
     // in a particular section to update
@@ -495,13 +522,24 @@ var scrollVis = function() {
   }
 
   /**
+   * blankSlide - blank slide
+   *
+   * hides: circulation chart
+   * shows: nothing
+   *
+   */
+  function blankSlide() {
+    console.log("blank slide");
+  }
+
+
+  /**
    * showAxis - helper function to
    * display particular xAxis
    *
    * @param xAxis, yAxis - the axis to show, delay - how long to delay the transition
    */
   function showAxis(xAxis, yAxis, delay) {
-    console.log("show axis");
     g.select(".x.axis")
       .call(xAxis)
       .transition().duration(500).delay(delay)
@@ -518,7 +556,6 @@ var scrollVis = function() {
    *
    */
   function hideAxis() {
-    console.log("hide axis");
     g.select(".x.axis")
       .transition().duration(0)
       .style("opacity",0);
@@ -612,6 +649,7 @@ var scrollVis = function() {
     var scrolledSections = d3.range(lastIndex + sign, activeIndex + sign, sign);
     scrolledSections.forEach(function(i) {
       activateFunctions[i]();
+      // changes highlighted circle
       $('.active-circle').removeClass('active-circle');
       $('#circle-' + (i+1)).addClass('active-circle');
     });

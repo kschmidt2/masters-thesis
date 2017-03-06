@@ -100,11 +100,6 @@ h2 {
   }
 }
 
-#header {
-  text-align: center;
-  @include centered;
-}
-
 .fixed {
   position: fixed;
   top: 0;
@@ -138,8 +133,16 @@ h2 {
 }
 
 #header {
-  max-width: 1048px !important;
-  width: 1048px;
+  text-align: center;
+  @include centered;
+  @include breakpoint(medium) {
+    max-width: 780px !important;
+    width: 780px;
+  }
+  @include breakpoint(large) {
+    max-width: 1048px !important;
+    width: 1048px;
+  }
 }
 
 p {
@@ -173,6 +176,7 @@ img {
 
 .vis-small-container {
   max-width: 560px !important;
+  bottom: 0vh;
   @include centered;
   @include breakpoint(medium) {
     max-width: 780px !important;
@@ -199,13 +203,17 @@ img {
 }
 
 #bridge-text {
-  margin: 20vh auto 0;
+  margin: 10vh auto 0;
   text-align: center;
   font-family: $sans-serif-font;
-  width: 700px;
+  width: 360px;
   display: none;
   position: relative;
   z-index: 3;
+  @include breakpoint(medium) {
+    width: 700px;
+    margin: 20vh auto 0;
+  }
 }
 
 .bridge-quote {
@@ -217,8 +225,11 @@ img {
 
 .bridge-attrib {
   font-size: .8rem;
-  width: 400px;
+  width: 360px;
   margin: 10px auto 0;
+  @include breakpoint(medium) {
+    width: 400px;
+  }
 }
 
 #interactive-footer {
