@@ -240,6 +240,13 @@ var scrollVis = function() {
    *
    */
   setupSections = function() {
+
+    // function highlightCircle (i) {
+    //   $('.active-circle').removeClass('active-circle');
+    //   $('#circle-' + (i+1)).addClass('active-circle');
+    // }
+
+
     // activateFunctions are called each
     // time the active section changes
     activateFunctions[0] = showBridge;
@@ -291,8 +298,6 @@ var scrollVis = function() {
    */
   function showBridge() {
     $('#bridge-text').fadeTo(500,0).css("display", "none");
-    $('.active-circle').removeClass('active-circle');
-    $('#circle-1').addClass('active-circle');
   }
 
   /**
@@ -304,8 +309,6 @@ var scrollVis = function() {
    *
    */
   function showBridgeQuote() {
-    $('.active-circle').removeClass('active-circle');
-    $('#circle-2').addClass('active-circle');
 
     $('#bridge-text').show();
     $('#bridge-text').fadeTo(500,1);
@@ -322,8 +325,6 @@ var scrollVis = function() {
    *
    */
   function showBridgeQuote2() {
-    $('.active-circle').removeClass('active-circle');
-    $('#circle-3').addClass('active-circle');
     $('#vis').removeClass('vis-small-container');
 
     $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').fadeIn(1000);
@@ -360,8 +361,6 @@ var scrollVis = function() {
    *  are moved back to their place in the grid
    */
   function showRecord() {
-    $('.active-circle').removeClass('active-circle');
-    $('#circle-4').addClass('active-circle');
 
     $('#bridge-text').fadeTo(500,0).css("display", "none");
     $('#bridge_illo').hide();
@@ -401,8 +400,6 @@ var scrollVis = function() {
    *
    */
   function showNational() {
-    $('.active-circle').removeClass('active-circle');
-    $('#circle-5').addClass('active-circle');
 
     g.selectAll(".record-before")
       .transition()
@@ -466,9 +463,6 @@ var scrollVis = function() {
    *
    */
   function showNationalTrend() {
-    $('.active-circle').removeClass('active-circle');
-    $('#circle-6').addClass('active-circle');
-    // switch the axis to histogram one
 
     g.selectAll(".square")
       .transition()
@@ -495,7 +489,6 @@ var scrollVis = function() {
       .attr("opacity", 0);
 
     showAxis(xAxisLine, yAxisLine, 700);
-    // showAxis(yLineAxis);
 
     var totalLength = g.selectAll(".employee-line").node().getTotalLength();
 
@@ -528,8 +521,6 @@ var scrollVis = function() {
    *
    */
   function showNewspaper() {
-    $('.active-circle').removeClass('active-circle');
-    $('#circle-7').addClass('active-circle');
 
     hideAxis();
 
@@ -744,6 +735,8 @@ var scrollVis = function() {
     var scrolledSections = d3.range(lastIndex + sign, activeIndex + sign, sign);
     scrolledSections.forEach(function(i) {
       activateFunctions[i]();
+      $('.active-circle').removeClass('active-circle');
+      $('#circle-' + (i+1)).addClass('active-circle');
     });
     lastIndex = activeIndex;
   };
