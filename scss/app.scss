@@ -230,7 +230,7 @@ img {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    justify-content: space-between;
+    // justify-content: space-between;
     padding-top: 5vh;
     padding-bottom: 2vh;
   }
@@ -294,6 +294,13 @@ img {
   font-family: $sans-serif-font;
   & text {
     fill: white;
+    font-weight: 300;
   }
   color: white;
+}
+
+.axis {
+  stroke: white;
+  stroke-width: 1px;
+  fill: none;
 }

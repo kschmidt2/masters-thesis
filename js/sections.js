@@ -8,8 +8,10 @@ var scrollVis = function() {
   // constants to define the size
   // and margins of the vis area.
   var width = 800;
-  var height = 400;
-  var margin = {top:50, left:40, bottom:0, right:40};
+  var height = 300;
+  var margin = {top:60, left:60, bottom:0, right:60};
+
+  var employeeLineData = [];
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -30,6 +32,25 @@ var scrollVis = function() {
   // d3 selection that will be used
   // for displaying visualizations
   var g = null;
+
+  var xLineScale = d3.scale.linear()
+    .range([0, width]);
+
+  var yLineScale = d3.scale.linear()
+    .range([height, 0]);
+
+  var xAxisLine = d3.svg.axis()
+    .scale(xLineScale)
+    .ticks(20)
+    .tickFormat(function (d) { return d; })
+    .innerTickSize(5)
+    .orient("bottom");
+
+  var yAxisLine = d3.svg.axis()
+    .scale(yLineScale)
+    .tickFormat(function(d) { return d.toLocaleString();})
+    .ticks(5)
+    .orient("left");
 
   // We will set the domain when the
   // data is processed.
@@ -96,7 +117,7 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log(rawData);
+      console.log('employeeLineData', employeeLineData);
       // create svg and give it a width and height
     svg = d3.select(this)
       .append("div")
@@ -105,7 +126,7 @@ var scrollVis = function() {
       .data([getSquares]);
       svg.enter().append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 885 600")
+        .attr("viewBox", "0 0 885 400")
         .classed("svg-content-responsive", true) //class to make it responsive
         .append("g")
         .classed("main-g", true);
@@ -117,24 +138,19 @@ var scrollVis = function() {
 
       // perform some preprocessing on raw data
       var squareData = getSquares(rawData);
-      // filter to just include filler words
-      // var fillerWords = getFillerWords(wordData);
 
-      // get the counts of filler words for the
-      // bar chart display
-      // var fillerCounts = groupByWord(fillerWords);
-      // set the bar scale's domain
-      // var countMax = d3.max(fillerCounts, function(d) { return d.values;});
-      // xBarScale.domain([0,countMax]);
+      employeeLineData.forEach(function(d){
+        d.year = +d.year;
+        d.total = +d.total;
+        return d;
+      });
 
-      // get aggregated histogram data
-      // var histData = getHistogram(fillerWords);
+      // line chart domain
+      var employeeLineMax = d3.max(employeeLineData, function (d) { return d.total });
+      yLineScale.domain([30000,employeeLineMax])
+      xLineScale.domain(d3.extent(employeeLineData, function(d) { return d.year }));
 
-      // set histogram's domain
-      // var histMax = d3.max(histData, function(d) { return d.y; });
-      // yHistScale.domain([0, histMax]);
-
-      setupVis(squareData);
+      setupVis(squareData, employeeLineData);
 
       setupSections();
 
@@ -151,14 +167,21 @@ var scrollVis = function() {
    *  element for each filler word type.
    * @param histData - binned histogram data
    */
-  setupVis = function(squareData) {
+  setupVis = function(squareData, employeeLineData) {
 
-    // axis
+    // x axis
     g.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(xAxisBar);
+      .call(xAxisLine);
     g.select(".x.axis").style("opacity", 0);
+
+    // y axis
+    g.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(0,0)")
+      .call(yAxisLine);
+    g.select(".y.axis").style("opacity", 0);
 
     var squares = g.selectAll(".square").data(squareData);
     squares.enter()
@@ -174,10 +197,10 @@ var scrollVis = function() {
       .attr("y", function(d) { return d.y;})
       .attr("opacity", 0);
 
-    var squareText = g.append("text")
-        .attr("class", "square-key square-hed")
+    var chartText = g.append("text")
+        .attr("class", "chart-key chart-hed")
         .attr("x", 0)
-        .attr("y", -15)
+        .attr("y", -25)
         .text("Bergen Record employees, before and after 2016 layoffs")
         .style("font-weight", 700)
         .attr("opacity", 0);
@@ -186,15 +209,27 @@ var scrollVis = function() {
         .attr("height", squareSize)
         .attr("fill", "#e7472e")
         .attr("x", 645)
-        .attr("y", -30)
-        .attr("class", "square-key")
+        .attr("y", -40)
+        .attr("class", "chart-key-square")
         .attr("opacity", 0);
       g.append("text")
-        .attr("class", "square-key employee-count")
+        .attr("class", "chart-key chart-legend")
         .attr("x", 670)
-        .attr("y", -15)
+        .attr("y", -25)
         .text("= 1 employee")
         .attr("opacity", 0);
+
+      var employeeLineDraw = d3.svg.line()
+        .x(function(d) { return xLineScale(d.year); })
+        .y(function(d) { return yLineScale(d.total); });
+
+      var employeeLineChart = g.selectAll(".employee-line").data([employeeLineData]);
+      employeeLineChart.enter()
+        .append("path")
+        .attr("class", "employee-line")
+        .attr("fill", "none")
+        .attr("d", function(d) { return employeeLineDraw(d) });
+
   };
 
   /**
@@ -305,7 +340,12 @@ var scrollVis = function() {
       .duration(0)
       .attr("opacity", 0.0);
 
-    g.selectAll(".square-key")
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
+
+    g.selectAll(".chart-key-square")
       .transition()
       .duration(0)
       .attr("opacity", 0.0);
@@ -334,26 +374,21 @@ var scrollVis = function() {
       .duration(0)
       .attr("opacity", 0);
 
-    g.selectAll(".square-key")
+    g.selectAll(".chart-key")
       .transition()
       .duration(600)
       .attr("opacity", 1.0);
+
+    g.selectAll(".chart-key-square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 1);
 
     g.selectAll(".record-before")
       .transition()
       .duration(600)
       .attr("opacity", 1.0)
       .style("fill", "#e7472e");
-
-    // g.selectAll(".square-hed")
-    //   .transition()
-    //   .duration(600)
-    //   .text("Bergen Record employees, before and after 2016 layoffs");
-    //
-    // g.selectAll(".employee-count")
-    //   .transition()
-    //   .duration(600)
-    //   .text("= 1 employee");
 
   }
 
@@ -380,20 +415,45 @@ var scrollVis = function() {
       .attr("opacity", 1.0)
       .style("fill", "#e7472e");
 
-    g.selectAll(".square-hed")
+    g.selectAll(".chart-hed")
       .transition()
       .duration(600)
       .text("National newspaper employees, 2000 and 2014");
 
-    g.selectAll(".employee-count")
+    g.selectAll(".chart-legend")
       .transition()
       .duration(600)
       .text("= 100 employees");
 
-    g.selectAll(".square-key")
+    g.selectAll(".chart-key")
       .transition()
       .duration(0)
       .attr("opacity", 1);
+
+    g.selectAll(".chart-key-square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 1);
+
+    g.selectAll(".square")
+      .transition("move-fills")
+      .duration(800)
+      .attr("x", function(d,i) {
+        return d.x;
+      })
+      .attr("y", function(d,i) {
+        return d.y;
+      });
+
+    hideAxis();
+
+    var totalLength = g.selectAll(".employee-line").node().getTotalLength();
+
+    g.selectAll(".employee-line")
+    .transition()
+      .duration(500)
+      .ease("linear")
+      .attr("stroke-dashoffset", totalLength);
   }
 
   /**
@@ -409,39 +469,52 @@ var scrollVis = function() {
     $('.active-circle').removeClass('active-circle');
     $('#circle-6').addClass('active-circle');
     // switch the axis to histogram one
-    showAxis(xAxisHist);
 
     g.selectAll(".square")
       .transition()
-      .duration(0)
-      .attr("opacity", 0.0);
-
-    g.selectAll(".square-key")
-      .transition()
-      .duration(0)
-      .attr("opacity", 0.0);
-
-    g.selectAll(".bar-text")
+      .duration(800)
+      .attr("x", 0)
+      .attr("y", 125)
       .transition()
       .duration(0)
       .attr("opacity", 0);
 
-    g.selectAll(".bar")
+    g.selectAll(".chart-hed")
+      .transition()
+      .text("National newspaper employees, 1978-2014")
+      .attr("opacity", 1);
+
+    g.selectAll(".chart-legend")
       .transition()
       .duration(600)
-      .attr("width", 0);
+      .attr("opacity", 0);
+
+    g.selectAll(".chart-key-square")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    showAxis(xAxisLine, yAxisLine, 700);
+    // showAxis(yLineAxis);
+
+    var totalLength = g.selectAll(".employee-line").node().getTotalLength();
+
+    g.selectAll(".employee-line")
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .transition()
+      .delay(700)
+        .duration(1000)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0)
+        .attr("stroke-width", 5)
+        .attr("fill", "none")
+        .attr("stroke", "#e7472e");
+
 
     $('#newspaper_illo').fadeTo(500,0).hide();
     $('#header').removeClass('fixed');
 
-    // here we only show a bar if
-    // it is before the 15 minute mark
-    g.selectAll(".hist")
-      .transition()
-      .duration(600)
-      .attr("y", function(d) { return (d.x < 15) ? yHistScale(d.y) : height; })
-      .attr("height", function(d) { return (d.x < 15) ? height - yHistScale(d.y) : 0;  })
-      .style("opacity", function(d,i) { return (d.x < 15) ? 1.0 : 1e-6; });
   }
 
   /**
@@ -460,14 +533,15 @@ var scrollVis = function() {
 
     hideAxis();
 
-    g.selectAll(".hist")
-      .transition()
-      .duration(600)
-      .attr("height", function(d) { return  0; })
-      .attr("y", function(d) { return  height; })
-      .style("opacity", 0);
+    var totalLength = g.selectAll(".employee-line").node().getTotalLength();
 
-    g.selectAll(".cough")
+    g.selectAll(".employee-line")
+    .transition()
+      .duration(0)
+      .ease("linear")
+      .attr("stroke-dashoffset", totalLength);
+
+    g.selectAll(".chart-hed")
       .transition()
       .duration(0)
       .attr("opacity", 0);
@@ -489,9 +563,6 @@ var scrollVis = function() {
     $('#newspaper_illo').fadeTo(500,0).hide();
     $('#header').removeClass('fixed');
 
-    // ensure the axis to histogram one
-    showAxis(xAxisHist);
-
     g.selectAll(".hist")
       .transition()
       .duration(600)
@@ -507,10 +578,15 @@ var scrollVis = function() {
    * @param axis - the axis to show
    *  (xAxisHist or xAxisBar)
    */
-  function showAxis(axis) {
+  function showAxis(xAxis, yAxis, delay) {
+    console.log("show axis");
     g.select(".x.axis")
-      .call(axis)
-      .transition().duration(500)
+      .call(xAxis)
+      .transition().duration(500).delay(delay)
+      .style("opacity", 1);
+    g.select(".y.axis")
+      .call(yAxis)
+      .transition().duration(500).delay(delay)
       .style("opacity", 1);
   }
 
@@ -520,8 +596,12 @@ var scrollVis = function() {
    *
    */
   function hideAxis() {
+    console.log("hide axis");
     g.select(".x.axis")
-      .transition().duration(500)
+      .transition().duration(0)
+      .style("opacity",0);
+    g.select(".y.axis")
+      .transition().duration(0)
       .style("opacity",0);
   }
 
@@ -546,7 +626,7 @@ var scrollVis = function() {
    */
 
    function updateRecord(progress) {
-     if (progress > 0.3) {
+     if (progress > 0.5) {
        g.selectAll(".record-after")
          .transition("record")
          .duration(0)
@@ -555,7 +635,7 @@ var scrollVis = function() {
    }
 
    function updateNational(progress) {
-     if (progress > 0.3) {
+     if (progress > 0.5) {
        g.selectAll(".national-after")
          .transition("national")
          .duration(0)
@@ -603,6 +683,12 @@ var scrollVis = function() {
       return d;
     });
   }
+
+  // function getEmployeeLine(d) {
+  //     d.total = +d.total;
+  //     d.year = +d.year;
+  //     return d;
+  // }
 
   /**
    * getFillerWords - returns array of
@@ -663,6 +749,18 @@ var scrollVis = function() {
   };
 
   /**
+   * setOtherData -
+   * this setter can be more complicated - and can even take in
+   * more then one data set - but we can start with just this
+   * to minimize changes in the code.
+   * @param other - array of some other data you want to use
+   */
+
+  chart.setOtherData = function(employeeLine) {
+    employeeLineData = employeeLine;
+  };
+
+  /**
    * update
    *
    * @param index
@@ -686,12 +784,12 @@ var scrollVis = function() {
  * @param data - loaded tsv data
  */
 function display(error, employeeSquares, employeeLine) {
-  console.log(employeeSquares, employeeLine);
   // create a new plot and
   // display it
   var plot = scrollVis();
+  plot.setOtherData(employeeLine);
   d3.select("#vis")
-    .datum(employeeSquares, employeeLine)
+    .datum(employeeSquares)
     .call(plot);
 
   // setup scroll functionality
