@@ -33,6 +33,7 @@ var scrollVis = function() {
   // for displaying visualizations
   var g = null;
 
+  // scales and axes for national employee line chart
   var xLineScale = d3.scale.linear()
     .range([0, width]);
 
@@ -51,52 +52,6 @@ var scrollVis = function() {
     .tickFormat(function(d) { return d.toLocaleString();})
     .ticks(5)
     .orient("left");
-
-  // We will set the domain when the
-  // data is processed.
-  var xBarScale = d3.scale.linear()
-    .range([0, width]);
-
-  // The bar chart display is horizontal
-  // so we can use an ordinal scale
-  // to get width and y locations.
-  var yBarScale = d3.scale.ordinal()
-    .domain([0,1,2])
-    .rangeBands([0, height - 50], 0.1, 0.1);
-
-  // Color is determined just by the index of the bars
-  var barColors = {0: "#008080", 1: "#399785", 2: "#5AAF8C"};
-
-  // The histogram display shows the
-  // first 30 minutes of data
-  // so the range goes from 0 to 30
-  var xHistScale = d3.scale.linear()
-    .domain([0, 30])
-    .range([0, width - 20]);
-
-  var yHistScale = d3.scale.linear()
-    .range([height, 0]);
-
-  // The color translation uses this
-  // scale to convert the progress
-  // through the section into a
-  // color value.
-  var squareColorScale = d3.scale.linear()
-    .domain([0,0.4])
-    .range(["#e7472e", "#e5e2ca"]);
-
-  // You could probably get fancy and
-  // use just one axis, modifying the
-  // scale, but I will use two separate
-  // ones to keep things easy.
-  var xAxisBar = d3.svg.axis()
-    .scale(xBarScale)
-    .orient("bottom");
-
-  var xAxisHist = d3.svg.axis()
-    .scale(xHistScale)
-    .orient("bottom")
-    .tickFormat(function(d) { return d + " min"; });
 
   // When scrolling to a new section
   // the activation function for that
@@ -118,7 +73,7 @@ var scrollVis = function() {
   var chart = function(selection) {
     selection.each(function(rawData) {
       console.log('employeeLineData', employeeLineData);
-      // create svg and give it a width and height
+    // create responsive svg
     svg = d3.select(this)
       .append("div")
       .classed("svg-container", true) //container class to make it responsive
@@ -136,16 +91,17 @@ var scrollVis = function() {
       g = svg.select("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      // perform some preprocessing on raw data
+      // perform some preprocessing on raw squares data
       var squareData = getSquares(rawData);
 
+      //  convert national employee data to numbers
       employeeLineData.forEach(function(d){
         d.year = +d.year;
         d.total = +d.total;
         return d;
       });
 
-      // line chart domain
+      // national employee line chart domain
       var employeeLineMax = d3.max(employeeLineData, function (d) { return d.total });
       yLineScale.domain([30000,employeeLineMax])
       xLineScale.domain(d3.extent(employeeLineData, function(d) { return d.year }));
@@ -162,10 +118,6 @@ var scrollVis = function() {
    * setupVis - creates initial elements for all
    * sections of the visualization.
    *
-   * @param wordData - data object for each word.
-   * @param fillerCounts - nested data that includes
-   *  element for each filler word type.
-   * @param histData - binned histogram data
    */
   setupVis = function(squareData, employeeLineData) {
 
@@ -241,12 +193,6 @@ var scrollVis = function() {
    */
   setupSections = function() {
 
-    // function highlightCircle (i) {
-    //   $('.active-circle').removeClass('active-circle');
-    //   $('#circle-' + (i+1)).addClass('active-circle');
-    // }
-
-
     // activateFunctions are called each
     // time the active section changes
     activateFunctions[0] = showBridge;
@@ -256,7 +202,7 @@ var scrollVis = function() {
     activateFunctions[4] = showNational;
     activateFunctions[5] = showNationalTrend;
     activateFunctions[6] = showNewspaper;
-    activateFunctions[7] = showCough;
+    activateFunctions[7] = hideNewspaper;
     // activateFunctions[8] = showHistAll;
 
     // updateFunctions are called while
@@ -289,11 +235,11 @@ var scrollVis = function() {
    */
 
   /**
-   * showTitle - initial title
+   * showBridge - initial title
    *
-   * hides: count title
+   * hides: bridge quote 1
    * (no previous step to hide)
-   * shows: intro title
+   * shows: bridge
    *
    */
   function showBridge() {
@@ -301,11 +247,11 @@ var scrollVis = function() {
   }
 
   /**
-   * showFillerTitle - filler counts
+   * showBridgeQuote - time for some traffic problems
    *
-   * hides: intro title
-   * hides: square grid
-   * shows: filler count title
+   * (no previous step to hide)
+   * hides: Christie drops out
+   * shows: traffic problems quote
    *
    */
   function showBridgeQuote() {
@@ -317,11 +263,11 @@ var scrollVis = function() {
   }
 
   /**
-   * showGrid - square grid
+   * showBridgeQuote1 - Christie drops out
    *
-   * hides: filler count title
-   * hides: filler highlight in grid
-   * shows: square grid
+   * hides: traffic problems quote
+   * hides: square grid
+   * shows: Christie drops out
    *
    */
   function showBridgeQuote2() {
@@ -353,12 +299,11 @@ var scrollVis = function() {
   }
 
   /**
-   * highlightGrid - show fillers in grid
+   * showRecord - show Record employee grid
    *
-   * hides: barchart, text and axis
-   * shows: square grid and highlighted
-   *  filler words. also ensures squares
-   *  are moved back to their place in the grid
+   * hides: christie drops out, bridge illustration
+   * hides: national employee squares
+   * shows: Record employee grid, updates on scroll
    */
   function showRecord() {
 
@@ -392,11 +337,11 @@ var scrollVis = function() {
   }
 
   /**
-   * showBar - barchart
+   * showNational - national employee grid
    *
-   * hides: square grid
-   * hides: histogram
-   * shows: barchart
+   * hides: Record employee squares
+   * hides: national employee line chart
+   * shows: national employee squares
    *
    */
   function showNational() {
@@ -454,12 +399,11 @@ var scrollVis = function() {
   }
 
   /**
-   * showHistPart - shows the first part
-   *  of the histogram of filler words
+   * showNationalTrend - shows national employee line graph
    *
-   * hides: barchart
-   * hides: last half of histogram
-   * shows: first half of histogram
+   * hides: national employee squares
+   * hides: newspaper illustration
+   * shows: national employee line chart
    *
    */
   function showNationalTrend() {
@@ -511,13 +455,10 @@ var scrollVis = function() {
   }
 
   /**
-   * showHistAll - show all histogram
+   * showNewspaper - show newspaper illustration
    *
-   * hides: cough title and color
-   * (previous step is also part of the
-   *  histogram, so we don't have to hide
-   *  that)
-   * shows: all histogram bars
+   * hides: national employee line chart
+   * shows: newspaper illustration
    *
    */
   function showNewspaper() {
@@ -542,32 +483,22 @@ var scrollVis = function() {
   }
 
   /**
-   * showCough
+   * hideNewspaper - blank slide
    *
-   * hides: nothing
-   * (previous and next sections are histograms
-   *  so we don't have to hide much here)
-   * shows: histogram
+   * hides: newspaper illustration
+   * shows: nothing
    *
    */
-  function showCough() {
+  function hideNewspaper() {
     $('#newspaper_illo').fadeTo(500,0).hide();
     $('#header').removeClass('fixed');
-
-    g.selectAll(".hist")
-      .transition()
-      .duration(600)
-      .attr("y", function(d) { return yHistScale(d.y); })
-      .attr("height", function(d) { return  height - yHistScale(d.y);  })
-      .style("opacity", 1.0);
   }
 
   /**
    * showAxis - helper function to
    * display particular xAxis
    *
-   * @param axis - the axis to show
-   *  (xAxisHist or xAxisBar)
+   * @param xAxis, yAxis - the axis to show, delay - how long to delay the transition
    */
   function showAxis(xAxis, yAxis, delay) {
     console.log("show axis");
@@ -609,9 +540,6 @@ var scrollVis = function() {
    */
 
   /**
-   * updateCough - increase/decrease
-   * cough text and color
-   *
    * @param progress - 0.0 - 1.0 -
    *  how far user has scrolled in section
    */
@@ -649,15 +577,13 @@ var scrollVis = function() {
    */
 
   /**
-   * getWords - maps raw data to
-   * array of data objects. There is
-   * one data object for each word in the speach
-   * data.
+   * getSquares - maps raw data to
+   * array of data objects.
    *
    * This function converts some attributes into
    * numbers and adds attributes used in the visualization
    *
-   * @param rawData - data read in from file
+   * @param rawData - data read in from squares file
    */
   function getSquares(rawData) {
     return rawData.map(function(d,i) {
@@ -673,55 +599,6 @@ var scrollVis = function() {
       d.y = d.row * (squareSize + squarePad);
       return d;
     });
-  }
-
-  // function getEmployeeLine(d) {
-  //     d.total = +d.total;
-  //     d.year = +d.year;
-  //     return d;
-  // }
-
-  /**
-   * getFillerWords - returns array of
-   * only filler words
-   *
-   * @param data - word data from getWords
-   */
-  function getFillerWords(data) {
-    return data.filter(function(d) {return d.filler; });
-  }
-
-  /**
-   * getHistogram - use d3's histogram layout
-   * to generate histogram bins for our word data
-   *
-   * @param data - word data. we use filler words
-   *  from getFillerWords
-   */
-  function getHistogram(data) {
-    // only get words from the first 30 minutes
-    var thirtyMins = data.filter(function(d) { return d.min < 30; });
-    // bin data into 2 minutes chuncks
-    // from 0 - 31 minutes
-    return d3.layout.histogram()
-      .value(function(d) { return d.min; })
-      .bins(d3.range(0,31,2))
-      (thirtyMins);
-  }
-
-  /**
-   * groupByWord - group words together
-   * using nest. Used to get counts for
-   * barcharts.
-   *
-   * @param words
-   */
-  function groupByWord(words) {
-    return d3.nest()
-      .key(function(d) { return d.word; })
-      .rollup(function(v) { return v.length; })
-      .entries(words)
-      .sort(function(a,b) {return b.values - a.values;});
   }
 
   /**
@@ -742,10 +619,7 @@ var scrollVis = function() {
   };
 
   /**
-   * setOtherData -
-   * this setter can be more complicated - and can even take in
-   * more then one data set - but we can start with just this
-   * to minimize changes in the code.
+   * setOtherData - brings in all data except the first file
    * @param other - array of some other data you want to use
    */
 
@@ -774,7 +648,7 @@ var scrollVis = function() {
  * sets up the scroller and
  * displays the visualization.
  *
- * @param data - loaded tsv data
+ * @param data - loaded csv data
  */
 function display(error, employeeSquares, employeeLine) {
   // create a new plot and
@@ -809,21 +683,7 @@ function display(error, employeeSquares, employeeLine) {
   });
 }
 
-// function display1(data) {
-//   // create a new plot and
-//   // display it
-//   var plot = scrollVis();
-//   d3.select("#vis")
-//     .datum(data)
-//     .call(plot);
-// }
-
 // load data and display
-// d3.tsv("data/words.tsv", display);
-
-// d3.csv("data/employees_intro.csv", display)
-// d3.csv("data/national_employees_intro.csv", display1)
-
 queue()
 .defer(d3.csv, "data/employees_intro.csv")
 .defer(d3.csv, "data/national_employees_intro.csv")
