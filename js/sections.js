@@ -12,6 +12,7 @@ var scrollVis = function() {
   var margin = {top:60, left:60, bottom:0, right:60};
 
   var employeeLineData = [];
+  var circulationData = [];
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -53,6 +54,26 @@ var scrollVis = function() {
     .ticks(5)
     .orient("left");
 
+  // scales and axes for circulation line chart
+  var xLineScale1 = d3.scale.linear()
+    .range([0, width]);
+
+  var yLineScale1 = d3.scale.linear()
+    .range([height, 0]);
+
+  var xAxisLine1 = d3.svg.axis()
+    .scale(xLineScale1)
+    .ticks(10)
+    .tickFormat(function (d) { return d; })
+    .innerTickSize(5)
+    .orient("bottom");
+
+  var yAxisLine1 = d3.svg.axis()
+    .scale(yLineScale1)
+    .tickFormat(function(d) { return d.toLocaleString()*100 + '%';})
+    .ticks(5)
+    .orient("left");
+
   // When scrolling to a new section
   // the activation function for that
   // section is called.
@@ -72,7 +93,7 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log('employeeLineData', employeeLineData);
+      console.log('circulationData', circulationData);
     // create responsive svg
     svg = d3.select(this)
       .append("div")
@@ -101,12 +122,23 @@ var scrollVis = function() {
         return d;
       });
 
+      circulationData.forEach(function(d){
+        d.year = +d.year;
+        d.daily = +d.daily;
+        d.sunday = +d.sunday;
+        return d;
+      });
+
       // national employee line chart domain
       var employeeLineMax = d3.max(employeeLineData, function (d) { return d.total });
       yLineScale.domain([30000,employeeLineMax])
       xLineScale.domain(d3.extent(employeeLineData, function(d) { return d.year }));
 
-      setupVis(squareData, employeeLineData);
+      // circulation line chart domain
+      yLineScale1.domain([-.12,.12])
+      xLineScale1.domain(d3.extent(circulationData, function(d) { return d.year }));
+
+      setupVis(squareData, employeeLineData, circulationData);
 
       setupSections();
 
@@ -119,7 +151,7 @@ var scrollVis = function() {
    * sections of the visualization.
    *
    */
-  setupVis = function(squareData, employeeLineData) {
+  setupVis = function(squareData, employeeLineData, circulationData) {
 
     // x axis
     g.append("g")
@@ -182,6 +214,17 @@ var scrollVis = function() {
         .attr("fill", "none")
         .attr("d", function(d) { return employeeLineDraw(d) });
 
+      var circulationDraw = d3.svg.line()
+        .x(function(d) { return xLineScale1(d.year); })
+        .y(function(d) { return yLineScale1(d.daily); });
+
+      var circulationChart = g.selectAll(".circulation-line").data([circulationData]);
+      circulationChart.enter()
+        .append("path")
+        .attr("class", "circulation-line")
+        .attr("fill", "none")
+        .attr("d", function(d) { return circulationDraw(d) });
+
   };
 
   /**
@@ -204,7 +247,7 @@ var scrollVis = function() {
     activateFunctions[6] = showNewspaper;
     activateFunctions[7] = hideNewspaper;
     activateFunctions[8] = blankSlide;
-    // activateFunctions[9] = blankSlide1;
+    activateFunctions[9] = showCirculation;
     // activateFunctions[10] = blankSlide;
     // activateFunctions[11] = blankSlide;
     // activateFunctions[12] = blankSlide;
@@ -238,7 +281,7 @@ var scrollVis = function() {
     // Most sections do not need to be updated
     // for all scrolling and so are set to
     // no-op functions.
-    for(var i = 0; i < 9; i++) {
+    for(var i = 0; i < activateFunctions.length; i++) {
       updateFunctions[i] = function() {};
     }
     updateFunctions[3] = updateRecord;
@@ -529,7 +572,54 @@ var scrollVis = function() {
    *
    */
   function blankSlide() {
-    console.log("blank slide");
+
+    hideAxis();
+
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
+
+    var totalLength = g.selectAll(".circulation-line").node().getTotalLength();
+
+    g.selectAll(".circulation-line")
+    .transition()
+      .duration(0)
+      .ease("linear")
+      .attr("stroke-dashoffset", totalLength);
+  }
+
+  function showCirculation() {
+    showAxis(xAxisLine1, yAxisLine1, 0);
+
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(600)
+      .attr("opacity", 1.0);
+
+    g.selectAll(".chart-hed")
+      .text("Percent change in daily newspaper circulation, 2003-2015");
+
+    g.selectAll(".chart-legend")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    var totalLength = g.selectAll(".circulation-line").node().getTotalLength();
+
+    g.selectAll(".circulation-line")
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .transition()
+        .duration(1000)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0)
+        .attr("stroke-width", 5)
+        .attr("fill", "none")
+        .attr("stroke", "#e7472e");
+
+    g.selectAll(".circulation-line-daily")
+      .attr("stroke", "#52908b");
   }
 
 
@@ -661,8 +751,9 @@ var scrollVis = function() {
    * @param other - array of some other data you want to use
    */
 
-  chart.setOtherData = function(employeeLine) {
+  chart.setOtherData = function(employeeLine, circulation) {
     employeeLineData = employeeLine;
+    circulationData = circulation;
   };
 
   /**
@@ -688,11 +779,11 @@ var scrollVis = function() {
  *
  * @param data - loaded csv data
  */
-function display(error, employeeSquares, employeeLine) {
+function display(error, employeeSquares, employeeLine, circulation) {
   // create a new plot and
   // display it
   var plot = scrollVis();
-  plot.setOtherData(employeeLine);
+  plot.setOtherData(employeeLine, circulation);
   d3.select("#vis")
     .datum(employeeSquares)
     .call(plot);
@@ -725,4 +816,5 @@ function display(error, employeeSquares, employeeLine) {
 queue()
 .defer(d3.csv, "data/employees_intro.csv")
 .defer(d3.csv, "data/national_employees_intro.csv")
+.defer(d3.csv, "data/circulation.csv")
 .await(display);
