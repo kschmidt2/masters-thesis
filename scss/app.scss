@@ -121,7 +121,7 @@ h2 {
 #graphic section {
   max-width: 560px;
   margin: auto;
-  margin-bottom: 40vh;
+  margin-bottom: 60vh;
   margin-top: 15vh;
   opacity: 0;
   background-color: rgba(50,50,50,0.6);
@@ -163,7 +163,7 @@ img {
 #vis {
   position: fixed;
   bottom: 0vh;
-  z-index: -1;
+  z-index: 1;
   height: 60vh;
   width: 100vw;
   @include breakpoint(medium) {
@@ -265,6 +265,7 @@ img {
   top: 10vh;
   bottom: 10vh;
   right: 2vw;
+  z-index:3 ;
 }
 
 #dots {
@@ -274,6 +275,9 @@ img {
   justify-content: space-between;
   align-items: center;
   width: 1rem;
+  & a {
+    color: white;
+  }
 }
 
 .fa-sm {
@@ -314,4 +318,8 @@ img {
   stroke: white;
   stroke-width: 1px;
   fill: none;
+}
+
+.y .tick line {
+  opacity: 0.5 !important;
 }

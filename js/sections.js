@@ -46,12 +46,14 @@ var scrollVis = function() {
     .ticks(20)
     .tickFormat(function (d) { return d; })
     .innerTickSize(5)
+    .outerTickSize(0)
     .orient("bottom");
 
   var yAxisLine = d3.svg.axis()
     .scale(yLineScale)
     .tickFormat(function(d) { return d.toLocaleString();})
     .ticks(5)
+    .outerTickSize(0)
     .orient("left");
 
   // scales and axes for circulation line chart
@@ -66,12 +68,37 @@ var scrollVis = function() {
     .ticks(10)
     .tickFormat(function (d) { return d; })
     .innerTickSize(5)
+    .outerTickSize(0)
     .orient("bottom");
 
   var yAxisLine1 = d3.svg.axis()
     .scale(yLineScale1)
     .tickFormat(function(d) { return d.toLocaleString()*100 + '%';})
     .ticks(5)
+    .innerTickSize(-width)
+    .outerTickSize(0)
+    .orient("left");
+
+  var xLineScale2 = d3.scale.linear()
+    .range([0, width]);
+
+  var yLineScale2 = d3.scale.linear()
+    .range([height, 0]);
+
+  var xAxisLine2 = d3.svg.axis()
+    .scale(xLineScale2)
+    .ticks(10)
+    .tickFormat(function (d) { return d; })
+    .innerTickSize(5)
+    .outerTickSize(0)
+    .orient("bottom");
+
+  var yAxisLine2 = d3.svg.axis()
+    .scale(yLineScale2)
+    .tickFormat(function(d) { return d.toLocaleString()*100 + '%';})
+    .ticks(6)
+    .innerTickSize(-width)
+    .outerTickSize(0)
     .orient("left");
 
   // When scrolling to a new section
@@ -125,7 +152,8 @@ var scrollVis = function() {
       circulationData.forEach(function(d){
         d.year = +d.year;
         d.daily = +d.daily;
-        d.sunday = +d.sunday;
+        d.circulation = +d.circulation;
+        d.advertising = +d.advertising;
         return d;
       });
 
@@ -137,6 +165,10 @@ var scrollVis = function() {
       // circulation line chart domain
       yLineScale1.domain([-.12,.12])
       xLineScale1.domain(d3.extent(circulationData, function(d) { return d.year }));
+
+      // revenue line chart domain
+      yLineScale2.domain([-.27,.27])
+      xLineScale2.domain([2007,2015]);
 
       setupVis(squareData, employeeLineData, circulationData);
 
@@ -248,31 +280,33 @@ var scrollVis = function() {
     activateFunctions[7] = hideNewspaper;
     activateFunctions[8] = blankSlide;
     activateFunctions[9] = showCirculation;
-    // activateFunctions[10] = blankSlide;
-    // activateFunctions[11] = blankSlide;
-    // activateFunctions[12] = blankSlide;
-    // activateFunctions[13] = blankSlide;
-    // activateFunctions[14] = blankSlide;
-    // activateFunctions[15] = blankSlide;
-    // activateFunctions[16] = blankSlide;
-    // activateFunctions[17] = blankSlide;
-    // activateFunctions[18] = blankSlide;
-    // activateFunctions[19] = blankSlide;
-    // activateFunctions[20] = blankSlide;
-    // activateFunctions[21] = blankSlide;
-    // activateFunctions[22] = blankSlide;
-    // activateFunctions[23] = blankSlide;
-    // activateFunctions[24] = blankSlide;
-    // activateFunctions[25] = blankSlide;
-    // activateFunctions[26] = blankSlide;
-    // activateFunctions[27] = blankSlide;
-    // activateFunctions[28] = blankSlide;
-    // activateFunctions[29] = blankSlide;
-    // activateFunctions[30] = blankSlide;
-    // activateFunctions[31] = blankSlide;
-    // activateFunctions[32] = blankSlide;
-    // activateFunctions[33] = blankSlide;
-    // activateFunctions[34] = blankSlide;
+    activateFunctions[10] = showCircRevenue;
+    activateFunctions[11] = showAdRevenue;
+    activateFunctions[12] = showPapersClosed;
+    activateFunctions[13] = blankSlide;
+    activateFunctions[14] = blankSlide;
+    activateFunctions[15] = blankSlide;
+    activateFunctions[16] = blankSlide;
+    activateFunctions[17] = blankSlide;
+    activateFunctions[18] = blankSlide;
+    activateFunctions[19] = blankSlide;
+    activateFunctions[20] = blankSlide;
+    activateFunctions[21] = blankSlide;
+    activateFunctions[22] = blankSlide;
+    activateFunctions[23] = blankSlide;
+    activateFunctions[24] = blankSlide;
+    activateFunctions[25] = blankSlide;
+    activateFunctions[26] = blankSlide;
+    activateFunctions[27] = blankSlide;
+    activateFunctions[28] = blankSlide;
+    activateFunctions[29] = blankSlide;
+    activateFunctions[30] = blankSlide;
+    activateFunctions[31] = blankSlide;
+    activateFunctions[32] = blankSlide;
+    activateFunctions[33] = blankSlide;
+    activateFunctions[34] = blankSlide;
+    activateFunctions[35] = blankSlide;
+    activateFunctions[36] = blankSlide;
 
 
     // updateFunctions are called while
@@ -550,6 +584,8 @@ var scrollVis = function() {
 
     $('#newspaper_illo').show().fadeTo(500,1);
 
+    // $('#header').addClass('fixed');
+
   }
 
   /**
@@ -592,13 +628,13 @@ var scrollVis = function() {
   function showCirculation() {
     showAxis(xAxisLine1, yAxisLine1, 0);
 
+    g.selectAll(".chart-hed")
+      .text("Percent change in daily newspaper circulation, 2003-2015");
+
     g.selectAll(".chart-key")
       .transition()
       .duration(600)
       .attr("opacity", 1.0);
-
-    g.selectAll(".chart-hed")
-      .text("Percent change in daily newspaper circulation, 2003-2015");
 
     g.selectAll(".chart-legend")
       .transition()
@@ -618,8 +654,67 @@ var scrollVis = function() {
         .attr("fill", "none")
         .attr("stroke", "#e7472e");
 
-    g.selectAll(".circulation-line-daily")
-      .attr("stroke", "#52908b");
+  }
+
+  function showCircRevenue () {
+
+    g.selectAll(".chart-hed")
+      .text("Percent change in newspaper circulation revenue, 2007-2015");
+
+    var revenueDraw = d3.svg.line()
+      .x(function(d) { return xLineScale2(d.year); })
+      .y(function(d) { return yLineScale2(d.circulation); })
+      .defined(function(d) { return !isNaN(d.circulation); });
+
+    g.selectAll(".circulation-line")
+      .transition()
+        .duration(1000)
+        .attr("d", function(d) { return revenueDraw(d) });
+
+    g.select(".x.axis")
+      .transition()
+        .duration(1000)
+        .call(xAxisLine2);
+    g.select(".y.axis")
+      .transition()
+        .duration(1000)
+        .call(yAxisLine2);
+
+  }
+
+  function showAdRevenue () {
+
+    g.selectAll(".chart-hed")
+      .text("Percent change in newspaper advertising revenue, 2007-2015");
+
+    var revenueDraw1 = d3.svg.line()
+      .x(function(d) { return xLineScale2(d.year); })
+      .y(function(d) { return yLineScale2(d.advertising); })
+      .defined(function(d) { return !isNaN(d.advertising); });
+
+    g.selectAll(".circulation-line")
+      .transition()
+        .duration(1000)
+        .attr("d", function(d) { return revenueDraw1(d) });
+  }
+
+  function showPapersClosed () {
+
+    hideAxis();
+
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
+
+    var totalLength = g.selectAll(".circulation-line").node().getTotalLength();
+
+    g.selectAll(".circulation-line")
+    .transition()
+      .duration(0)
+      .ease("linear")
+      .attr("stroke-dashoffset", totalLength);
+
   }
 
 
@@ -692,7 +787,6 @@ var scrollVis = function() {
     function updateNewspaper(progress) {
       var negativeProgress = 1-(progress);
       $('#newspaper_illo').css('transform', 'scale('+ negativeProgress + ')');
-      $('#header').addClass('fixed');
     }
 
   /**
@@ -742,6 +836,8 @@ var scrollVis = function() {
       // changes highlighted circle
       $('.active-circle').removeClass('active-circle');
       $('#circle-' + (i+1)).addClass('active-circle');
+      // $('.step').removeClass('fixed');
+      // $('#step' + (i+1)).addClass('fixed');
     });
     lastIndex = activeIndex;
   };

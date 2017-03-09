@@ -78,7 +78,7 @@ function scroller() {
       }
       sectionPositions.push(top - startPos);
     });
-    containerStart = container.node().getBoundingClientRect().top + window.pageYOffset + 100;
+    containerStart = container.node().getBoundingClientRect().top + window.pageYOffset + 300;
   }
 
   /**
