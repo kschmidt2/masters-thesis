@@ -625,7 +625,8 @@ var scrollVis = function() {
     .transition()
       .duration(0)
       .ease("linear")
-      .attr("stroke-dashoffset", totalLength);
+      .attr("stroke-dashoffset", totalLength)
+      .attr("opacity", 0);
   }
 
   function showCirculation() {
@@ -644,18 +645,38 @@ var scrollVis = function() {
       .duration(600)
       .attr("opacity", 0);
 
+    var circulationDraw = d3.svg.line()
+      .x(function(d) { return xLineScale1(d.year); })
+      .y(function(d) { return yLineScale1(d.daily); });
+
     var totalLength = g.selectAll(".circulation-line").node().getTotalLength();
 
-    g.selectAll(".circulation-line")
-      .attr("stroke-dasharray", totalLength + " " + totalLength)
-      .attr("stroke-dashoffset", totalLength)
-      .transition()
-        .duration(1000)
-        .ease("linear")
-        .attr("stroke-dashoffset", 0)
-        .attr("stroke-width", 5)
-        .attr("fill", "none")
-        .attr("stroke", "#e7472e");
+    if (totalLength > 955.58 && totalLength < 956.59) {
+      g.selectAll(".circulation-line")
+        .attr("stroke-dasharray", totalLength + " " + totalLength)
+        .attr("stroke-dashoffset", totalLength)
+        .transition()
+          .duration(1000)
+          .ease("linear")
+          .attr("stroke-dashoffset", 0)
+          .attr("stroke-width", 5)
+          .attr("fill", "none")
+          .attr("stroke", "#e7472e")
+          .attr("opacity", 1);
+    } else {
+      g.selectAll(".circulation-line")
+        .transition("circ line")
+          .duration(1000)
+          .attr("d", function(d) { return circulationDraw(d) });
+      g.select(".x.axis")
+        .transition()
+          .duration(1000)
+          .call(xAxisLine1);
+      g.select(".y.axis")
+        .transition()
+          .duration(1000)
+          .call(yAxisLine1);
+    }
 
   }
 
@@ -698,7 +719,10 @@ var scrollVis = function() {
     g.selectAll(".circulation-line")
       .transition()
         .duration(1000)
+        .attr("opacity", 1)
         .attr("d", function(d) { return revenueDraw1(d) });
+
+    showAxis(xAxisLine2, yAxisLine2, 0);
   }
 
   function showPapersClosed () {
@@ -710,13 +734,10 @@ var scrollVis = function() {
       .duration(0)
       .attr("opacity", 0.0);
 
-    var totalLength = g.selectAll(".circulation-line").node().getTotalLength();
-
     g.selectAll(".circulation-line")
     .transition()
       .duration(0)
-      .ease("linear")
-      .attr("stroke-dashoffset", totalLength);
+      .attr("opacity", 0);
 
   }
 
