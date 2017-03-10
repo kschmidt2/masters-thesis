@@ -15,7 +15,7 @@
       <div id="graphic">
         <div id="sections">
 
-          <section class="step">
+          <section class="step current">
             <p>On January 8, 2014, the Bergen Record reported that members of New Jersey Gov. Chris Christie’s team ordered the lane closures on the George Washington Bridge that crippled the tiny borough of Fort Lee, N.J., for four days the previous September. </p>
           </section>
 
@@ -253,20 +253,7 @@
     <script src="js/queue.js"></script>
     <script src="js/scroller.js"></script>
     <script src="js/sections.js"></script>
-    <script>
-    var sections = $('.step').length - 1;
-
-    var addDots = "";
-    for (var i=0; i < sections; i++) {
-      addDots += '<a href="#step' + (i+1) + '"<i class="fa fa-circle-o fa-sm" id="circle-' + (i+1) + '" aria-hidden="true"></i>'
-    };
-    $('#dots').html(addDots);
-
-    $.each($(".step"), function(index, value){
-      var num = index + 1;
-      $(value).attr("id","step"+ num);
-    });
-
-    </script>
+    <script src="js/app.js"></script>
+    
   </body>
 </html>

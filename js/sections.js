@@ -342,7 +342,7 @@ var scrollVis = function() {
     activateFunctions[12] = showPapersClosed;
     activateFunctions[13] = showBigCities;
     activateFunctions[14] = showSuburbs;
-    activateFunctions[15] = blankSlide;
+    activateFunctions[15] = showCongressCoverage;
     activateFunctions[16] = blankSlide;
     activateFunctions[17] = blankSlide;
     activateFunctions[18] = blankSlide;
@@ -796,6 +796,21 @@ var scrollVis = function() {
       .duration(0)
       .attr("opacity", 0);
 
+    g.selectAll(".govt-bar")
+      .transition()
+      .duration(600)
+      .attr("width", 0);
+
+    g.selectAll(".govt-bar-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".govt-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
   }
 
   function showBigCities () {
@@ -830,6 +845,12 @@ var scrollVis = function() {
       .duration(600)
       .delay(600)
       .attr("opacity", 1);
+
+    g.selectAll(".govt-bar-number-1")
+      .transition()
+      .duration(600)
+      .delay(600)
+      .attr("opacity", 0);
   }
 
   function showSuburbs () {
@@ -848,11 +869,35 @@ var scrollVis = function() {
       .duration(0)
       .attr("opacity", 0);
 
-      g.selectAll(".govt-bar-number-1")
-        .transition()
-        .duration(600)
-        .attr("opacity", 1);
+    g.selectAll(".govt-bar-number-1")
+      .transition()
+      .duration(600)
+      .attr("opacity", 1);
 
+    g.selectAll(".govt-bar-text")
+      .transition()
+      .duration(600)
+      .delay(600)
+      .attr("opacity", 1);
+
+  }
+
+  function showCongressCoverage () {
+
+    g.selectAll(".govt-bar")
+      .transition()
+      .duration(600)
+      .attr("width", 0);
+
+    g.selectAll(".govt-bar-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".govt-bar-number-1")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
   }
 
 

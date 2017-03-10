@@ -292,14 +292,14 @@ img {
   justify-content: space-between;
   align-items: center;
   width: 1rem;
-  & a {
-    color: white;
-  }
 }
 
 .fa-sm {
   font-size: .6rem !important;
   opacity: 0.5;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .active-circle {
