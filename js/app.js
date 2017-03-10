@@ -29,29 +29,17 @@ $.each($(".fa-circle-o"), function(index, value){
 
 // scroll down on down arrow press
 function scrollDown(e){
-    var $next = $('.current').next('.step');
+    var $next = $('.current').next('.step').next('.step');
     var top = $next.offset().top;
 
-    $('.current').removeClass('current');
-
-    $('body').animate({
-      scrollTop: top
-    }, function () {
-      $next.addClass('current');
-    });
+    $('body').animate({ scrollTop: top });
 }
 // scroll up on up arrow press
 function scrollUp(e){
   var $prev = $('.current').prev('.step');
   var top = $prev.offset().top;
 
-  $('.current').removeClass('current');
-
-  $('body').animate({
-    scrollTop: top
-  }, function () {
-    $prev.addClass('current');
-  });
+  $('body').animate({ scrollTop: top });
 }
 
 // call functions on arrow press

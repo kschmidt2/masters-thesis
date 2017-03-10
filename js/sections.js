@@ -712,7 +712,7 @@ var scrollVis = function() {
       g.selectAll(".circulation-line")
         .attr("stroke-dasharray", totalLength + " " + totalLength)
         .attr("stroke-dashoffset", totalLength)
-        .transition()
+        .transition("circ line")
           .duration(1000)
           .ease("linear")
           .attr("stroke-dashoffset", 0)
@@ -748,7 +748,7 @@ var scrollVis = function() {
       .defined(function(d) { return !isNaN(d.circulation); });
 
     g.selectAll(".circulation-line")
-      .transition()
+      .transition("circ rev line")
         .duration(1000)
         .attr("d", function(d) { return revenueDraw(d) });
 
@@ -774,7 +774,7 @@ var scrollVis = function() {
       .defined(function(d) { return !isNaN(d.advertising); });
 
     g.selectAll(".circulation-line")
-      .transition()
+      .transition("ad rev line")
         .duration(1000)
         .attr("opacity", 1)
         .attr("d", function(d) { return revenueDraw1(d) });
@@ -1021,6 +1021,8 @@ var scrollVis = function() {
       $('#circle-' + (i+1)).addClass('active-circle');
       $('.step').removeClass('fixed').fadeTo(0);
       $('#step' + (i+1)).addClass('fixed').fadeTo(100);
+      $('.current').removeClass('current');
+      $('#step' + (i+1)).addClass('current');
     });
     lastIndex = activeIndex;
   };
