@@ -15,36 +15,36 @@
       <div id="graphic">
         <div id="sections">
 
-          <section class="step" id="step1">
+          <section class="step">
             <p>On January 8, 2014, the Bergen Record reported that members of New Jersey Gov. Chris Christie’s team ordered the lane closures on the George Washington Bridge that crippled the tiny borough of Fort Lee, N.J., for four days the previous September. </p>
           </section>
 
-          <section class="step" id="step2">
+          <section class="step">
             <p id="p2">Uncovered emails indicated that the lane closures were retaliation for Mayor Mark Sokolich's failure to endorse Christie in his re-election bid. </p>
           </section>
 
-          <section class="step" id="step3">
+          <section class="step">
             <p>The scandal had national implications as the damage to Christie’s reputation crippled his presidency run in 2016. </p>
           </section>
 
-          <section class="step" id="step4">
+          <section class="step">
             <p>Last September, the Record announced more than 40% of its newsroom employees would be laid off in a “restructuring” of the paper. </p>
           </section>
 
-          <section class="step" id="step5">
+          <section class="step">
             <p>The layoffs are part of a larger, decade-long trend. Nationwide, newspaper employment fell to 32,900 in 2014, down from a high of more than 56,000 in 2000. From 1994 to 2014, the industry shed 39 percent of its jobs. Meanwhile, reporters are expected to produce more content than ever.</p>
           </section>
 
-          <section class="step" id="step6">
+          <section class="step">
             <p>If a scandal like this happened in your city, would anyone be there to cover it? </p>
           </section>
 
-          <section class="step" id="header">
+          <section class="step">
             <h1>No News is Bad News</h1>
             <h2>The political implications of a shrinking newspaper industry</h2>
           </section>
 
-          <section class="step" id="first_p">
+          <section class="step">
             <!-- <div class="blank_space"></div> -->
             <p>A free press that actively covers politics has long been considered an essential component of democracy. As Thomas Jefferson wrote in 1789, "were it left to me to decide whether we should have a government without newspapers or newspapers without a government, I should not hesitate a moment to prefer the latter.” </p>
           </section>
@@ -261,6 +261,11 @@
       addDots += '<a href="#step' + (i+1) + '"<i class="fa fa-circle-o fa-sm" id="circle-' + (i+1) + '" aria-hidden="true"></i>'
     };
     $('#dots').html(addDots);
+
+    $.each($(".step"), function(index, value){
+      var num = index + 1;
+      $(value).attr("id","step"+ num);
+    });
 
     </script>
   </body>

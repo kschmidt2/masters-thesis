@@ -554,7 +554,8 @@ var scrollVis = function() {
 
 
     $('#newspaper_illo').fadeTo(500,0).hide();
-    $('#header').removeClass('fixed');
+    // $('#header').removeClass('fixed');
+    $('#sections').removeClass('header-step');
 
   }
 
@@ -583,6 +584,7 @@ var scrollVis = function() {
       .attr("opacity", 0);
 
     $('#newspaper_illo').show().fadeTo(500,1);
+    $('#sections').addClass('header-step');
 
     // $('#header').addClass('fixed');
 
@@ -597,7 +599,8 @@ var scrollVis = function() {
    */
   function hideNewspaper() {
     $('#newspaper_illo').fadeTo(500,0).hide();
-    $('#header').removeClass('fixed');
+    // $('#header').removeClass('fixed');
+    $('#sections').removeClass('header-step');
   }
 
   /**
@@ -836,8 +839,8 @@ var scrollVis = function() {
       // changes highlighted circle
       $('.active-circle').removeClass('active-circle');
       $('#circle-' + (i+1)).addClass('active-circle');
-      // $('.step').removeClass('fixed');
-      // $('#step' + (i+1)).addClass('fixed');
+      $('.step').removeClass('fixed').fadeTo(0);
+      $('#step' + (i+1)).addClass('fixed').fadeTo(100);
     });
     lastIndex = activeIndex;
   };

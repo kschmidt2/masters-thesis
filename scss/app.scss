@@ -118,23 +118,40 @@ h2 {
   @include centered;
 }
 
-#graphic section {
+#sections {
   max-width: 560px;
+  margin: 0 auto;
+}
+
+#graphic section {
+  max-width: 90%;
   margin: auto;
   margin-bottom: 60vh;
-  margin-top: 15vh;
+  margin-top: 0vh;
   opacity: 0;
   background-color: rgba(50,50,50,0.6);
-  padding: 0 5px;
+  padding: 15vh 0 0;
+  opacity: 0;
 }
 
 #graphic section:last-of-type {
   margin-bottom: 100vh;
 }
 
-#header {
+#step7 { //header section
   text-align: center;
   @include centered;
+  @include breakpoint(medium) {
+    max-width: 780px !important;
+    width: 780px;
+  }
+  @include breakpoint(large) {
+    max-width: 1048px !important;
+    width: 1048px;
+  }
+}
+
+.header-step {
   @include breakpoint(medium) {
     max-width: 780px !important;
     width: 780px;
