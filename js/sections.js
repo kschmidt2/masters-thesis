@@ -13,6 +13,7 @@ var scrollVis = function() {
 
   var employeeLineData = [];
   var circulationData = [];
+  var govtCoverageData = [];
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -101,6 +102,13 @@ var scrollVis = function() {
     .outerTickSize(0)
     .orient("left");
 
+  var xBarScale = d3.scale.linear()
+    .range([0, width-200]);
+
+  var yBarScale = d3.scale.ordinal()
+    .domain([0,1,2,3,4,5])
+    .rangeBands([0, height - 50], 0.1, 0.1);
+
   // When scrolling to a new section
   // the activation function for that
   // section is called.
@@ -120,7 +128,7 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log('circulationData', circulationData);
+      console.log('govtCoverageData', govtCoverageData);
     // create responsive svg
     svg = d3.select(this)
       .append("div")
@@ -142,21 +150,6 @@ var scrollVis = function() {
       // perform some preprocessing on raw squares data
       var squareData = getSquares(rawData);
 
-      //  convert national employee data to numbers
-      employeeLineData.forEach(function(d){
-        d.year = +d.year;
-        d.total = +d.total;
-        return d;
-      });
-
-      circulationData.forEach(function(d){
-        d.year = +d.year;
-        d.daily = +d.daily;
-        d.circulation = +d.circulation;
-        d.advertising = +d.advertising;
-        return d;
-      });
-
       // national employee line chart domain
       var employeeLineMax = d3.max(employeeLineData, function (d) { return d.total });
       yLineScale.domain([30000,employeeLineMax])
@@ -170,7 +163,9 @@ var scrollVis = function() {
       yLineScale2.domain([-.27,.27])
       xLineScale2.domain([2007,2015]);
 
-      setupVis(squareData, employeeLineData, circulationData);
+      xBarScale.domain([0,d3.max(govtCoverageData, function(d) { return d.big_city})]);
+
+      setupVis(squareData, employeeLineData, circulationData, govtCoverageData);
 
       setupSections();
 
@@ -183,7 +178,7 @@ var scrollVis = function() {
    * sections of the visualization.
    *
    */
-  setupVis = function(squareData, employeeLineData, circulationData) {
+  setupVis = function(squareData, employeeLineData, circulationData, govtCoverageData) {
 
     // x axis
     g.append("g")
@@ -257,6 +252,68 @@ var scrollVis = function() {
         .attr("fill", "none")
         .attr("d", function(d) { return circulationDraw(d) });
 
+      var govtCoverageBars = g.selectAll(".govt-bar").data(govtCoverageData);
+      govtCoverageBars.enter()
+        .append("rect")
+        .attr("class", "govt-bar")
+        .attr("x", 180)
+        .attr("y", function(d,i) { return yBarScale(i);})
+        .attr("width", 0)
+        .attr("height", yBarScale.rangeBand());
+
+      var govtCoverageBarText = g.selectAll(".govt-bar-text").data(govtCoverageData);
+      govtCoverageBarText.enter()
+        .append("text")
+        .attr("class", "govt-bar-text")
+        .text(function(d) { return d.display; })
+        .attr("x", 150)
+        .attr("dx", 15)
+        .attr("y", function(d,i) { return yBarScale(i);})
+        .attr("dy", yBarScale.rangeBand() / 1.5)
+        .style("font-size", "20px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
+      var govtCoverageBarNumber = g.selectAll(".govt-bar-number").data(govtCoverageData);
+      govtCoverageBarNumber.enter()
+        .append("text")
+        .attr("class", "govt-bar-number")
+        .text(function(d) { return (d.big_city*100).toFixed(1) + "%"; })
+        .attr("x",function(d) {
+          if (d.medium == "cable" || d.medium == "websites") {
+            return xBarScale(d.big_city)+220;
+          } else {
+            return xBarScale(d.big_city)+150;
+          }
+        })
+        .attr("dx", 15)
+        .attr("y", function(d,i) { return yBarScale(i);})
+        .attr("dy", yBarScale.rangeBand() / 1.5)
+        .style("font-size", "20px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
+      var govtCoverageBarNumber1 = g.selectAll(".govt-bar-number-1").data(govtCoverageData);
+      govtCoverageBarNumber1.enter()
+        .append("text")
+        .attr("class", "govt-bar-number-1")
+        .text(function(d) { return (d.suburbs*100).toFixed(1) + "%"; })
+        .attr("x",function(d) {
+          if (d.medium == "websites") {
+            return xBarScale(d.suburbs)+220;
+          } else if (d.medium == "cable") {
+            return xBarScale(d.suburbs)+210;
+          } else {
+            return xBarScale(d.suburbs)+150;
+          }
+        })
+        .attr("dx", 15)
+        .attr("y", function(d,i) { return yBarScale(i);})
+        .attr("dy", yBarScale.rangeBand() / 1.5)
+        .style("font-size", "20px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
   };
 
   /**
@@ -283,8 +340,8 @@ var scrollVis = function() {
     activateFunctions[10] = showCircRevenue;
     activateFunctions[11] = showAdRevenue;
     activateFunctions[12] = showPapersClosed;
-    activateFunctions[13] = blankSlide;
-    activateFunctions[14] = blankSlide;
+    activateFunctions[13] = showBigCities;
+    activateFunctions[14] = showSuburbs;
     activateFunctions[15] = blankSlide;
     activateFunctions[16] = blankSlide;
     activateFunctions[17] = blankSlide;
@@ -741,6 +798,63 @@ var scrollVis = function() {
 
   }
 
+  function showBigCities () {
+
+    g.selectAll(".chart-hed")
+      .text("Percentage of local government news stories reported by medium in big cities, 2010");
+
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(600)
+      .attr("opacity", 1.0);
+
+    g.selectAll(".chart-legend")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".govt-bar")
+      .transition()
+      .delay(function(d,i) { return 100 * (i + 1);})
+      .duration(600)
+      .attr("width", function(d) { return xBarScale(d.big_city); });
+
+    g.selectAll(".govt-bar-text")
+      .transition()
+      .duration(600)
+      .delay(600)
+      .attr("opacity", 1);
+
+    g.selectAll(".govt-bar-number")
+      .transition()
+      .duration(600)
+      .delay(600)
+      .attr("opacity", 1);
+  }
+
+  function showSuburbs () {
+
+    g.selectAll(".chart-hed")
+      .text("Percentage of local government news stories reported by medium in suburbs, 2010");
+
+    g.selectAll(".govt-bar")
+      .transition()
+      .delay(function(d,i) { return 100 * (i + 1);})
+      .duration(600)
+      .attr("width", function(d) { return xBarScale(d.suburbs); });
+
+    g.selectAll(".govt-bar-number")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0);
+
+      g.selectAll(".govt-bar-number-1")
+        .transition()
+        .duration(600)
+        .attr("opacity", 1);
+
+  }
+
 
   /**
    * showAxis - helper function to
@@ -871,9 +985,32 @@ var scrollVis = function() {
    * @param other - array of some other data you want to use
    */
 
-  chart.setOtherData = function(employeeLine, circulation) {
+  chart.setOtherData = function(employeeLine, circulation, govt_coverage) {
     employeeLineData = employeeLine;
     circulationData = circulation;
+    govtCoverageData = govt_coverage;
+
+    employeeLineData.forEach(function(d){
+      d.year = +d.year;
+      d.total = +d.total;
+      return d;
+    });
+
+    circulationData.forEach(function(d){
+      d.year = +d.year;
+      d.daily = +d.daily;
+      d.circulation = +d.circulation;
+      d.advertising = +d.advertising;
+      return d;
+    });
+
+    govtCoverageData.forEach(function(d){
+      d.medium = d.medium;
+      d.big_city = +d.big_city;
+      d.suburbs = +d.suburbs;
+      d.display = d.display;
+      return d;
+    });
   };
 
   /**
@@ -899,11 +1036,11 @@ var scrollVis = function() {
  *
  * @param data - loaded csv data
  */
-function display(error, employeeSquares, employeeLine, circulation) {
+function display(error, employeeSquares, employeeLine, circulation, govt_coverage) {
   // create a new plot and
   // display it
   var plot = scrollVis();
-  plot.setOtherData(employeeLine, circulation);
+  plot.setOtherData(employeeLine, circulation, govt_coverage);
   d3.select("#vis")
     .datum(employeeSquares)
     .call(plot);
@@ -937,4 +1074,5 @@ queue()
 .defer(d3.csv, "data/employees_intro.csv")
 .defer(d3.csv, "data/national_employees_intro.csv")
 .defer(d3.csv, "data/circulation.csv")
+.defer(d3.csv, "data/govt_coverage.csv")
 .await(display);

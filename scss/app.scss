@@ -130,7 +130,7 @@ h2 {
   margin-top: 0vh;
   opacity: 0;
   background-color: rgba(50,50,50,0.6);
-  padding: 15vh 0 0;
+  padding: 10vh 0 0;
   opacity: 0;
 }
 
@@ -339,4 +339,8 @@ img {
 
 .y .tick line {
   opacity: 0.5 !important;
+}
+
+.govt-bar {
+  fill: $teal;
 }
