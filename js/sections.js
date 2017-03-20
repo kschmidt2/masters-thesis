@@ -14,6 +14,8 @@ var scrollVis = function() {
   var employeeLineData = [];
   var circulationData = [];
   var govtCoverageData = [];
+  var congressCoverageData = [];
+  var stateReportersData = [];
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -80,6 +82,7 @@ var scrollVis = function() {
     .outerTickSize(0)
     .orient("left");
 
+  // scales and axes for revenue chart
   var xLineScale2 = d3.scale.linear()
     .range([0, width]);
 
@@ -102,12 +105,28 @@ var scrollVis = function() {
     .outerTickSize(0)
     .orient("left");
 
+  // scales for news coverage bar chart
   var xBarScale = d3.scale.linear()
     .range([0, width-200]);
 
   var yBarScale = d3.scale.ordinal()
     .domain([0,1,2,3,4,5])
     .rangeBands([0, height - 50], 0.1, 0.1);
+
+  // bar scale for Congress coverage chart
+  var xBarScale1 = d3.scale.linear()
+    .range([0, width-80]);
+
+  var yBarScale1 = d3.scale.ordinal()
+    .domain([0,1])
+    .rangeBands([0, height - 50], 0.1, 0.1);
+
+  // bar scale for state reporter chart
+  var xBarScale2 = d3.scale.ordinal()
+    .rangeRoundBands([0, width], 0.1);
+
+  var yBarScale2 = d3.scale.linear()
+    .range([height, 0]);
 
   // When scrolling to a new section
   // the activation function for that
@@ -128,7 +147,7 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log('govtCoverageData', govtCoverageData);
+      console.log('stateReportersData', stateReportersData);
     // create responsive svg
     svg = d3.select(this)
       .append("div")
@@ -163,9 +182,14 @@ var scrollVis = function() {
       yLineScale2.domain([-.27,.27])
       xLineScale2.domain([2007,2015]);
 
-      xBarScale.domain([0,d3.max(govtCoverageData, function(d) { return d.big_city})]);
+      xBarScale.domain([0,d3.max(govtCoverageData, function(d) { return d.big_city })]);
 
-      setupVis(squareData, employeeLineData, circulationData, govtCoverageData);
+      xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.articles })]);
+
+      xBarScale2.domain(stateReportersData.map(function(d) { return d.state; }));
+      yBarScale2.domain([0, d3.max(stateReportersData, function(d) { return d.per_ten_legislators; })]);
+
+      setupVis(squareData, employeeLineData, circulationData, govtCoverageData, congressCoverageData, stateReportersData);
 
       setupSections();
 
@@ -178,7 +202,7 @@ var scrollVis = function() {
    * sections of the visualization.
    *
    */
-  setupVis = function(squareData, employeeLineData, circulationData, govtCoverageData) {
+  setupVis = function(squareData, employeeLineData, circulationData, govtCoverageData, congressCoverageData, stateReportersData) {
 
     // x axis
     g.append("g")
@@ -212,7 +236,7 @@ var scrollVis = function() {
         .attr("class", "chart-key chart-hed")
         .attr("x", 0)
         .attr("y", -25)
-        .text("Bergen Record employees, before and after 2016 layoffs")
+        .text("Bergen Record employees, before 2016 layoffs")
         .style("font-weight", 700)
         .attr("opacity", 0);
       g.append("rect")
@@ -314,6 +338,76 @@ var scrollVis = function() {
         .attr("text-anchor", "end")
         .attr("opacity", 0);
 
+      var congressCoverageBars = g.selectAll(".congress-bar").data(congressCoverageData);
+      congressCoverageBars.enter()
+        .append("rect")
+        .attr("class", "congress-bar")
+        .attr("x", 60)
+        .attr("y", function(d,i) { return yBarScale1(i);})
+        .attr("width", 0)
+        .attr("height", yBarScale1.rangeBand());
+
+      var congressCoverageBarText = g.selectAll(".congress-bar-text").data(congressCoverageData);
+      congressCoverageBarText.enter()
+        .append("text")
+        .attr("class", "congress-bar-text")
+        .text(function(d) { return d.year; })
+        .attr("x", 35)
+        .attr("dx", 15)
+        .attr("y", function(d,i) { return yBarScale1(i);})
+        .attr("dy", yBarScale1.rangeBand() / 1.75)
+        .style("font-size", "20px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
+      var congressCoverageBarNumber = g.selectAll(".congress-bar-number").data(congressCoverageData);
+      congressCoverageBarNumber.enter()
+        .append("text")
+        .attr("class", "congress-bar-number")
+        .text(function(d) { return (d.articles.toLocaleString()); })
+        .attr("x",function(d) { return xBarScale1(d.articles)+20; })
+        .attr("dx", 15)
+        .attr("y", function(d,i) { return yBarScale1(i);})
+        .attr("dy", yBarScale1.rangeBand() / 1.75)
+        .style("font-size", "20px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
+      var congressCoverageBarNumber1 = g.selectAll(".congress-bar-number-1").data(congressCoverageData);
+      congressCoverageBarNumber1.enter()
+        .append("text")
+        .attr("class", "congress-bar-number-1")
+        .text(function(d) { return (d.candidates); })
+        .attr("x",function(d) { return xBarScale1(d.candidates)+200; })
+        .attr("dx", 15)
+        .attr("y", function(d,i) { return yBarScale1(i);})
+        .attr("dy", yBarScale1.rangeBand() / 1.75)
+        .style("font-size", "20px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
+      var stateReporterBars = g.selectAll(".state-bar").data(stateReportersData);
+      stateReporterBars.enter()
+        .append("rect")
+        .attr("class", "state-bar")
+        .attr("y", height)
+        .attr("x", function(d) { return xBarScale2(d.state);})
+        .attr("height", 0)
+        .attr("width", xBarScale2.rangeBand());
+
+      var stateReporterBarText = g.selectAll(".state-bar-text").data(stateReportersData);
+      stateReporterBarText.enter()
+        .append("text")
+        .attr("class", "state-bar-text")
+        .text(function(d) { return d.state; })
+        .attr("x", function(d) { return xBarScale2(d.state);})
+        .attr("dx", xBarScale2.rangeBand()/2)
+        .attr("y", height)
+        .attr("dy", 10)
+        .style("font-size", "10.5px")
+        .attr("text-anchor", "middle")
+        .attr("opacity", 0);
+
   };
 
   /**
@@ -343,7 +437,7 @@ var scrollVis = function() {
     activateFunctions[13] = showBigCities;
     activateFunctions[14] = showSuburbs;
     activateFunctions[15] = showCongressCoverage;
-    activateFunctions[16] = blankSlide;
+    activateFunctions[16] = showStateReporters;
     activateFunctions[17] = blankSlide;
     activateFunctions[18] = blankSlide;
     activateFunctions[19] = blankSlide;
@@ -378,6 +472,7 @@ var scrollVis = function() {
     updateFunctions[3] = updateRecord;
     updateFunctions[4] = updateNational;
     updateFunctions[6] = updateNewspaper;
+    updateFunctions[15] = updateCongressCoverage;
   };
 
   /**
@@ -441,7 +536,7 @@ var scrollVis = function() {
     $('#bridge-text').show();
     $('#bridge-text').fadeTo(500,1);
 
-    $('#vis').css("height", "80vh");
+    $('#vis').addClass('vis-trigger');
 
     g.selectAll(".square")
       .transition()
@@ -472,7 +567,7 @@ var scrollVis = function() {
     $('#bridge_illo').hide();
     $('#vis').addClass('vis-small-container');
 
-    $('#vis').css("height", "65vh");
+    $('#vis').removeClass('vis-trigger');
 
     g.selectAll(".square")
       .transition()
@@ -519,9 +614,7 @@ var scrollVis = function() {
       .style("fill", "#e7472e");
 
     g.selectAll(".chart-hed")
-      .transition()
-      .duration(600)
-      .text("National newspaper employees, 2000 and 2014");
+      .text("National newspaper employees, 2000");
 
     g.selectAll(".chart-legend")
       .transition()
@@ -679,7 +772,7 @@ var scrollVis = function() {
     var totalLength = g.selectAll(".circulation-line").node().getTotalLength();
 
     g.selectAll(".circulation-line")
-    .transition()
+    .transition("hide circ line")
       .duration(0)
       .ease("linear")
       .attr("stroke-dashoffset", totalLength)
@@ -880,9 +973,32 @@ var scrollVis = function() {
       .delay(600)
       .attr("opacity", 1);
 
+    g.selectAll(".congress-bar")
+      .transition()
+      .duration(600)
+      .attr("width", 0);
+
+    g.selectAll(".congress-bar-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".congress-bar-number-1")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".congress-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
   }
 
   function showCongressCoverage () {
+
+    g.selectAll(".chart-hed")
+      .text("Number of news stories mentioning Congressional candidates in major newspapers");
 
     g.selectAll(".govt-bar")
       .transition()
@@ -898,6 +1014,83 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 0);
+
+    g.selectAll(".congress-bar")
+      .transition()
+      .duration(600)
+      .attr("width", function(d) { return xBarScale1(d.articles); });
+
+    g.selectAll(".congress-bar-text")
+      .transition()
+      .duration(600)
+      .delay(600)
+      .attr("opacity", 1);
+
+    g.selectAll(".congress-bar-number")
+      .transition()
+      .duration(600)
+      .delay(600)
+      .attr("opacity", 1);
+
+    g.selectAll(".congress-bar-number-1")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    // g.selectAll(".state-bar")
+    //   .transition()
+    //   .duration(600)
+    //   .attr("width", 0);
+    //
+    // g.selectAll(".state-bar-text")
+    //   .transition()
+    //   .duration(600)
+    //   .attr("opacity", 0);
+    //
+    // g.selectAll(".state-bar-number-1")
+    //   .transition()
+    //   .duration(600)
+    //   .attr("opacity", 0);
+  }
+
+  function showStateReporters () {
+    g.selectAll(".congress-bar")
+      .transition()
+      .duration(600)
+      .attr("width", 0);
+
+    g.selectAll(".congress-bar-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".congress-bar-number-1")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".chart-hed")
+      .text("Total statehouse reporters per 10 legislators, 2014");
+
+    g.selectAll(".state-bar")
+      .transition()
+      .delay(function(d,i) { return 10 * (i + 1);})
+      .duration(600)
+      .attr("opacity", 1)
+      .attr("y", function(d) { return yBarScale2(d.per_ten_legislators); })
+      .attr("height", function(d) { return height - yBarScale2(d.per_ten_legislators); });
+
+    g.selectAll(".state-bar-text")
+      .transition()
+      .duration(600)
+      .delay(function(d,i) { return 10 * (i + 1);})
+      .attr("opacity", 1);
+    //
+    // g.selectAll(".govt-bar-number")
+    //   .transition()
+    //   .duration(600)
+    //   .delay(600)
+    //   .attr("opacity", 1);
   }
 
 
@@ -951,6 +1144,9 @@ var scrollVis = function() {
 
    function updateRecord(progress) {
      if (progress > 0.5) {
+       g.selectAll(".chart-hed")
+         .text("Bergen record employees, after 2016 layoffs");
+
        g.selectAll(".record-after")
          .transition("record")
          .duration(0)
@@ -960,6 +1156,9 @@ var scrollVis = function() {
 
    function updateNational(progress) {
      if (progress > 0.5) {
+       g.selectAll(".chart-hed")
+         .text("National newspaper employees, 2014");
+
        g.selectAll(".national-after")
          .transition("national")
          .duration(0)
@@ -970,6 +1169,52 @@ var scrollVis = function() {
     function updateNewspaper(progress) {
       var negativeProgress = 1-(progress);
       $('#newspaper_illo').css('transform', 'scale('+ negativeProgress + ')');
+    }
+
+    function updateCongressCoverage(progress) {
+      if (progress > 0.5) {
+
+        xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.candidates })])
+
+        g.selectAll(".chart-hed")
+          .text("Number of major-party Congressional candidates covered in major newspapers");
+
+        g.selectAll(".congress-bar")
+          .transition()
+          .duration(600)
+          .attr("width", function(d) { return xBarScale1(d.candidates); });
+
+        g.selectAll(".congress-bar-number")
+          .transition()
+          .duration(0)
+          .attr("opacity", 0);
+
+        g.selectAll(".congress-bar-number-1")
+          .transition()
+          .duration(600)
+          .attr("opacity", 1);
+
+      } else {
+        g.selectAll(".chart-hed")
+          .text("Number of news stories mentioning Congressional candidates in major newspapers");
+
+        xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.articles })])
+
+        g.selectAll(".congress-bar")
+          .transition()
+          .duration(600)
+          .attr("width", function(d) { return xBarScale1(d.articles); });
+
+        g.selectAll(".congress-bar-number-1")
+          .transition()
+          .duration(600)
+          .attr("opacity", 0);
+
+        g.selectAll(".congress-bar-number")
+          .transition()
+          .duration(600)
+          .attr("opacity", 1);
+      }
     }
 
   /**
@@ -1032,10 +1277,12 @@ var scrollVis = function() {
    * @param other - array of some other data you want to use
    */
 
-  chart.setOtherData = function(employeeLine, circulation, govt_coverage) {
+  chart.setOtherData = function(employeeLine, circulation, govt_coverage, congress_coverage, state_reporters) {
     employeeLineData = employeeLine;
     circulationData = circulation;
     govtCoverageData = govt_coverage;
+    congressCoverageData = congress_coverage;
+    stateReportersData = state_reporters;
 
     employeeLineData.forEach(function(d){
       d.year = +d.year;
@@ -1058,6 +1305,19 @@ var scrollVis = function() {
       d.display = d.display;
       return d;
     });
+
+    congressCoverageData.forEach(function(d){
+      d.year = +d.year;
+      d.articles = +d.articles;
+      d.candidates = +d.candidates;
+    })
+
+    stateReportersData.forEach(function(d){
+      d.state = d.state;
+      d.reporters = +d.reporters;
+      d.legislators = +d.legislators;
+      d.per_ten_legislators = +d.per_ten_legislators;
+    })
   };
 
   /**
@@ -1083,11 +1343,11 @@ var scrollVis = function() {
  *
  * @param data - loaded csv data
  */
-function display(error, employeeSquares, employeeLine, circulation, govt_coverage) {
+function display(error, employeeSquares, employeeLine, circulation, govt_coverage, congress_coverage, state_reporters) {
   // create a new plot and
   // display it
   var plot = scrollVis();
-  plot.setOtherData(employeeLine, circulation, govt_coverage);
+  plot.setOtherData(employeeLine, circulation, govt_coverage, congress_coverage, state_reporters);
   d3.select("#vis")
     .datum(employeeSquares)
     .call(plot);
@@ -1122,4 +1382,6 @@ queue()
 .defer(d3.csv, "data/national_employees_intro.csv")
 .defer(d3.csv, "data/circulation.csv")
 .defer(d3.csv, "data/govt_coverage.csv")
+.defer(d3.csv, "data/congress_coverage.csv")
+.defer(d3.csv, "data/state_reporters.csv")
 .await(display);

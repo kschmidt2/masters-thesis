@@ -134,6 +134,10 @@ h2 {
   opacity: 0;
 }
 
+#step4, #step5, #step7, #step16 {
+  margin-bottom: 120vh !important;
+}
+
 #graphic section:last-of-type {
   margin-bottom: 100vh;
 }
@@ -181,13 +185,20 @@ img {
   position: fixed;
   bottom: 0vh;
   z-index: 1;
-  height: 60vh;
+  height: 50vh;
   width: 100vw;
   @include breakpoint(medium) {
-    height: 80vh;
+    height: 65vh;
   }
   & > svg {
     @include centered;
+  }
+}
+
+.vis-trigger {
+  height: 60vh !important;
+  @include breakpoint(medium) {
+    height: 80vh !important;
   }
 }
 
@@ -287,10 +298,13 @@ img {
 
 #dots {
   height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
+  display: none;
+  @include breakpoint(medium) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
   width: 1rem;
 }
 
@@ -343,4 +357,15 @@ img {
 
 .govt-bar {
   fill: $teal;
+}
+
+.congress-bar, .state-bar {
+  fill: $red;
+}
+
+.chart-hed {
+  font-size: 24px;
+  @include breakpoint(medium) {
+    font-size: 16px;
+  };
 }
