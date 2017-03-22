@@ -16,6 +16,7 @@ var scrollVis = function() {
   var govtCoverageData = [];
   var congressCoverageData = [];
   var stateReportersData = [];
+  var partisanshipData = [];
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -59,51 +60,33 @@ var scrollVis = function() {
     .outerTickSize(0)
     .orient("left");
 
-  // scales and axes for circulation line chart
-  var xLineScale1 = d3.scale.linear()
-    .range([0, width]);
+  // scales and axes for circulation bar chart
+  var xBarScale0 = d3.scale.ordinal()
+    .rangeRoundBands([0, width], 0.2);
 
-  var yLineScale1 = d3.scale.linear()
+  var yBarScale0 = d3.scale.linear()
     .range([height, 0]);
 
-  var xAxisLine1 = d3.svg.axis()
-    .scale(xLineScale1)
-    .ticks(10)
+  var xAxisBar0 = d3.svg.axis()
+    .scale(xBarScale0)
     .tickFormat(function (d) { return d; })
     .innerTickSize(5)
     .outerTickSize(0)
     .orient("bottom");
-
-  var yAxisLine1 = d3.svg.axis()
-    .scale(yLineScale1)
-    .tickFormat(function(d) { return d.toLocaleString()*100 + '%';})
-    .ticks(5)
-    .innerTickSize(-width)
-    .outerTickSize(0)
-    .orient("left");
 
   // scales and axes for revenue chart
-  var xLineScale2 = d3.scale.linear()
-    .range([0, width]);
+  var xBarScale01 = d3.scale.ordinal()
+  .rangeRoundBands([0, width], 0.2);
 
-  var yLineScale2 = d3.scale.linear()
+  var yBarScale01 = d3.scale.linear()
     .range([height, 0]);
 
-  var xAxisLine2 = d3.svg.axis()
-    .scale(xLineScale2)
-    .ticks(10)
+  var xAxisBar01 = d3.svg.axis()
+    .scale(xBarScale01)
     .tickFormat(function (d) { return d; })
     .innerTickSize(5)
     .outerTickSize(0)
     .orient("bottom");
-
-  var yAxisLine2 = d3.svg.axis()
-    .scale(yLineScale2)
-    .tickFormat(function(d) { return d.toLocaleString()*100 + '%';})
-    .ticks(6)
-    .innerTickSize(-width)
-    .outerTickSize(0)
-    .orient("left");
 
   // scales for news coverage bar chart
   var xBarScale = d3.scale.linear()
@@ -128,6 +111,29 @@ var scrollVis = function() {
   var yBarScale2 = d3.scale.linear()
     .range([height, 0]);
 
+  // scales and axes for partisanship line charts
+  var xLineScale1 = d3.scale.linear()
+    .range([0, width]);
+
+  var yLineScale1 = d3.scale.linear()
+    .range([height, 0])
+    .domain([25,65]);
+
+  var xAxisLine1 = d3.svg.axis()
+    .scale(xLineScale1)
+    .tickValues([1994,1999,2004,2011,2014,2015])
+    .tickFormat(function (d) { return d; })
+    .innerTickSize(5)
+    .outerTickSize(0)
+    .orient("bottom");
+
+  var yAxisLine1 = d3.svg.axis()
+    .scale(yLineScale1)
+    .tickFormat(function(d) { return d + "%";})
+    .ticks(5)
+    .outerTickSize(0)
+    .orient("left");
+
   // When scrolling to a new section
   // the activation function for that
   // section is called.
@@ -147,7 +153,7 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log('stateReportersData', stateReportersData);
+      console.log('partisanshipData', partisanshipData);
     // create responsive svg
     svg = d3.select(this)
       .append("div")
@@ -174,13 +180,13 @@ var scrollVis = function() {
       yLineScale.domain([30000,employeeLineMax])
       xLineScale.domain(d3.extent(employeeLineData, function(d) { return d.year }));
 
-      // circulation line chart domain
-      yLineScale1.domain([-.12,.12])
-      xLineScale1.domain(d3.extent(circulationData, function(d) { return d.year }));
+      // circulation bar chart domain
+      yBarScale0.domain([-.12,.04])
+      xBarScale0.domain(circulationData.map(function(d) { return d.year }));
 
-      // revenue line chart domain
-      yLineScale2.domain([-.27,.27])
-      xLineScale2.domain([2007,2015]);
+      // revenue bar chart domain
+      yBarScale01.domain([-.27,.06])
+      xBarScale01.domain([2007,2008,2009,2010,2011,2012,2013,2014,2015]);
 
       xBarScale.domain([0,d3.max(govtCoverageData, function(d) { return d.big_city })]);
 
@@ -189,7 +195,9 @@ var scrollVis = function() {
       xBarScale2.domain(stateReportersData.map(function(d) { return d.state; }));
       yBarScale2.domain([0, d3.max(stateReportersData, function(d) { return d.per_ten_legislators; })]);
 
-      setupVis(squareData, employeeLineData, circulationData, govtCoverageData, congressCoverageData, stateReportersData);
+      xLineScale1.domain(d3.extent(partisanshipData, function(d) { return d.year }))
+
+      setupVis(squareData, employeeLineData, circulationData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData);
 
       setupSections();
 
@@ -202,21 +210,7 @@ var scrollVis = function() {
    * sections of the visualization.
    *
    */
-  setupVis = function(squareData, employeeLineData, circulationData, govtCoverageData, congressCoverageData, stateReportersData) {
-
-    // x axis
-    g.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxisLine);
-    g.select(".x.axis").style("opacity", 0);
-
-    // y axis
-    g.append("g")
-      .attr("class", "y axis")
-      .attr("transform", "translate(0,0)")
-      .call(yAxisLine);
-    g.select(".y.axis").style("opacity", 0);
+  setupVis = function(squareData, employeeLineData, circulationData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData) {
 
     var squares = g.selectAll(".square").data(squareData);
     squares.enter()
@@ -265,16 +259,59 @@ var scrollVis = function() {
         .attr("fill", "none")
         .attr("d", function(d) { return employeeLineDraw(d) });
 
-      var circulationDraw = d3.svg.line()
-        .x(function(d) { return xLineScale1(d.year); })
-        .y(function(d) { return yLineScale1(d.daily); });
-
-      var circulationChart = g.selectAll(".circulation-line").data([circulationData]);
+      var circulationChart = g.selectAll(".circulation-bar").data(circulationData);
       circulationChart.enter()
-        .append("path")
-        .attr("class", "circulation-line")
-        .attr("fill", "none")
-        .attr("d", function(d) { return circulationDraw(d) });
+        .append("rect")
+        .attr("class", function(d) { return "circulation-bar circulation-bar-" + (d.daily < 0 ? "negative" : "positive"); })
+        .attr("y", function(d) { return yBarScale0(Math.max(0,d.daily)); })
+        .attr("x", function(d) { return xBarScale0(d.year); })
+        .attr("height", 0)
+        .attr("width", xBarScale0.rangeBand());
+
+      var circulationChartNumber = g.selectAll(".circulation-bar-number").data(circulationData);
+      circulationChartNumber.enter()
+        .append("text")
+        .attr("class", "circulation-bar-number")
+        .text(function(d) { return ((d.daily*100).toLocaleString() + '%'); })
+        .attr("x", function(d) { return xBarScale0(d.year); })
+        .attr("dx", xBarScale0.rangeBand() / 1.75)
+        .attr("y", function(d) {
+          if (d.daily >= 0) {
+            return yBarScale0(d.daily) - 35;
+          } else {
+            return yBarScale0(d.daily)
+          } })
+        .attr("dy", 25)
+        .style("font-size", "18px")
+        .attr("text-anchor", "middle")
+        .attr("opacity", 0);
+
+      var revChart = g.selectAll(".rev-bar").data(circulationData);
+      revChart.enter()
+        .append("rect")
+        .attr("class", function(d) { return "rev-bar circulation-bar-" + (d.circulation < 0 ? "negative" : "positive"); })
+        .attr("y", function(d) { return yBarScale01(Math.max(0,d.circulation)); })
+        .attr("x", function(d) { return xBarScale01(d.year); })
+        .attr("height", 0)
+        .attr("width", xBarScale01.rangeBand());
+
+      var revChartNumber = g.selectAll(".rev-bar-number").data(circulationData);
+      revChartNumber.enter()
+        .append("text")
+        .attr("class", "rev-bar-number")
+        .text(function(d) { if (d.circulation !== 0) { return ((d.circulation*100).toLocaleString() + '%') }; })
+        .attr("x", function(d) { return xBarScale01(d.year); })
+        .attr("dx", xBarScale01.rangeBand() / 1.75)
+        .attr("y", function(d) {
+          if (d.circulation >= 0) {
+            return yBarScale01(d.circulation) - 35;
+          } else {
+            return yBarScale01(d.circulation) + 15;
+          } })
+        .attr("dy", 25)
+        .style("font-size", "18px")
+        .attr("text-anchor", "middle")
+        .attr("opacity", 0);
 
       var govtCoverageBars = g.selectAll(".govt-bar").data(govtCoverageData);
       govtCoverageBars.enter()
@@ -408,6 +445,47 @@ var scrollVis = function() {
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
 
+      var stateReporterBarNumber = g.selectAll(".state-bar-number").data(stateReportersData);
+      stateReporterBarNumber.enter()
+        .append("text")
+        .attr("class", "state-bar-number")
+        .text(function(d) { return (d.per_ten_legislators).toFixed(1); })
+        .attr("x",function(d) { return xBarScale2(d.state); })
+        .attr("dx", xBarScale2.rangeBand()/2)
+        .attr("y", function(d) { return yBarScale2(d.per_ten_legislators); })
+        .attr("dy", -5)
+        .style("font-size", "10.5px")
+        .attr("text-anchor", "middle")
+        .attr("opacity", 0);
+
+      var partisanLineDraw = d3.svg.line()
+        .x(function(d) { return xLineScale1(d.year); })
+        .y(function(d) { return yLineScale1(d.rep); })
+        .defined(function(d) { return d; });;
+
+      var partisanLineChart = g.selectAll(".partisan-line").data([partisanshipData]);
+      partisanLineChart.enter()
+        .append("path")
+        .attr("class", "partisan-line")
+        .attr("fill", "none")
+        .attr("opacity", 0)
+        .attr("d", function(d) { return partisanLineDraw(d) });
+
+
+      // x axis
+      g.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxisLine);
+      g.select(".x.axis").style("opacity", 0);
+
+      // y axis
+      g.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(0,0)")
+        .call(yAxisLine);
+      g.select(".y.axis").style("opacity", 0);
+
   };
 
   /**
@@ -438,11 +516,11 @@ var scrollVis = function() {
     activateFunctions[14] = showSuburbs;
     activateFunctions[15] = showCongressCoverage;
     activateFunctions[16] = showStateReporters;
-    activateFunctions[17] = blankSlide;
-    activateFunctions[18] = blankSlide;
-    activateFunctions[19] = blankSlide;
-    activateFunctions[20] = blankSlide;
-    activateFunctions[21] = blankSlide;
+    activateFunctions[17] = hideStateReporters;
+    activateFunctions[18] = hideRepublican;
+    activateFunctions[19] = showRepublican;
+    activateFunctions[20] = showDemocrat;
+    activateFunctions[21] = showAnimosity;
     activateFunctions[22] = blankSlide;
     activateFunctions[23] = blankSlide;
     activateFunctions[24] = blankSlide;
@@ -586,7 +664,7 @@ var scrollVis = function() {
 
     g.selectAll(".record-before")
       .transition()
-      .duration(600)
+      .duration(0)
       .attr("opacity", 1.0)
       .style("fill", "#e7472e");
 
@@ -609,7 +687,7 @@ var scrollVis = function() {
 
     g.selectAll(".square")
       .transition()
-      .duration(600)
+      .duration(0)
       .attr("opacity", 1.0)
       .style("fill", "#e7472e");
 
@@ -762,132 +840,160 @@ var scrollVis = function() {
    */
   function blankSlide() {
 
+    g.select(".x.axis")
+      .attr("transform", "translate(0," + height + ")");
+
     hideAxis();
 
-    g.selectAll(".chart-key")
+    hideKey();
+
+    g.selectAll(".circulation-bar")
       .transition()
-      .duration(0)
-      .attr("opacity", 0.0);
+      .duration(600)
+      .attr("height", 0);
 
-    var totalLength = g.selectAll(".circulation-line").node().getTotalLength();
+    g.selectAll(".circulation-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0)
 
-    g.selectAll(".circulation-line")
-    .transition("hide circ line")
-      .duration(0)
-      .ease("linear")
-      .attr("stroke-dashoffset", totalLength)
-      .attr("opacity", 0);
   }
 
   function showCirculation() {
-    showAxis(xAxisLine1, yAxisLine1, 0);
+    showXAxis(xAxisBar0, 600);
+
+    g.select(".x.axis")
+      .attr("transform", "translate(0," + yBarScale0(0) + ")");
 
     g.selectAll(".chart-hed")
       .text("Percent change in daily newspaper circulation, 2003-2015");
 
-    g.selectAll(".chart-key")
+    showKey();
+
+    g.selectAll(".circulation-bar")
+      .transition()
+      .delay(function(d,i) { return 50 * (i + 1);})
+      .duration(600)
+      .attr("height", function(d) { return Math.abs(yBarScale0(0) - yBarScale0(d.daily)); });
+
+    g.selectAll(".circulation-bar-number")
+      .transition()
+      .delay(600)
+      .duration(600)
+      .attr("opacity", 1)
+
+    g.selectAll(".rev-bar")
       .transition()
       .duration(600)
-      .attr("opacity", 1.0);
+      .attr("height", 0);
 
-    g.selectAll(".chart-legend")
+    g.selectAll(".rev-bar-number")
       .transition()
       .duration(600)
-      .attr("opacity", 0);
-
-    var circulationDraw = d3.svg.line()
-      .x(function(d) { return xLineScale1(d.year); })
-      .y(function(d) { return yLineScale1(d.daily); });
-
-    var totalLength = g.selectAll(".circulation-line").node().getTotalLength();
-
-    if (totalLength > 955.58 && totalLength < 956.59) {
-      g.selectAll(".circulation-line")
-        .attr("stroke-dasharray", totalLength + " " + totalLength)
-        .attr("stroke-dashoffset", totalLength)
-        .transition("circ line")
-          .duration(1000)
-          .ease("linear")
-          .attr("stroke-dashoffset", 0)
-          .attr("stroke-width", 5)
-          .attr("fill", "none")
-          .attr("stroke", "#e7472e")
-          .attr("opacity", 1);
-    } else {
-      g.selectAll(".circulation-line")
-        .transition("circ line")
-          .duration(1000)
-          .attr("d", function(d) { return circulationDraw(d) });
-      g.select(".x.axis")
-        .transition()
-          .duration(1000)
-          .call(xAxisLine1);
-      g.select(".y.axis")
-        .transition()
-          .duration(1000)
-          .call(yAxisLine1);
-    }
+      .attr("opacity", 0)
 
   }
 
   function showCircRevenue () {
 
+    showKey();
+
+    g.select(".x.axis")
+      .attr("transform", "translate(0," + yBarScale01(0) + ")");
+
+    g.selectAll(".circulation-bar")
+      .transition()
+      .duration(600)
+      .attr("height", 0);
+
+    g.selectAll(".circulation-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0)
+
+    showXAxis(xAxisBar01, 600);
+
     g.selectAll(".chart-hed")
       .text("Percent change in newspaper circulation revenue, 2007-2015");
 
-    var revenueDraw = d3.svg.line()
-      .x(function(d) { return xLineScale2(d.year); })
-      .y(function(d) { return yLineScale2(d.circulation); })
-      .defined(function(d) { return !isNaN(d.circulation); });
-
-    g.selectAll(".circulation-line")
-      .transition("circ rev line")
-        .duration(1000)
-        .attr("d", function(d) { return revenueDraw(d) });
-
-    g.select(".x.axis")
+    g.selectAll(".rev-bar")
       .transition()
-        .duration(1000)
-        .call(xAxisLine2);
-    g.select(".y.axis")
+      .delay(function(d,i) { return 50 * (i + 1);})
+      .duration(600)
+      .attr("class", function(d) { return "rev-bar circulation-bar-" + (d.circulation < 0 ? "negative" : "positive"); })
+      .attr("y", function(d) { return yBarScale01(Math.max(0,d.circulation)); })
+      .attr("height", function(d) { return Math.abs(yBarScale01(0) - yBarScale01(d.circulation)); });
+
+    g.selectAll(".rev-bar-number")
+      .attr("opacity", 0)
       .transition()
-        .duration(1000)
-        .call(yAxisLine2);
+      .delay(600)
+      .duration(600)
+      .attr("opacity", 1)
+      .text(function(d) { if (d.circulation !== 0) { return ((d.circulation*100).toLocaleString() + '%') }; })
+      .attr("y", function(d) {
+        if (d.circulation >= 0) {
+          return yBarScale01(d.circulation) - 35;
+        } else {
+          return yBarScale01(d.circulation) + 15;
+        } });
 
   }
 
   function showAdRevenue () {
 
+    showKey();
+
+    g.select(".x.axis")
+      .attr("transform", "translate(0," + yBarScale01(0) + ")");
+
     g.selectAll(".chart-hed")
       .text("Percent change in newspaper advertising revenue, 2007-2015");
 
-    var revenueDraw1 = d3.svg.line()
-      .x(function(d) { return xLineScale2(d.year); })
-      .y(function(d) { return yLineScale2(d.advertising); })
-      .defined(function(d) { return !isNaN(d.advertising); });
+    g.selectAll(".rev-bar")
+      .transition()
+      .delay(function(d,i) { return 50 * (i + 1);})
+      .duration(600)
+      .attr("class", function(d) { return "rev-bar circulation-bar-" + (d.advertising < 0 ? "negative" : "positive"); })
+      .attr("y", function(d) { return yBarScale01(Math.max(0,d.advertising)); })
+      .attr("height", function(d) { return Math.abs(yBarScale01(0) - yBarScale01(d.advertising)); });
 
-    g.selectAll(".circulation-line")
-      .transition("ad rev line")
-        .duration(1000)
-        .attr("opacity", 1)
-        .attr("d", function(d) { return revenueDraw1(d) });
+    g.selectAll(".rev-bar-number")
+      .attr("opacity", 0)
+      .transition()
+      .delay(600)
+      .duration(600)
+      .attr("opacity", 1)
+      .text(function(d) { if (d.advertising !== 0) { return ((d.advertising*100).toLocaleString() + '%') }; })
+      .attr("y", function(d) {
+        if (d.advertising >= 0) {
+          return yBarScale01(d.advertising) - 35;
+        } else {
+          return yBarScale01(d.advertising);
+        } });
 
-    showAxis(xAxisLine2, yAxisLine2, 0);
+
+    showXAxis(xAxisBar01, 0);
   }
 
   function showPapersClosed () {
 
+    g.select(".x.axis")
+      .attr("transform", "translate(0," + height + ")");
+
     hideAxis();
 
-    g.selectAll(".chart-key")
-      .transition()
-      .duration(0)
-      .attr("opacity", 0.0);
+    hideKey();
 
-    g.selectAll(".circulation-line")
-    .transition()
-      .duration(0)
-      .attr("opacity", 0);
+    g.selectAll(".rev-bar")
+      .transition()
+      .duration(600)
+      .attr("height", 0);
+
+    g.selectAll(".rev-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0)
 
     g.selectAll(".govt-bar")
       .transition()
@@ -908,18 +1014,10 @@ var scrollVis = function() {
 
   function showBigCities () {
 
+    showKey();
+
     g.selectAll(".chart-hed")
       .text("Percentage of local government news stories reported by medium in big cities, 2010");
-
-    g.selectAll(".chart-key")
-      .transition()
-      .duration(600)
-      .attr("opacity", 1.0);
-
-    g.selectAll(".chart-legend")
-      .transition()
-      .duration(600)
-      .attr("opacity", 0);
 
     g.selectAll(".govt-bar")
       .transition()
@@ -947,6 +1045,8 @@ var scrollVis = function() {
   }
 
   function showSuburbs () {
+
+    showKey();
 
     g.selectAll(".chart-hed")
       .text("Percentage of local government news stories reported by medium in suburbs, 2010");
@@ -997,6 +1097,8 @@ var scrollVis = function() {
 
   function showCongressCoverage () {
 
+    showKey();
+
     g.selectAll(".chart-hed")
       .text("Number of news stories mentioning Congressional candidates in major newspapers");
 
@@ -1037,20 +1139,23 @@ var scrollVis = function() {
       .duration(600)
       .attr("opacity", 0);
 
-    // g.selectAll(".state-bar")
-    //   .transition()
-    //   .duration(600)
-    //   .attr("width", 0);
-    //
-    // g.selectAll(".state-bar-text")
-    //   .transition()
-    //   .duration(600)
-    //   .attr("opacity", 0);
-    //
-    // g.selectAll(".state-bar-number-1")
-    //   .transition()
-    //   .duration(600)
-    //   .attr("opacity", 0);
+    g.selectAll(".state-bar")
+      .transition()
+      .delay(function(d,i) { return 10 * (i + 1);})
+      .duration(600)
+      .attr("opacity", 0)
+      .attr("y", height)
+      .attr("height", 0);
+
+    g.selectAll(".state-bar-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".state-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
   }
 
   function showStateReporters () {
@@ -1064,6 +1169,11 @@ var scrollVis = function() {
       .duration(600)
       .attr("opacity", 0);
 
+    g.selectAll(".congress-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
     g.selectAll(".congress-bar-number-1")
       .transition()
       .duration(600)
@@ -1071,6 +1181,8 @@ var scrollVis = function() {
 
     g.selectAll(".chart-hed")
       .text("Total statehouse reporters per 10 legislators, 2014");
+
+    showKey();
 
     g.selectAll(".state-bar")
       .transition()
@@ -1085,14 +1197,130 @@ var scrollVis = function() {
       .duration(600)
       .delay(function(d,i) { return 10 * (i + 1);})
       .attr("opacity", 1);
-    //
-    // g.selectAll(".govt-bar-number")
-    //   .transition()
-    //   .duration(600)
-    //   .delay(600)
-    //   .attr("opacity", 1);
+
+    g.selectAll(".state-bar-number")
+      .transition()
+      .duration(600)
+      .delay(600)
+      .attr("opacity", 1);
   }
 
+  function hideStateReporters() {
+
+    hideKey();
+
+    g.selectAll(".state-bar-text")
+      .transition()
+      .duration(600)
+      .delay(function(d,i) { return 10 * (i + 1);})
+      .attr("opacity", 0);
+
+    g.selectAll(".state-bar")
+      .transition()
+      .delay(function(d,i) { return 10 * (i + 1);})
+      .duration(600)
+      .attr("opacity", 0)
+      .attr("y", height)
+      .attr("height", 0);
+
+    g.selectAll(".state-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+  }
+
+  function hideRepublican() {
+
+    hideKey();
+
+    hideAxis();
+
+    var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
+
+    g.selectAll(".partisan-line")
+    .transition()
+      .duration(500)
+      .ease("linear")
+      .attr("stroke-dashoffset", totalLength)
+      .attr("opacity", 0);
+
+  }
+
+  function showRepublican() {
+
+    showAxis(xAxisLine1, yAxisLine1, 0);
+
+    showKey();
+
+    g.selectAll(".chart-hed")
+      .text("Share of Republicans who consider themselves conservative");
+
+    var partisanLineDraw = d3.svg.line()
+      .x(function(d) { return xLineScale1(d.year); })
+      .y(function(d) { return yLineScale1(d.rep); })
+      .defined(function(d) { return d; });
+
+    var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
+
+    g.selectAll(".partisan-line")
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .attr("opacity", 1)
+      .transition()
+        .delay(700)
+        .attr("d", function(d) { return partisanLineDraw(d) })
+        .duration(1000)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0)
+        .attr("stroke-width", 5)
+        .attr("fill", "none")
+        .attr("stroke", "#e7472e");
+
+  }
+
+  function showDemocrat() {
+
+    showAxis(xAxisLine1, yAxisLine1, 0);
+
+    showKey();
+
+    g.selectAll(".chart-hed")
+      .text("Share of Democrats who consider themselves liberal");
+
+    var partisanLineDraw = d3.svg.line()
+      .x(function(d) { return xLineScale1(d.year); })
+      .y(function(d) { return yLineScale1(d.dem); })
+      .defined(function(d) { return d; });
+
+    g.selectAll('.partisan-line')
+      .attr("opacity", 1)
+      .transition()
+        .delay(0)
+        .duration(1000)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0)
+        .attr("stroke-width", 5)
+        .attr("fill", "none")
+        .attr("stroke", "#52908b")
+        .attr("d", function(d) { return partisanLineDraw(d) });
+
+  }
+
+  function showAnimosity() {
+
+    hideAxis();
+
+    var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
+
+    g.selectAll(".partisan-line")
+      .transition()
+        .duration(500)
+        .ease("linear")
+        .attr("stroke-dashoffset", totalLength)
+        .attr("opacity", 0);
+
+  }
 
   /**
    * showAxis - helper function to
@@ -1111,6 +1339,13 @@ var scrollVis = function() {
       .style("opacity", 1);
   }
 
+  function showXAxis(xAxis, delay) {
+    g.select(".x.axis")
+      .call(xAxis)
+      .transition().duration(500).delay(delay)
+      .style("opacity", 1);
+  }
+
   /**
    * hideAxis - helper function
    * to hide the axis
@@ -1123,6 +1358,25 @@ var scrollVis = function() {
     g.select(".y.axis")
       .transition().duration(0)
       .style("opacity",0);
+  }
+
+  function showKey() {
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(600)
+      .attr("opacity", 1.0);
+
+    g.selectAll(".chart-legend")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+  }
+
+  function hideKey() {
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0.0);
   }
 
   /**
@@ -1151,6 +1405,15 @@ var scrollVis = function() {
          .transition("record")
          .duration(0)
          .style("fill", "#7a3a30");
+     } else {
+       g.selectAll(".chart-hed")
+         .text("Bergen record employees, before 2016 layoffs");
+
+       g.selectAll(".record-before")
+         .transition()
+         .duration(0)
+         .attr("opacity", 1.0)
+         .style("fill", "#e7472e");
      }
    }
 
@@ -1163,6 +1426,15 @@ var scrollVis = function() {
          .transition("national")
          .duration(0)
          .style("fill", "#7a3a30");
+     } else {
+       g.selectAll(".chart-hed")
+         .text("National newspaper employees, 2000");
+
+       g.selectAll(".square")
+         .transition()
+         .duration(0)
+         .attr("opacity", 1.0)
+         .style("fill", "#e7472e");
      }
    }
 
@@ -1277,12 +1549,13 @@ var scrollVis = function() {
    * @param other - array of some other data you want to use
    */
 
-  chart.setOtherData = function(employeeLine, circulation, govt_coverage, congress_coverage, state_reporters) {
+  chart.setOtherData = function(employeeLine, circulation, govt_coverage, congress_coverage, state_reporters, partisanship) {
     employeeLineData = employeeLine;
     circulationData = circulation;
     govtCoverageData = govt_coverage;
     congressCoverageData = congress_coverage;
     stateReportersData = state_reporters;
+    partisanshipData = partisanship;
 
     employeeLineData.forEach(function(d){
       d.year = +d.year;
@@ -1318,6 +1591,12 @@ var scrollVis = function() {
       d.legislators = +d.legislators;
       d.per_ten_legislators = +d.per_ten_legislators;
     })
+
+    partisanshipData.forEach(function(d){
+      d.year = +d.year;
+      d.rep = +d.rep;
+      d.dem = +d.dem;
+    })
   };
 
   /**
@@ -1343,11 +1622,11 @@ var scrollVis = function() {
  *
  * @param data - loaded csv data
  */
-function display(error, employeeSquares, employeeLine, circulation, govt_coverage, congress_coverage, state_reporters) {
+function display(error, employeeSquares, employeeLine, circulation, govt_coverage, congress_coverage, state_reporters, partisanship) {
   // create a new plot and
   // display it
   var plot = scrollVis();
-  plot.setOtherData(employeeLine, circulation, govt_coverage, congress_coverage, state_reporters);
+  plot.setOtherData(employeeLine, circulation, govt_coverage, congress_coverage, state_reporters, partisanship);
   d3.select("#vis")
     .datum(employeeSquares)
     .call(plot);
@@ -1384,4 +1663,5 @@ queue()
 .defer(d3.csv, "data/govt_coverage.csv")
 .defer(d3.csv, "data/congress_coverage.csv")
 .defer(d3.csv, "data/state_reporters.csv")
+.defer(d3.csv, "data/partisanship.csv")
 .await(display);

@@ -126,7 +126,7 @@ h2 {
 #graphic section {
   max-width: 90%;
   margin: auto;
-  margin-bottom: 60vh;
+  margin-bottom: 100vh;
   margin-top: 0vh;
   opacity: 0;
   background-color: rgba(50,50,50,0.6);
@@ -135,7 +135,7 @@ h2 {
 }
 
 #step4, #step5, #step7, #step16 {
-  margin-bottom: 120vh !important;
+  margin-bottom: 200vh !important;
 }
 
 #graphic section:last-of-type {
@@ -355,11 +355,11 @@ img {
   opacity: 0.5 !important;
 }
 
-.govt-bar {
+.circulation-bar-positive, .govt-bar {
   fill: $teal;
 }
 
-.congress-bar, .state-bar {
+.circulation-bar-negative, .congress-bar, .state-bar {
   fill: $red;
 }
 
