@@ -13,6 +13,7 @@ var scrollVis = function() {
 
   var employeeLineData = [];
   var circulationData = [];
+  var papersClosedData = [];
   var govtCoverageData = [];
   var congressCoverageData = [];
   var stateReportersData = [];
@@ -153,7 +154,7 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log('partisanshipData', partisanshipData);
+      console.log('papersClosedData', papersClosedData);
     // create responsive svg
     svg = d3.select(this)
       .append("div")
@@ -197,7 +198,7 @@ var scrollVis = function() {
 
       xLineScale1.domain(d3.extent(partisanshipData, function(d) { return d.year }))
 
-      setupVis(squareData, employeeLineData, circulationData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData);
+      setupVis(squareData, employeeLineData, circulationData, papersClosedData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData);
 
       setupSections();
 
@@ -210,7 +211,7 @@ var scrollVis = function() {
    * sections of the visualization.
    *
    */
-  setupVis = function(squareData, employeeLineData, circulationData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData) {
+  setupVis = function(squareData, employeeLineData, circulationData, papersClosedData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData) {
 
     var squares = g.selectAll(".square").data(squareData);
     squares.enter()
@@ -1268,7 +1269,7 @@ var scrollVis = function() {
       .attr("stroke-dashoffset", totalLength)
       .attr("opacity", 1)
       .transition()
-        .delay(700)
+        .delay(0)
         .attr("d", function(d) { return partisanLineDraw(d) })
         .duration(1000)
         .ease("linear")
@@ -1310,6 +1311,11 @@ var scrollVis = function() {
   function showAnimosity() {
 
     hideAxis();
+
+    showKey();
+
+    g.selectAll(".chart-hed")
+      .text("Republican attitudes about Democratic Party");
 
     var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
 
@@ -1549,9 +1555,10 @@ var scrollVis = function() {
    * @param other - array of some other data you want to use
    */
 
-  chart.setOtherData = function(employeeLine, circulation, govt_coverage, congress_coverage, state_reporters, partisanship) {
+  chart.setOtherData = function(employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship) {
     employeeLineData = employeeLine;
     circulationData = circulation;
+    papersClosedData = papers_closed;
     govtCoverageData = govt_coverage;
     congressCoverageData = congress_coverage;
     stateReportersData = state_reporters;
@@ -1570,6 +1577,14 @@ var scrollVis = function() {
       d.advertising = +d.advertising;
       return d;
     });
+
+    papersClosedData.forEach(function(d){
+      d.type = d.type;
+      d.closed = +d.closed;
+      d.open = +d.open;
+      d.closed_display = +d.closed_display;
+      d.open_display = +d.open_display;
+    })
 
     govtCoverageData.forEach(function(d){
       d.medium = d.medium;
@@ -1622,11 +1637,11 @@ var scrollVis = function() {
  *
  * @param data - loaded csv data
  */
-function display(error, employeeSquares, employeeLine, circulation, govt_coverage, congress_coverage, state_reporters, partisanship) {
+function display(error, employeeSquares, employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship) {
   // create a new plot and
   // display it
   var plot = scrollVis();
-  plot.setOtherData(employeeLine, circulation, govt_coverage, congress_coverage, state_reporters, partisanship);
+  plot.setOtherData(employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship);
   d3.select("#vis")
     .datum(employeeSquares)
     .call(plot);
@@ -1660,6 +1675,7 @@ queue()
 .defer(d3.csv, "data/employees_intro.csv")
 .defer(d3.csv, "data/national_employees_intro.csv")
 .defer(d3.csv, "data/circulation.csv")
+.defer(d3.csv, "data/papers_closed.csv")
 .defer(d3.csv, "data/govt_coverage.csv")
 .defer(d3.csv, "data/congress_coverage.csv")
 .defer(d3.csv, "data/state_reporters.csv")
