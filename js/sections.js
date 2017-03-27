@@ -89,6 +89,21 @@ var scrollVis = function() {
     .outerTickSize(0)
     .orient("bottom");
 
+  // scales for closed newspaper donut charts
+  var radius = 170,
+      padding = 10;
+
+  var donutColor = d3.scale.ordinal()
+    .range(["#e7472e", "#52908b"]);
+
+  var arc = d3.svg.arc()
+    .outerRadius(radius)
+    .innerRadius(radius - 80);
+
+  var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) { return d.papers; });
+
   // scales for news coverage bar chart
   var xBarScale = d3.scale.linear()
     .range([0, width-200]);
@@ -188,6 +203,14 @@ var scrollVis = function() {
       // revenue bar chart domain
       yBarScale01.domain([-.27,.06])
       xBarScale01.domain([2007,2008,2009,2010,2011,2012,2013,2014,2015]);
+
+      // donut charts
+      donutColor.domain(d3.keys(papersClosedData[0]).filter(function(key) { return key !== "type"; }));
+      papersClosedData.forEach(function(d) {
+        d.newspapers = donutColor.domain().map(function(name) {
+          return {name: name, papers: +d[name]};
+        });
+      });
 
       xBarScale.domain([0,d3.max(govtCoverageData, function(d) { return d.big_city })]);
 
@@ -313,6 +336,31 @@ var scrollVis = function() {
         .style("font-size", "18px")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
+
+      var donutChart = g.selectAll(".pie").data(papersClosedData);
+      donutChart.enter().append("svg")
+        .attr("class", "pie")
+        .attr("width", radius * 2)
+        .attr("height", radius * 2)
+        .attr("x", function(d,i) { return i*radius*2.7 });
+
+      var donutG = donutChart.append("g")
+        .attr("transform", "translate(" + radius + "," + radius + ")");
+
+      donutG.selectAll(".arc")
+        .data(function(d) { return pie(d.newspapers); })
+      .enter().append("path")
+        .attr("class", "arc")
+        .attr("d", arc)
+        .attr("opacity", 0)
+        .style("fill", function(d) { return donutColor(d.data.name); });
+
+      donutG.append("text")
+        .attr("dy", ".35em")
+        .attr("class", "donut-text")
+        .attr("opacity", 0)
+        .style("text-anchor", "middle")
+        .text(function(d) { return d.type; });
 
       var govtCoverageBars = g.selectAll(".govt-bar").data(govtCoverageData);
       govtCoverageBars.enter()
@@ -975,6 +1023,27 @@ var scrollVis = function() {
 
 
     showXAxis(xAxisBar01, 0);
+
+    g.selectAll(".arc")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".donut-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".chart-legend")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".chart-key-square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0);
+
   }
 
   function showPapersClosed () {
@@ -984,7 +1053,19 @@ var scrollVis = function() {
 
     hideAxis();
 
-    hideKey();
+    g.selectAll(".chart-hed")
+      .text("Percent of newspapers that have closed since 2004");
+
+    g.selectAll(".chart-legend")
+      .transition()
+      .duration(600)
+      .attr("opacity", 1)
+      .text("= closed papers");
+
+    g.selectAll(".chart-key-square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 1);
 
     g.selectAll(".rev-bar")
       .transition()
@@ -1011,11 +1092,39 @@ var scrollVis = function() {
       .duration(600)
       .attr("opacity", 0);
 
+    g.selectAll(".arc")
+      .transition()
+      .duration(600)
+      .attr("opacity", 1);
+
+    g.selectAll(".donut-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 1);
+
   }
 
   function showBigCities () {
 
-    showKey();
+    g.selectAll(".arc")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".donut-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".chart-legend")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".chart-key-square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0);
 
     g.selectAll(".chart-hed")
       .text("Percentage of local government news stories reported by medium in big cities, 2010");
@@ -1181,7 +1290,7 @@ var scrollVis = function() {
       .attr("opacity", 0);
 
     g.selectAll(".chart-hed")
-      .text("Total statehouse reporters per 10 legislators, 2014");
+      .text("Full-time statehouse reporters per 10 legislators, 2014");
 
     showKey();
 
@@ -1213,12 +1322,12 @@ var scrollVis = function() {
     g.selectAll(".state-bar-text")
       .transition()
       .duration(600)
-      .delay(function(d,i) { return 10 * (i + 1);})
+      .delay(function(d,i) { return 1 * (i + 1);})
       .attr("opacity", 0);
 
     g.selectAll(".state-bar")
       .transition()
-      .delay(function(d,i) { return 10 * (i + 1);})
+      .delay(function(d,i) { return 1 * (i + 1);})
       .duration(600)
       .attr("opacity", 0)
       .attr("y", height)
@@ -1546,6 +1655,12 @@ var scrollVis = function() {
       $('#step' + (i+1)).addClass('fixed').fadeTo(100);
       $('.current').removeClass('current');
       $('#step' + (i+1)).addClass('current');
+      if ($('#step' + (i+1)).hasClass("blank-step")) {
+        var height = $('#step' + (i+1)).height();
+        var windowHeight = $(window).height();
+        var topSpace = (windowHeight - height)/3;
+        $('#step' + (i+1)).css('top', topSpace + 'px');
+      }
     });
     lastIndex = activeIndex;
   };
@@ -1582,8 +1697,6 @@ var scrollVis = function() {
       d.type = d.type;
       d.closed = +d.closed;
       d.open = +d.open;
-      d.closed_display = +d.closed_display;
-      d.open_display = +d.open_display;
     })
 
     govtCoverageData.forEach(function(d){

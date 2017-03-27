@@ -100,13 +100,15 @@ h2 {
   }
 }
 
+.step {
+  opacity: 0;
+}
+
 .fixed {
   position: fixed;
   top: 0;
-}
-
-.blank_space {
-  height: 30vh;
+  opacity: 1;
+  transition: opacity .5s ease-in-out;
 }
 
 .container {
@@ -263,18 +265,19 @@ img {
 #interactive-footer {
   position: relative;
   z-index: 2;
-  background-color: $teal;
-  color: white;
+  background-image: url("../images/interactive_prototype.png");
+  background-color: white;
+  // color: white;
   .container {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 1053px;
     // justify-content: space-between;
     padding-top: 5vh;
     padding-bottom: 2vh;
   }
   p {
-    color: white;
+    // color: white;
     max-width: 5000px;
   }
   #states-interactive {
@@ -368,4 +371,8 @@ img {
   @include breakpoint(medium) {
     font-size: 16px;
   };
+}
+
+.pie {
+  padding: 10px 0 0 10px;
 }

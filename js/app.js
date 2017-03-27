@@ -20,9 +20,10 @@ $.each($(".step"), function(index, value){
 
 $.each($(".fa-circle-o"), function(index, value){
   $(this).on('click', function(){
-    var num = index + 2;
+    var num = index + 1;
     var stepid = "#step" + num;
     var top = $(stepid).offset().top;
+    console.log(stepid);
     $('body').animate({scrollTop: top});
   })
 })
