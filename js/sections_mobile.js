@@ -129,7 +129,8 @@ var scrollVis = function() {
     .rangeBands([0, width], 0.1, 0);
 
   var yBarScale2 = d3.scale.linear()
-    .range([height, 0]);
+    .range([height, 0])
+    .domain([0,600]);
 
   // scales and axes for partisanship line charts
   var xLineScale1 = d3.scale.linear()
@@ -212,7 +213,7 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log('animosityData', animosityData);
+      console.log('stateReportersData', stateReportersData);
     // create responsive svg
     svg = d3.select(this)
       .append("div")
@@ -259,8 +260,7 @@ var scrollVis = function() {
 
       xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.articles })]);
 
-      xBarScale2.domain(stateReportersData.map(function(d) { return d.state; }));
-      yBarScale2.domain([0, d3.max(stateReportersData, function(d) { return d.per_ten_legislators; })]);
+      xBarScale2.domain(stateReportersData.map(function(d) { return d.year; }));
 
       xLineScale1.domain(d3.extent(partisanshipData, function(d) { return d.year }))
 
@@ -469,7 +469,7 @@ var scrollVis = function() {
         .attr("dx", 15)
         .attr("y", function(d,i) { return yBarScale(i);})
         .attr("dy", yBarScale.rangeBand() / 1.5)
-        .style("font-size", "20px")
+        .style("font-size", "16px")
         .attr("text-anchor", "end")
         .attr("opacity", 0);
 
@@ -513,7 +513,7 @@ var scrollVis = function() {
         .append("text")
         .attr("class", "congress-bar-number-1")
         .text(function(d) { return (d.candidates); })
-        .attr("x",function(d) { return xBarScale1(d.candidates)+200; })
+        .attr("x",function(d) { return xBarScale1(d.candidates)+250; })
         .attr("dx", 15)
         .attr("y", function(d,i) { return yBarScale1(i);})
         .attr("dy", yBarScale1.rangeBand() / 1.75)
@@ -526,7 +526,7 @@ var scrollVis = function() {
         .append("rect")
         .attr("class", "state-bar")
         .attr("y", height)
-        .attr("x", function(d) { return xBarScale2(d.state);})
+        .attr("x", function(d) { return xBarScale2(d.year);})
         .attr("height", 0)
         .attr("width", xBarScale2.rangeBand());
 
@@ -534,12 +534,12 @@ var scrollVis = function() {
       stateReporterBarText.enter()
         .append("text")
         .attr("class", "state-bar-text")
-        .text(function(d) { return d.state; })
-        .attr("x", function(d) { return xBarScale2(d.state);})
+        .text(function(d) { return d.year; })
+        .attr("x", function(d) { return xBarScale2(d.year);})
         .attr("dx", xBarScale2.rangeBand()/2)
         .attr("y", height)
-        .attr("dy", 10)
-        .style("font-size", "5.5px")
+        .attr("dy", 20)
+        .style("font-size", "14px")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
 
@@ -547,12 +547,12 @@ var scrollVis = function() {
       stateReporterBarNumber.enter()
         .append("text")
         .attr("class", "state-bar-number")
-        .text(function(d) { return (d.per_ten_legislators).toFixed(1); })
-        .attr("x",function(d) { return xBarScale2(d.state); })
+        .text(function(d) { return (d.reporters); })
+        .attr("x",function(d) { return xBarScale2(d.year); })
         .attr("dx", xBarScale2.rangeBand()/2)
-        .attr("y", function(d) { return yBarScale2(d.per_ten_legislators); })
+        .attr("y", function(d) { return yBarScale2(d.reporters); })
         .attr("dy", -5)
-        .style("font-size", "5.5px")
+        .style("font-size", "20px")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
 
@@ -732,6 +732,7 @@ var scrollVis = function() {
     activateFunctions[30] = hideCorruption;
     activateFunctions[31] = blankSlide;
     activateFunctions[32] = blankSlide;
+    activateFunctions[33] = blankSlide;
 
 
     // updateFunctions are called while
@@ -1438,7 +1439,7 @@ var scrollVis = function() {
       .attr("opacity", 0);
 
     g.selectAll(".chart-hed")
-      .text("Full-time reporters per 10 legislators, 2014");
+      .text("Full-time newspaper statehouse reporters");
 
     showKey();
 
@@ -1447,8 +1448,8 @@ var scrollVis = function() {
       .delay(function(d,i) { return 10 * (i + 1);})
       .duration(600)
       .attr("opacity", 1)
-      .attr("y", function(d) { return yBarScale2(d.per_ten_legislators); })
-      .attr("height", function(d) { return height - yBarScale2(d.per_ten_legislators); });
+      .attr("y", function(d) { return yBarScale2(d.reporters); })
+      .attr("height", function(d) { return height - yBarScale2(d.reporters); });
 
     g.selectAll(".state-bar-text")
       .transition()
@@ -2147,10 +2148,8 @@ var scrollVis = function() {
     })
 
     stateReportersData.forEach(function(d){
-      d.state = d.state;
+      d.year = d.year;
       d.reporters = +d.reporters;
-      d.legislators = +d.legislators;
-      d.per_ten_legislators = +d.per_ten_legislators;
     })
 
     partisanshipData.forEach(function(d){
@@ -2242,7 +2241,7 @@ queue()
 .defer(d3.csv, "data/papers_closed.csv")
 .defer(d3.csv, "data/govt_coverage.csv")
 .defer(d3.csv, "data/congress_coverage.csv")
-.defer(d3.csv, "data/state_reporters.csv")
+.defer(d3.csv, "data/state_reporters_mobile.csv")
 .defer(d3.csv, "data/partisanship.csv")
 .defer(d3.csv, "data/animosity.csv")
 .defer(d3.csv, "data/losangeles.csv")

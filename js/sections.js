@@ -514,7 +514,7 @@ var scrollVis = function() {
         .append("text")
         .attr("class", "congress-bar-number-1")
         .text(function(d) { return (d.candidates); })
-        .attr("x",function(d) { return xBarScale1(d.candidates)+200; })
+        .attr("x",function(d) { return xBarScale1(d.candidates)+620; })
         .attr("dx", 15)
         .attr("y", function(d,i) { return yBarScale1(i);})
         .attr("dy", yBarScale1.rangeBand() / 1.75)
@@ -733,6 +733,7 @@ var scrollVis = function() {
     activateFunctions[30] = hideCorruption;
     activateFunctions[31] = blankSlide;
     activateFunctions[32] = blankSlide;
+    activateFunctions[33] = blankSlide;
 
 
     // updateFunctions are called while
