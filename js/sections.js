@@ -18,6 +18,9 @@ var scrollVis = function() {
   var congressCoverageData = [];
   var stateReportersData = [];
   var partisanshipData = [];
+  var losAngelesData = [];
+  var corruptionData = [];
+  var animosityData = [];
 
   // Keep track of which visualization
   // we are on and which was the last
@@ -150,6 +153,45 @@ var scrollVis = function() {
     .outerTickSize(0)
     .orient("left");
 
+  // scales and axes for animosity line charts
+  var xLineScale2 = d3.scale.linear()
+    .range([0, width]);
+
+  var yLineScale2 = d3.scale.linear()
+    .range([height, 0])
+    .domain([0,100]);
+
+  var xAxisLine2 = d3.svg.axis()
+    .scale(xLineScale2)
+    .tickValues([1994,2016])
+    .tickFormat(function (d) { return d; })
+    .innerTickSize(5)
+    .outerTickSize(0)
+    .orient("bottom");
+
+  var yAxisLine2 = d3.svg.axis()
+    .scale(yLineScale2)
+    .tickFormat(function(d) { return d + "%";})
+    .ticks(5)
+    .outerTickSize(0)
+    .orient("left");
+
+  // scales for Los Angeles chart
+  var xBarScale3 = d3.scale.ordinal()
+    .rangeBands([0, width], 0.1, 0.8);
+
+  var yBarScale3 = d3.scale.linear()
+    .range([height, 0])
+    .domain([0,80]);
+
+  // scales for corruption bar chart
+  var xBarScale4 = d3.scale.linear()
+    .range([0, width-300]);
+
+  var yBarScale4 = d3.scale.ordinal()
+    .domain([0,1,2,3,4])
+    .rangeBands([0, height - 50], 0.1, 0.1);
+
   // When scrolling to a new section
   // the activation function for that
   // section is called.
@@ -169,7 +211,7 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log('papersClosedData', papersClosedData);
+      console.log('animosityData', animosityData);
     // create responsive svg
     svg = d3.select(this)
       .append("div")
@@ -221,7 +263,13 @@ var scrollVis = function() {
 
       xLineScale1.domain(d3.extent(partisanshipData, function(d) { return d.year }))
 
-      setupVis(squareData, employeeLineData, circulationData, papersClosedData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData);
+      xLineScale2.domain(d3.extent(animosityData, function(d) { return d.year }))
+
+      xBarScale3.domain(losAngelesData.map(function(d) { return d.paper; }));
+
+      xBarScale4.domain([0,d3.max(corruptionData, function(d) { return d.change})]);
+
+      setupVis(squareData, employeeLineData, circulationData, papersClosedData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData, animosityData, losAngelesData, corruptionData);
 
       setupSections();
 
@@ -234,7 +282,7 @@ var scrollVis = function() {
    * sections of the visualization.
    *
    */
-  setupVis = function(squareData, employeeLineData, circulationData, papersClosedData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData) {
+  setupVis = function(squareData, employeeLineData, circulationData, papersClosedData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData, animosityData, losAngelesData, corruptionData) {
 
     var squares = g.selectAll(".square").data(squareData);
     squares.enter()
@@ -520,6 +568,108 @@ var scrollVis = function() {
         .attr("opacity", 0)
         .attr("d", function(d) { return partisanLineDraw(d) });
 
+      var animosityLineDraw1 = d3.svg.line()
+        .x(function(d) { return xLineScale2(d.year); })
+        .y(function(d) { return yLineScale2(d.rep_unfav); })
+        .defined(function(d) { return d; });;
+
+      var animosityLineDraw2 = d3.svg.line()
+        .x(function(d) { return xLineScale2(d.year); })
+        .y(function(d) { return yLineScale2(d.rep_very); })
+        .defined(function(d) { return d; });;
+
+      var animosityLineChart = g.selectAll(".animosity-line").data([animosityData]);
+      animosityLineChart.enter()
+        .append("path")
+        .attr("class", "animosity-line unfav-line")
+        .attr("fill", "none")
+        .attr("opacity", 0)
+        .attr("d", function(d) { return animosityLineDraw1(d) });
+      animosityLineChart.enter()
+        .append("path")
+        .attr("class", "animosity-line very-line")
+        .attr("fill", "none")
+        .attr("opacity", 0)
+        .attr("d", function(d) { return animosityLineDraw2(d) });
+
+      var losAngelesBars = g.selectAll(".la-bar").data(losAngelesData);
+      losAngelesBars.enter()
+        .append("rect")
+        .attr("class", "la-bar")
+        .attr("y", height)
+        .attr("x", function(d) { return xBarScale3(d.paper);})
+        .attr("height", 0)
+        .attr("width", xBarScale3.rangeBand());
+
+      var losAngelesBarText = g.selectAll(".la-bar-text").data(losAngelesData);
+      losAngelesBarText.enter()
+        .append("text")
+        .attr("class", "la-bar-text")
+        .text(function(d) { return d.paper; })
+        .attr("x", function(d) { return xBarScale3(d.paper);})
+        .attr("dx", xBarScale3.rangeBand()/2)
+        .attr("y", height)
+        .attr("dy", 20)
+        .style("font-size", "20px")
+        .attr("text-anchor", "middle")
+        .attr("opacity", 0);
+
+      var losAngelesBarNumber = g.selectAll(".la-bar-number").data(losAngelesData);
+      losAngelesBarNumber.enter()
+        .append("text")
+        .attr("class", "la-bar-number")
+        .text(function(d) { return (d.percent + "%"); })
+        .attr("x",function(d) { return xBarScale3(d.paper); })
+        .attr("dx", xBarScale3.rangeBand()/2)
+        .attr("y", function(d) { return yBarScale3(d.percent); })
+        .attr("dy", -5)
+        .style("font-size", "20px")
+        .attr("text-anchor", "middle")
+        .attr("opacity", 0);
+
+      var corruptionBars = g.selectAll(".corruption-bar").data(corruptionData);
+      corruptionBars.enter()
+        .append("rect")
+        .attr("class", function(d) {
+          if (d.variable == "Free circulation of newspapers") {
+            return "corruption-bar bar-highlight"
+          } else {
+            return "corruption-bar"
+          }
+        })
+        .attr("x", 240)
+        .attr("y", function(d,i) { return yBarScale4(i);})
+        .attr("width", 0)
+        .attr("height", yBarScale4.rangeBand());
+
+      var corruptionBarText = g.selectAll(".corruption-bar-text").data(corruptionData);
+      corruptionBarText.enter()
+        .append("text")
+        .attr("class", "corruption-bar-text")
+        .text(function(d) { return d.variable; })
+        .attr("x", 210)
+        .attr("dx", 15)
+        .attr("y", function(d,i) { return yBarScale4(i);})
+        .attr("dy", yBarScale4.rangeBand() / 1.5)
+        .style("font-size", "16px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
+      var corruptionBarNumber = g.selectAll(".corruption-bar-number").data(corruptionData);
+      corruptionBarNumber.enter()
+        .append("text")
+        .attr("class", "corruption-bar-number")
+        .text(function(d) { return (d.change).toFixed(2); })
+        .attr("x",function(d) {
+            return xBarScale4(d.change)+280;
+        })
+        .attr("dx", 15)
+        .attr("y", function(d,i) { return yBarScale4(i);})
+        .attr("dy", yBarScale4.rangeBand() / 1.5)
+        .style("font-size", "20px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
 
       // x axis
       g.append("g")
@@ -570,19 +720,19 @@ var scrollVis = function() {
     activateFunctions[19] = showRepublican;
     activateFunctions[20] = showDemocrat;
     activateFunctions[21] = showAnimosity;
-    activateFunctions[22] = blankSlide;
+    activateFunctions[22] = hideAnimosity;
     activateFunctions[23] = blankSlide;
     activateFunctions[24] = blankSlide;
     activateFunctions[25] = blankSlide;
     activateFunctions[26] = blankSlide;
     activateFunctions[27] = blankSlide;
-    activateFunctions[28] = blankSlide;
-    activateFunctions[29] = blankSlide;
-    activateFunctions[30] = blankSlide;
+    activateFunctions[28] = hideCincinnati;
+    activateFunctions[29] = showLosAngeles;
+    activateFunctions[30] = hideLosAngeles;
     activateFunctions[31] = blankSlide;
-    activateFunctions[32] = blankSlide;
-    activateFunctions[33] = blankSlide;
-    activateFunctions[34] = blankSlide;
+    activateFunctions[32] = hideCorruption;
+    activateFunctions[33] = showCorruption;
+    activateFunctions[34] = hideCorruption;
     activateFunctions[35] = blankSlide;
     activateFunctions[36] = blankSlide;
 
@@ -600,6 +750,7 @@ var scrollVis = function() {
     updateFunctions[4] = updateNational;
     updateFunctions[6] = updateNewspaper;
     updateFunctions[15] = updateCongressCoverage;
+    updateFunctions[21] = updateAnimosity;
   };
 
   /**
@@ -640,7 +791,7 @@ var scrollVis = function() {
   function showBridgeQuote() {
 
     $('#bridge-text').show();
-    $('#bridge-text').fadeTo(500,1);
+    $('#bridge-text').delay(2000).fadeTo(500,1);
     $('.bridge-quote').hide().html('"Time for some traffic problems in Fort Lee."').fadeIn(1000);
     $('.bridge-attrib').hide().html("Bridget Anne Kelly, deputy chief of staff in Christie's office in an email to Port Authority executive David Wildstein.").fadeIn(1000);
   }
@@ -656,8 +807,8 @@ var scrollVis = function() {
   function showBridgeQuote2() {
     $('#vis').removeClass('vis-small-container');
 
-    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').fadeIn(1000);
-    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').fadeIn(1000);
+    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').delay(2000).fadeIn(1000);
+    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').delay(2000).fadeIn(1000);
 
     $('#bridge_illo').fadeTo(500,1);
     $('#bridge-text').show();
@@ -1138,13 +1289,13 @@ var scrollVis = function() {
     g.selectAll(".govt-bar-text")
       .transition()
       .duration(600)
-      .delay(600)
+      .delay(function(d,i) { return 100 * (i + 1);})
       .attr("opacity", 1);
 
     g.selectAll(".govt-bar-number")
       .transition()
       .duration(600)
-      .delay(600)
+      .delay(function(d,i) { return 100 * (i + 1);})
       .attr("opacity", 1);
 
     g.selectAll(".govt-bar-number-1")
@@ -1415,16 +1566,31 @@ var scrollVis = function() {
         .attr("stroke", "#52908b")
         .attr("d", function(d) { return partisanLineDraw(d) });
 
+    var totalLength1 = g.selectAll(".unfav-line").node().getTotalLength();
+
+    g.selectAll(".unfav-line")
+      .transition()
+        .duration(500)
+        .ease("linear")
+        .attr("stroke-dashoffset", totalLength1)
+        .attr("opacity", 0);
+
+    var totalLength2 = g.selectAll(".very-line").node().getTotalLength();
+
+    g.selectAll(".very-line")
+      .transition()
+        .duration(500)
+        .ease("linear")
+        .attr("stroke-dashoffset", totalLength2)
+        .attr("opacity", 0);
+
   }
 
   function showAnimosity() {
 
-    hideAxis();
+    showAxis(xAxisLine2, yAxisLine2, 0);
 
     showKey();
-
-    g.selectAll(".chart-hed")
-      .text("Republican attitudes about Democratic Party");
 
     var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
 
@@ -1435,6 +1601,195 @@ var scrollVis = function() {
         .attr("stroke-dashoffset", totalLength)
         .attr("opacity", 0);
 
+    var animosityLineDraw1 = d3.svg.line()
+      .x(function(d) { return xLineScale2(d.year); })
+      .y(function(d) { return yLineScale2(d.rep_unfav); })
+      .defined(function(d) { return d; });
+
+    var totalLength1 = g.selectAll(".unfav-line").node().getTotalLength();
+
+    g.selectAll(".unfav-line")
+      .attr("stroke-dasharray", totalLength1 + " " + totalLength1)
+      .attr("stroke-dashoffset", totalLength1)
+      .attr("opacity", 1)
+      .transition()
+        .delay(0)
+        .attr("d", function(d) { return animosityLineDraw1(d) })
+        .duration(1000)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0)
+        .attr("stroke-width", 5)
+        .attr("fill", "none")
+        .attr("stroke", "#e7472e");
+
+    var animosityLineDraw2 = d3.svg.line()
+      .x(function(d) { return xLineScale2(d.year); })
+      .y(function(d) { return yLineScale2(d.rep_very); })
+      .defined(function(d) { return d; });
+
+      var totalLength2 = g.selectAll(".very-line").node().getTotalLength();
+
+    g.selectAll(".very-line")
+      .attr("stroke-dasharray", totalLength2 + " " + totalLength2)
+      .attr("stroke-dashoffset", totalLength2)
+      .attr("opacity", 1)
+      .transition()
+        .delay(0)
+        .attr("d", function(d) { return animosityLineDraw2(d) })
+        .duration(1000)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0)
+        .attr("stroke-width", 5)
+        .attr("fill", "none")
+        .attr("stroke", "#e5e2ca");
+
+  }
+
+  function hideAnimosity() {
+
+    hideKey();
+    hideAxis();
+
+    var totalLength1 = g.selectAll(".unfav-line").node().getTotalLength();
+
+    g.selectAll(".unfav-line")
+      .transition()
+        .duration(500)
+        .ease("linear")
+        .attr("stroke-dashoffset", totalLength1)
+        .attr("opacity", 0);
+
+    var totalLength2 = g.selectAll(".very-line").node().getTotalLength();
+
+    g.selectAll(".very-line")
+      .transition()
+        .duration(500)
+        .ease("linear")
+        .attr("stroke-dashoffset", totalLength2)
+        .attr("opacity", 0);
+  }
+
+  function hideCincinnati() {
+
+    hideKey();
+
+    g.selectAll(".la-bar-text")
+      .transition()
+      .duration(600)
+      .delay(function(d,i) { return 1 * (i + 1);})
+      .attr("opacity", 0);
+
+    g.selectAll(".la-bar")
+      .transition()
+      .delay(function(d,i) { return 1 * (i + 1);})
+      .duration(600)
+      .attr("opacity", 0)
+      .attr("y", height)
+      .attr("height", 0);
+
+    g.selectAll(".la-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+  }
+
+  function showLosAngeles() {
+    g.selectAll(".chart-hed")
+      .text("Perecentage of people in Los Angeles communities who say they always vote, 2009");
+
+    showKey();
+
+    g.selectAll(".la-bar")
+      .transition()
+      .delay(function(d,i) { return 10 * (i + 1);})
+      .duration(600)
+      .attr("opacity", 1)
+      .attr("y", function(d) { return yBarScale3(d.percent); })
+      .attr("height", function(d) { return height - yBarScale3(d.percent); });
+
+    g.selectAll(".la-bar-text")
+      .transition()
+      .duration(600)
+      .delay(function(d,i) { return 10 * (i + 1);})
+      .attr("opacity", 1);
+
+    g.selectAll(".la-bar-number")
+      .transition()
+      .duration(600)
+      .delay(200)
+      .attr("opacity", 1);
+  }
+
+  function hideLosAngeles() {
+
+    hideKey();
+
+    g.selectAll(".la-bar-text")
+      .transition()
+      .duration(600)
+      .delay(function(d,i) { return 1 * (i + 1);})
+      .attr("opacity", 0);
+
+    g.selectAll(".la-bar")
+      .transition()
+      .delay(function(d,i) { return 1 * (i + 1);})
+      .duration(600)
+      .attr("opacity", 0)
+      .attr("y", height)
+      .attr("height", 0);
+
+    g.selectAll(".la-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+  }
+
+  function hideCorruption() {
+
+    hideKey();
+
+    g.selectAll(".corruption-bar")
+      .transition()
+      .duration(600)
+      .attr("width", 0);
+
+    g.selectAll(".corruption-bar-text")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+
+    g.selectAll(".corruption-bar-number")
+      .transition()
+      .duration(600)
+      .attr("opacity", 0);
+  }
+
+  function showCorruption() {
+
+    g.selectAll(".chart-hed")
+      .text("Change in corruption index as a result of increasing variable from minimum to maximum value");
+
+    showKey();
+
+    g.selectAll(".corruption-bar")
+      .transition()
+      .delay(function(d,i) { return 100 * (i + 1);})
+      .duration(600)
+      .attr("width", function(d) { return xBarScale4(d.change); });
+
+    g.selectAll(".corruption-bar-text")
+      .transition()
+      .delay(function(d,i) { return 1 * (i + 1);})
+      .duration(600)
+      .attr("opacity", 1);
+
+    g.selectAll(".corruption-bar-number")
+      .transition()
+      .delay(function(d,i) { return 1 * (i + 1);})
+      .duration(600)
+      .attr("opacity", 1);
+
+    $('#bridge-text').fadeTo(500,0).hide();
   }
 
   /**
@@ -1604,6 +1959,84 @@ var scrollVis = function() {
       }
     }
 
+    function updateAnimosity(progress) {
+      if (progress > 0.5) {
+        g.selectAll(".chart-hed")
+          .text("Democratic attitudes about Republican Party");
+
+          var animosityLineDraw1 = d3.svg.line()
+            .x(function(d) { return xLineScale2(d.year); })
+            .y(function(d) { return yLineScale2(d.dem_unfav); })
+            .defined(function(d) { return d; });
+
+          g.selectAll(".unfav-line")
+            .attr("opacity", 1)
+            .transition()
+              .delay(0)
+              .attr("d", function(d) { return animosityLineDraw1(d) })
+              .duration(500)
+              .ease("linear")
+              .attr("stroke-dashoffset", 0)
+              .attr("stroke-width", 5)
+              .attr("fill", "none")
+              .attr("stroke", "#52908b");
+
+            var animosityLineDraw2 = d3.svg.line()
+              .x(function(d) { return xLineScale2(d.year); })
+              .y(function(d) { return yLineScale2(d.dem_very); })
+              .defined(function(d) { return d; });
+
+            g.selectAll(".very-line")
+              .attr("opacity", 1)
+              .transition()
+                .delay(0)
+                .attr("d", function(d) { return animosityLineDraw2(d) })
+                .duration(500)
+                .ease("linear")
+                .attr("stroke-dashoffset", 0)
+                .attr("stroke-width", 5)
+                .attr("fill", "none")
+                .attr("stroke", "#e5e2ca");
+      } else {
+        g.selectAll(".chart-hed")
+          .text("Republican attitudes about Democratic Party");
+
+          var animosityLineDraw1 = d3.svg.line()
+            .x(function(d) { return xLineScale2(d.year); })
+            .y(function(d) { return yLineScale2(d.rep_unfav); })
+            .defined(function(d) { return d; });
+
+          g.selectAll(".unfav-line")
+            .attr("opacity", 1)
+            .transition()
+              .delay(0)
+              .attr("d", function(d) { return animosityLineDraw1(d) })
+              .duration(1000)
+              .ease("linear")
+              .attr("stroke-dashoffset", 0)
+              .attr("stroke-width", 5)
+              .attr("fill", "none")
+              .attr("stroke", "#e7472e");
+
+            var animosityLineDraw2 = d3.svg.line()
+              .x(function(d) { return xLineScale2(d.year); })
+              .y(function(d) { return yLineScale2(d.rep_very); })
+              .defined(function(d) { return d; });
+
+            g.selectAll(".very-line")
+              .attr("opacity", 1)
+              .transition()
+                .delay(0)
+                .attr("d", function(d) { return animosityLineDraw2(d) })
+                .duration(1000)
+                .ease("linear")
+                .attr("stroke-dashoffset", 0)
+                .attr("stroke-width", 5)
+                .attr("fill", "none")
+                .attr("stroke", "#e5e2ca");
+      }
+    }
+
   /**
    * DATA FUNCTIONS
    *
@@ -1670,7 +2103,7 @@ var scrollVis = function() {
    * @param other - array of some other data you want to use
    */
 
-  chart.setOtherData = function(employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship) {
+  chart.setOtherData = function(employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship, animosity, losangeles, corruption) {
     employeeLineData = employeeLine;
     circulationData = circulation;
     papersClosedData = papers_closed;
@@ -1678,6 +2111,9 @@ var scrollVis = function() {
     congressCoverageData = congress_coverage;
     stateReportersData = state_reporters;
     partisanshipData = partisanship;
+    animosityData = animosity;
+    losAngelesData = losangeles;
+    corruptionData = corruption;
 
     employeeLineData.forEach(function(d){
       d.year = +d.year;
@@ -1725,6 +2161,24 @@ var scrollVis = function() {
       d.rep = +d.rep;
       d.dem = +d.dem;
     })
+
+    animosityData.forEach(function(d){
+      d.year = +d.year;
+      d.rep_unfav = +d.rep_unfav;
+      d.rep_very = +d.rep_very;
+      d.dem_unfav = +d.dem_unfav;
+      d.dem_very = +d.dem_very;
+    })
+
+    losAngelesData.forEach(function(d){
+      d.paper = d.paper;
+      d.percent = +d.percent;
+    })
+
+    corruptionData.forEach(function(d){
+      d.variable = d.variable;
+      d.change = +d.change;
+    })
   };
 
   /**
@@ -1750,11 +2204,11 @@ var scrollVis = function() {
  *
  * @param data - loaded csv data
  */
-function display(error, employeeSquares, employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship) {
+function display(error, employeeSquares, employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship, animosity, losangeles, corruption) {
   // create a new plot and
   // display it
   var plot = scrollVis();
-  plot.setOtherData(employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship);
+  plot.setOtherData(employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship, animosity, losangeles, corruption);
   d3.select("#vis")
     .datum(employeeSquares)
     .call(plot);
@@ -1793,4 +2247,7 @@ queue()
 .defer(d3.csv, "data/congress_coverage.csv")
 .defer(d3.csv, "data/state_reporters.csv")
 .defer(d3.csv, "data/partisanship.csv")
+.defer(d3.csv, "data/animosity.csv")
+.defer(d3.csv, "data/losangeles.csv")
+.defer(d3.csv, "data/corruption.csv")
 .await(display);

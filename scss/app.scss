@@ -100,6 +100,11 @@ h2 {
   }
 }
 
+strong {
+  font-weight: 700;
+  color: $teal;
+}
+
 .step {
   opacity: 0;
 }
@@ -136,12 +141,12 @@ h2 {
   opacity: 0;
 }
 
-#step4, #step5, #step7, #step16 {
+#step4, #step5, #step7, #step16, #step22 {
   margin-bottom: 200vh !important;
 }
 
 #graphic section:last-of-type {
-  margin-bottom: 100vh;
+  margin-bottom: 200vh;
 }
 
 #step7 { //header section
@@ -325,6 +330,8 @@ img {
   font-size: .9rem !important;
 }
 
+// d3 styles
+
 /*styles to make the svg responsive*/
 .svg-content-responsive {
   display: inline-block;
@@ -358,11 +365,11 @@ img {
   opacity: 0.5 !important;
 }
 
-.circulation-bar-positive, .govt-bar {
+.circulation-bar-positive, .govt-bar, .corruption-bar {
   fill: $teal;
 }
 
-.circulation-bar-negative, .congress-bar, .state-bar {
+.circulation-bar-negative, .congress-bar, .state-bar, .la-bar, .bar-highlight {
   fill: $red;
 }
 
@@ -375,4 +382,31 @@ img {
 
 .pie {
   padding: 10px 0 0 10px;
+  float: left;
+}
+
+// social share styles
+
+#st-el-1 {
+  & .st-btn {
+    background-color: rgba(255,255,255,0.6) !important;
+    border-bottom: 1px solid $black;
+    border-right: 1px solid $black;
+    & .st-label {
+      color: $black !important;
+    }
+    &:hover {
+      background-color: white !important;
+      width: 100px !important;
+    }
+    & svg {
+      fill: $black;
+    }
+  }
+  & .st-toggle {
+    background-color: $red !important;
+    & svg {
+      fill: $black !important;
+    }
+  }
 }

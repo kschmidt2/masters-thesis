@@ -5,9 +5,7 @@ var sections = $('.step').length - 1;
 
 var addDots = "";
 for (var i=0; i < sections; i++) {
-  var stepId = "#step" + (i+1);
   addDots += '<i class="fa fa-circle-o fa-sm" id="circle-' + (i+1) + '" aria-hidden="true"></i>'
-  $(document)
 };
 $('#dots').html(addDots);
 
@@ -22,9 +20,10 @@ $.each($(".fa-circle-o"), function(index, value){
   $(this).on('click', function(){
     var num = index + 1;
     var stepid = "#step" + num;
-    var top = $(stepid).offset().top;
+    var sectionTop = $(stepid).offset().top;
     console.log(stepid);
-    $('body').animate({scrollTop: top});
+    console.log(sectionTop);
+    $('body').animate({scrollTop: sectionTop});
   })
 })
 
