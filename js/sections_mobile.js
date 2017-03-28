@@ -1,4 +1,4 @@
-console.log("this is desktop");
+console.log("this is mobile");
 
 /**
  * scrollVis - encapsulates
@@ -9,9 +9,9 @@ console.log("this is desktop");
 var scrollVis = function() {
   // constants to define the size
   // and margins of the vis area.
-  var width = 800;
-  var height = 300;
-  var margin = {top:60, left:60, bottom:0, right:60};
+  var width = 340;
+  var height = 230;
+  var margin = {top:100, left:30, bottom:0, right:30};
 
   var employeeLineData = [];
   var circulationData = [];
@@ -33,8 +33,8 @@ var scrollVis = function() {
   var activeIndex = 0;
 
   // Sizing for the grid visualization
-  var squareSize = 17;
-  var squarePad = 3;
+  var squareSize = 9;
+  var squarePad = 1;
   var numPerRow = width / (squareSize + squarePad);
 
   // main svg used for visualization
@@ -53,7 +53,6 @@ var scrollVis = function() {
 
   var xAxisLine = d3.svg.axis()
     .scale(xLineScale)
-    .ticks(20)
     .tickFormat(function (d) { return d; })
     .innerTickSize(5)
     .outerTickSize(0)
@@ -61,7 +60,7 @@ var scrollVis = function() {
 
   var yAxisLine = d3.svg.axis()
     .scale(yLineScale)
-    .tickFormat(function(d) { return d.toLocaleString();})
+    .tickFormat(function(d) { return d/1000+'k';})
     .ticks(5)
     .outerTickSize(0)
     .orient("left");
@@ -75,7 +74,7 @@ var scrollVis = function() {
 
   var xAxisBar0 = d3.svg.axis()
     .scale(xBarScale0)
-    .tickFormat(function (d) { return d; })
+    .tickFormat(function (d) { return "'" + d.charAt(2) + d.charAt(3); })
     .innerTickSize(5)
     .outerTickSize(0)
     .orient("bottom");
@@ -95,7 +94,7 @@ var scrollVis = function() {
     .orient("bottom");
 
   // scales for closed newspaper donut charts
-  var radius = 170,
+  var radius = 70,
       padding = 10;
 
   var donutColor = d3.scale.ordinal()
@@ -103,7 +102,7 @@ var scrollVis = function() {
 
   var arc = d3.svg.arc()
     .outerRadius(radius)
-    .innerRadius(radius - 80);
+    .innerRadius(radius - 30);
 
   var pie = d3.layout.pie()
     .sort(null)
@@ -111,7 +110,7 @@ var scrollVis = function() {
 
   // scales for news coverage bar chart
   var xBarScale = d3.scale.linear()
-    .range([0, width-200]);
+    .range([0, width-120]);
 
   var yBarScale = d3.scale.ordinal()
     .domain([0,1,2,3,4,5])
@@ -180,7 +179,7 @@ var scrollVis = function() {
 
   // scales for Los Angeles chart
   var xBarScale3 = d3.scale.ordinal()
-    .rangeBands([0, width], 0.1, 0.8);
+    .rangeBands([0, width], 0.1, 0);
 
   var yBarScale3 = d3.scale.linear()
     .range([height, 0])
@@ -188,7 +187,7 @@ var scrollVis = function() {
 
   // scales for corruption bar chart
   var xBarScale4 = d3.scale.linear()
-    .range([0, width-300]);
+    .range([0, width-200]);
 
   var yBarScale4 = d3.scale.ordinal()
     .domain([0,1,2,3,4])
@@ -222,7 +221,7 @@ var scrollVis = function() {
       .data([getSquares]);
       svg.enter().append("svg")
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 885 400")
+        .attr("viewBox", "0 0 400 650")
         .classed("svg-content-responsive", true) //class to make it responsive
         .append("g")
         .classed("main-g", true);
@@ -303,7 +302,7 @@ var scrollVis = function() {
     var chartText = g.append("text")
         .attr("class", "chart-key chart-hed")
         .attr("x", 0)
-        .attr("y", -25)
+        .attr("y", -40)
         .text("Bergen Record employees, before 2016 layoffs")
         .style("font-weight", 700)
         .attr("opacity", 0);
@@ -311,14 +310,14 @@ var scrollVis = function() {
         .attr("width", squareSize)
         .attr("height", squareSize)
         .attr("fill", "#e7472e")
-        .attr("x", 645)
-        .attr("y", -40)
+        .attr("x", 0)
+        .attr("y", -25)
         .attr("class", "chart-key-square")
         .attr("opacity", 0);
       g.append("text")
         .attr("class", "chart-key chart-legend")
-        .attr("x", 670)
-        .attr("y", -25)
+        .attr("x", squareSize+5)
+        .attr("y", -15)
         .text("= 1 employee")
         .attr("opacity", 0);
 
@@ -356,7 +355,7 @@ var scrollVis = function() {
             return yBarScale0(d.daily)
           } })
         .attr("dy", 25)
-        .style("font-size", "18px")
+        .style("font-size", "14px")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
 
@@ -383,7 +382,7 @@ var scrollVis = function() {
             return yBarScale01(d.circulation) + 15;
           } })
         .attr("dy", 25)
-        .style("font-size", "18px")
+        .style("font-size", "14px")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
 
@@ -416,7 +415,7 @@ var scrollVis = function() {
       govtCoverageBars.enter()
         .append("rect")
         .attr("class", "govt-bar")
-        .attr("x", 180)
+        .attr("x", 130)
         .attr("y", function(d,i) { return yBarScale(i);})
         .attr("width", 0)
         .attr("height", yBarScale.rangeBand());
@@ -426,11 +425,11 @@ var scrollVis = function() {
         .append("text")
         .attr("class", "govt-bar-text")
         .text(function(d) { return d.display; })
-        .attr("x", 150)
+        .attr("x", 100)
         .attr("dx", 15)
         .attr("y", function(d,i) { return yBarScale(i);})
         .attr("dy", yBarScale.rangeBand() / 1.5)
-        .style("font-size", "20px")
+        .style("font-size", "16px")
         .attr("text-anchor", "end")
         .attr("opacity", 0);
 
@@ -440,16 +439,16 @@ var scrollVis = function() {
         .attr("class", "govt-bar-number")
         .text(function(d) { return (d.big_city*100).toFixed(1) + "%"; })
         .attr("x",function(d) {
-          if (d.medium == "cable" || d.medium == "websites") {
-            return xBarScale(d.big_city)+220;
+          if (d.medium == "cable" || d.medium == "websites" || d.medium == "radio") {
+            return xBarScale(d.big_city)+170;
           } else {
-            return xBarScale(d.big_city)+150;
+            return xBarScale(d.big_city)+110;
           }
         })
         .attr("dx", 15)
         .attr("y", function(d,i) { return yBarScale(i);})
         .attr("dy", yBarScale.rangeBand() / 1.5)
-        .style("font-size", "20px")
+        .style("font-size", "16px")
         .attr("text-anchor", "end")
         .attr("opacity", 0);
 
@@ -459,12 +458,12 @@ var scrollVis = function() {
         .attr("class", "govt-bar-number-1")
         .text(function(d) { return (d.suburbs*100).toFixed(1) + "%"; })
         .attr("x",function(d) {
-          if (d.medium == "websites") {
-            return xBarScale(d.suburbs)+220;
+          if (d.medium == "websites" || d.medium == "radio") {
+            return xBarScale(d.suburbs)+170;
           } else if (d.medium == "cable") {
-            return xBarScale(d.suburbs)+210;
+            return xBarScale(d.suburbs)+160;
           } else {
-            return xBarScale(d.suburbs)+150;
+            return xBarScale(d.suburbs)+110;
           }
         })
         .attr("dx", 15)
@@ -540,7 +539,7 @@ var scrollVis = function() {
         .attr("dx", xBarScale2.rangeBand()/2)
         .attr("y", height)
         .attr("dy", 10)
-        .style("font-size", "10.5px")
+        .style("font-size", "5.5px")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
 
@@ -553,7 +552,7 @@ var scrollVis = function() {
         .attr("dx", xBarScale2.rangeBand()/2)
         .attr("y", function(d) { return yBarScale2(d.per_ten_legislators); })
         .attr("dy", -5)
-        .style("font-size", "10.5px")
+        .style("font-size", "5.5px")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
 
@@ -612,7 +611,7 @@ var scrollVis = function() {
         .attr("dx", xBarScale3.rangeBand()/2)
         .attr("y", height)
         .attr("dy", 20)
-        .style("font-size", "20px")
+        .style("font-size", "14px")
         .attr("text-anchor", "middle")
         .attr("opacity", 0);
 
@@ -639,7 +638,7 @@ var scrollVis = function() {
             return "corruption-bar"
           }
         })
-        .attr("x", 240)
+        .attr("x", 180)
         .attr("y", function(d,i) { return yBarScale4(i);})
         .attr("width", 0)
         .attr("height", yBarScale4.rangeBand());
@@ -649,11 +648,11 @@ var scrollVis = function() {
         .append("text")
         .attr("class", "corruption-bar-text")
         .text(function(d) { return d.variable; })
-        .attr("x", 210)
+        .attr("x", 160)
         .attr("dx", 15)
         .attr("y", function(d,i) { return yBarScale4(i);})
         .attr("dy", yBarScale4.rangeBand() / 1.5)
-        .style("font-size", "16px")
+        .style("font-size", "14px")
         .attr("text-anchor", "end")
         .attr("opacity", 0);
 
@@ -663,7 +662,7 @@ var scrollVis = function() {
         .attr("class", "corruption-bar-number")
         .text(function(d) { return (d.change).toFixed(2); })
         .attr("x",function(d) {
-            return xBarScale4(d.change)+280;
+            return xBarScale4(d.change)+210;
         })
         .attr("dx", 15)
         .attr("y", function(d,i) { return yBarScale4(i);})
@@ -1064,7 +1063,7 @@ var scrollVis = function() {
       .attr("transform", "translate(0," + yBarScale0(0) + ")");
 
     g.selectAll(".chart-hed")
-      .text("Percent change in daily newspaper circulation, 2003-2015");
+      .text("% change in daily newspaper circulation");
 
     showKey();
 
@@ -1112,7 +1111,7 @@ var scrollVis = function() {
     showXAxis(xAxisBar01, 600);
 
     g.selectAll(".chart-hed")
-      .text("Percent change in newspaper circulation revenue, 2007-2015");
+      .text("% change in newspaper circulation revenue");
 
     g.selectAll(".rev-bar")
       .transition()
@@ -1146,7 +1145,7 @@ var scrollVis = function() {
       .attr("transform", "translate(0," + yBarScale01(0) + ")");
 
     g.selectAll(".chart-hed")
-      .text("Percent change in newspaper advertising revenue, 2007-2015");
+      .text("% change in newspaper advertising revenue");
 
     g.selectAll(".rev-bar")
       .transition()
@@ -1203,7 +1202,7 @@ var scrollVis = function() {
     hideAxis();
 
     g.selectAll(".chart-hed")
-      .text("Percent of newspapers that have closed since 2004");
+      .text("% of newspapers that have closed since 2004");
 
     g.selectAll(".chart-legend")
       .transition()
@@ -1276,7 +1275,7 @@ var scrollVis = function() {
       .attr("opacity", 0);
 
     g.selectAll(".chart-hed")
-      .text("Percentage of local government news stories reported by medium in big cities, 2010");
+      .text("% of local gov't stories in big cities, 2010");
 
     g.selectAll(".govt-bar")
       .transition()
@@ -1308,7 +1307,7 @@ var scrollVis = function() {
     showKey();
 
     g.selectAll(".chart-hed")
-      .text("Percentage of local government news stories reported by medium in suburbs, 2010");
+      .text("% of local gov't stories in suburbs, 2010");
 
     g.selectAll(".govt-bar")
       .transition()
@@ -1439,7 +1438,7 @@ var scrollVis = function() {
       .attr("opacity", 0);
 
     g.selectAll(".chart-hed")
-      .text("Full-time statehouse reporters per 10 legislators, 2014");
+      .text("Full-time reporters per 10 legislators, 2014");
 
     showKey();
 
@@ -1513,7 +1512,7 @@ var scrollVis = function() {
     showKey();
 
     g.selectAll(".chart-hed")
-      .text("Share of Republicans who consider themselves conservative");
+      .text("Share GOP who consider selves conservative");
 
     var partisanLineDraw = d3.svg.line()
       .x(function(d) { return xLineScale1(d.year); })
@@ -1545,7 +1544,7 @@ var scrollVis = function() {
     showKey();
 
     g.selectAll(".chart-hed")
-      .text("Share of Democrats who consider themselves liberal");
+      .text("Share Dems who consider selves liberal");
 
     var partisanLineDraw = d3.svg.line()
       .x(function(d) { return xLineScale1(d.year); })
@@ -1693,7 +1692,7 @@ var scrollVis = function() {
 
   function showLosAngeles() {
     g.selectAll(".chart-hed")
-      .text("Percentage of people in Los Angeles communities who say they always vote, 2009");
+      .text("Those in L.A. who say they always vote, 2009");
 
     showKey();
 
@@ -1765,7 +1764,7 @@ var scrollVis = function() {
   function showCorruption() {
 
     g.selectAll(".chart-hed")
-      .text("Change in corruption index as a result of increasing variable from minimum to maximum value");
+      .text("Impact on government corruption index");
 
     showKey();
 
@@ -1917,7 +1916,7 @@ var scrollVis = function() {
         xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.candidates })])
 
         g.selectAll(".chart-hed")
-          .text("Number of major-party Congressional candidates covered in major newspapers");
+          .text("Congressional candidates in major papers");
 
         g.selectAll(".congress-bar")
           .transition()
@@ -1936,7 +1935,7 @@ var scrollVis = function() {
 
       } else {
         g.selectAll(".chart-hed")
-          .text("Number of news stories mentioning Congressional candidates in major newspapers");
+          .text("Number of stories mentioning candidates");
 
         xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.articles })])
 
@@ -2120,7 +2119,7 @@ var scrollVis = function() {
     });
 
     circulationData.forEach(function(d){
-      d.year = +d.year;
+      d.year = d.year;
       d.daily = +d.daily;
       d.circulation = +d.circulation;
       d.advertising = +d.advertising;

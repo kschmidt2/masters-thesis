@@ -18,6 +18,7 @@ $.each($(".step"), function(index, value){
 
 $.each($(".fa-circle-o"), function(index, value){
   $(this).on('click', function(){
+    $('.step').fadeTo(0).removeClass('fixed');
     var num = index + 1;
     var stepid = "#step" + num;
     var sectionTop = $(stepid).offset().top;

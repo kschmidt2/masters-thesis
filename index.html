@@ -119,30 +119,7 @@
 
           <section class="step blank-step">
             <p>Communities in Northern Kentucky learned the effects of diminishing news coverage after the closure of the Cincinnati Post in 2007. The Post, which competed with the Cincinnati Enquirer, provided more than 80 percent of the news coverage in the Kentucky suburbs. </p>
-          </section>
-
-          <section class="step">
-            <p>After the paper closed, fewer people voted in elections for city council, city commission, and school board… </p>
-
-            <p><i>[Cincinnati voted chart] </i></p>
-          </section>
-
-          <section class="step">
-            <p>...fewer candidates sought those seats... </p>
-
-            <p><i>[Cincinnati candidates chart] </i></p>
-          </section>
-
-          <section class="step">
-            <p>…while those who did run spent less money on their campaigns… </p>
-
-            <p><i>[Cincinnati money chart] </i></p>
-          </section>
-
-          <section class="step">
-            <p>...and for councils and commissions, the likelihood of the incumbent winning increased.</p>
-
-            <p><i>[Cincinnati incumbency chart] </i></p>
+            <p>After the paper closed, fewer people voted in elections for city council, city commission, and school board and fewer candidates sought those seats, while those who did run spent less money on their campaigns, and for councils and commissions, the likelihood of the incumbent winning increased.</p>
           </section>
 
           <section class="step blank-step">
@@ -237,11 +214,44 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/what-input/dist/what-input.js"></script>
     <script src="bower_components/foundation-sites/dist/js/foundation.js"></script>
+    <script src="js/enquire.min.js"></script>
     <script src="js/d3.js"></script>
     <script src="js/queue.js"></script>
     <script src="js/scroller.js"></script>
-    <script src="js/sections.js"></script>
+    <!-- <script src="js/sections.js"></script> -->
     <script src="js/app.js"></script>
+
+    <script type="text/javascript">
+
+    // This loads JS files in the head element
+        function loadJS(url)  {
+            // adding the script tag to the head
+           var body = document.getElementsByTagName('body')[0];
+           var script = document.createElement('script');
+           script.type = 'text/javascript';
+           script.src = 'js/' + url;
+
+           // fire the loading
+           body.appendChild(script);
+        }
+
+        // loads separate JS files for desktop and mobile
+        enquire.register("screen and (max-width: 40em)", {
+            match : function() {
+                // Load a mobile JS file
+                loadJS('sections_mobile.js');
+            }
+        });
+
+
+        enquire.register("screen and (min-width: 600px)", {
+            match : function() {
+                // Load a desktop JS file
+                loadJS('sections.js');
+            }
+        });
+
+    </script>
 
   </body>
 </html>

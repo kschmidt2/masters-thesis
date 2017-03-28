@@ -121,7 +121,6 @@ strong {
   @include breakpoint(large) {
     padding: 0 10%;
   }
-  overflow: scroll;
   @include centered;
 }
 
@@ -131,7 +130,10 @@ strong {
 }
 
 #graphic section {
-  max-width: 90%;
+  max-width: 92vw;
+  @include breakpoint(medium) {
+    max-width: 560px;
+  }
   margin: auto;
   margin-bottom: 100vh;
   margin-top: 0vh;
@@ -184,15 +186,17 @@ img {
 }
 
 .vis-container {
-  display: flex;
-  justify-content: center;
+  @include breakpoint(medium) {
+    display: flex;
+    justify-content: center;
+  }
 }
 
 #vis {
   position: fixed;
   bottom: 0vh;
   z-index: 1;
-  height: 50vh;
+  height: 60vh;
   width: 100vw;
   @include breakpoint(medium) {
     height: 65vh;
@@ -235,10 +239,14 @@ img {
 
 #newspaper_illo {
   display: none;
+  margin-top: 20vh;
+  @include breakpoint(medium) {
+    margin-top: 0;
+  }
 }
 
 #bridge-text {
-  margin: 10vh auto 0;
+  margin: 0 auto;
   text-align: center;
   font-family: $sans-serif-font;
   width: 360px;
@@ -343,7 +351,10 @@ img {
 .svg-container {
   position: relative;
   width: 100%;
-  padding-bottom: 80%; /* aspect ratio */
+  padding-bottom: 100%; /* aspect ratio */
+  @include breakpoint(medium) {
+    padding-bottom: 80%;
+  }
   vertical-align: top;
   overflow: hidden;
   @include centered;
@@ -365,6 +376,13 @@ img {
   opacity: 0.5 !important;
 }
 
+.tick text {
+  font-size: 10px;
+  @include breakpoint(medium) {
+    font-size: 12px;
+  }
+}
+
 .circulation-bar-positive, .govt-bar, .corruption-bar {
   fill: $teal;
 }
@@ -374,7 +392,7 @@ img {
 }
 
 .chart-hed {
-  font-size: 24px;
+  font-size: 16px;
   @include breakpoint(medium) {
     font-size: 16px;
   };
