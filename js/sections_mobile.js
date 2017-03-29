@@ -789,7 +789,7 @@ var scrollVis = function() {
   function showBridgeQuote() {
 
     $('#bridge-text').show();
-    $('#bridge-text').delay(2000).fadeTo(500,1);
+    $('#bridge-text').delay(1000).fadeTo(500,1);
     $('.bridge-quote').hide().html('"Time for some traffic problems in Fort Lee."').fadeIn(1000);
     $('.bridge-attrib').hide().html("Bridget Anne Kelly, deputy chief of staff in Christie's office in an email to Port Authority executive David Wildstein.").fadeIn(1000);
   }
@@ -805,8 +805,8 @@ var scrollVis = function() {
   function showBridgeQuote2() {
     $('#vis').removeClass('vis-small-container');
 
-    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').delay(2000).fadeIn(1000);
-    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').delay(2000).fadeIn(1000);
+    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').delay(1000).fadeIn(1000);
+    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').delay(1000).fadeIn(1000);
 
     $('#bridge_illo').fadeTo(500,1);
     $('#bridge-text').show();
@@ -974,7 +974,7 @@ var scrollVis = function() {
         .duration(1000)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
-        .attr("stroke-width", 5)
+        .attr("stroke-width", 3)
         .attr("fill", "none")
         .attr("stroke", "#e7472e");
 
@@ -1532,7 +1532,7 @@ var scrollVis = function() {
         .duration(1000)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
-        .attr("stroke-width", 5)
+        .attr("stroke-width", 3)
         .attr("fill", "none")
         .attr("stroke", "#e7472e");
 
@@ -1559,7 +1559,7 @@ var scrollVis = function() {
         .duration(1000)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
-        .attr("stroke-width", 5)
+        .attr("stroke-width", 3)
         .attr("fill", "none")
         .attr("stroke", "#52908b")
         .attr("d", function(d) { return partisanLineDraw(d) });
@@ -1616,7 +1616,7 @@ var scrollVis = function() {
         .duration(1000)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
-        .attr("stroke-width", 5)
+        .attr("stroke-width", 3)
         .attr("fill", "none")
         .attr("stroke", "#e7472e");
 
@@ -1637,7 +1637,7 @@ var scrollVis = function() {
         .duration(1000)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
-        .attr("stroke-width", 5)
+        .attr("stroke-width", 3)
         .attr("fill", "none")
         .attr("stroke", "#e5e2ca");
 
@@ -1975,7 +1975,7 @@ var scrollVis = function() {
               .duration(500)
               .ease("linear")
               .attr("stroke-dashoffset", 0)
-              .attr("stroke-width", 5)
+              .attr("stroke-width", 3)
               .attr("fill", "none")
               .attr("stroke", "#52908b");
 
@@ -1992,7 +1992,7 @@ var scrollVis = function() {
                 .duration(500)
                 .ease("linear")
                 .attr("stroke-dashoffset", 0)
-                .attr("stroke-width", 5)
+                .attr("stroke-width", 3)
                 .attr("fill", "none")
                 .attr("stroke", "#e5e2ca");
       } else {
@@ -2012,7 +2012,7 @@ var scrollVis = function() {
               .duration(1000)
               .ease("linear")
               .attr("stroke-dashoffset", 0)
-              .attr("stroke-width", 5)
+              .attr("stroke-width", 3)
               .attr("fill", "none")
               .attr("stroke", "#e7472e");
 
@@ -2029,7 +2029,7 @@ var scrollVis = function() {
                 .duration(1000)
                 .ease("linear")
                 .attr("stroke-dashoffset", 0)
-                .attr("stroke-width", 5)
+                .attr("stroke-width", 3)
                 .attr("fill", "none")
                 .attr("stroke", "#e5e2ca");
       }

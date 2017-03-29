@@ -119,6 +119,7 @@ strong {
 
 .fixed {
   position: fixed;
+  z-index: 2;
   top: 0;
   opacity: 1;
   transition: opacity .5s ease-in-out;
@@ -141,14 +142,15 @@ strong {
   max-width: 92vw;
   @include breakpoint(medium) {
     max-width: 560px;
+    margin-bottom: 100vh;
+    opacity: 0;
   }
   margin: auto;
-  margin-bottom: 100vh;
+  margin-bottom: 50vh;
   margin-top: 0vh;
-  opacity: 0;
+  opacity: 1;
   background-color: rgba(50,50,50,0.6);
   padding: 10vh 0 0;
-  opacity: 0;
 }
 
 #step4, #step5, #step7, #step16, #step22 {
@@ -189,6 +191,17 @@ p {
   @include centered;
   @include breakpoint(medium only) {
     font-size: 20px;
+  }
+  & a {
+    color: white;
+    border-bottom: 1px solid white;
+    &:visited {
+      color: white;
+    }
+    &:hover {
+      color: $teal;
+      border-bottom: 1px solid $teal;
+    }
   }
 }
 
