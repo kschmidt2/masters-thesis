@@ -733,6 +733,7 @@ var scrollVis = function() {
     activateFunctions[31] = blankSlide;
     activateFunctions[32] = blankSlide;
     activateFunctions[33] = blankSlide;
+    activateFunctions[34] = blankSlide;
 
 
     // updateFunctions are called while
@@ -1613,7 +1614,7 @@ var scrollVis = function() {
       .transition()
         .delay(0)
         .attr("d", function(d) { return animosityLineDraw1(d) })
-        .duration(1000)
+        .duration(500)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
         .attr("stroke-width", 3)
@@ -1972,7 +1973,7 @@ var scrollVis = function() {
             .transition()
               .delay(0)
               .attr("d", function(d) { return animosityLineDraw1(d) })
-              .duration(500)
+              .duration(200)
               .ease("linear")
               .attr("stroke-dashoffset", 0)
               .attr("stroke-width", 3)
@@ -1989,7 +1990,7 @@ var scrollVis = function() {
               .transition()
                 .delay(0)
                 .attr("d", function(d) { return animosityLineDraw2(d) })
-                .duration(500)
+                .duration(200)
                 .ease("linear")
                 .attr("stroke-dashoffset", 0)
                 .attr("stroke-width", 3)
@@ -2009,7 +2010,7 @@ var scrollVis = function() {
             .transition()
               .delay(0)
               .attr("d", function(d) { return animosityLineDraw1(d) })
-              .duration(1000)
+              .duration(200)
               .ease("linear")
               .attr("stroke-dashoffset", 0)
               .attr("stroke-width", 3)
@@ -2026,7 +2027,7 @@ var scrollVis = function() {
               .transition()
                 .delay(0)
                 .attr("d", function(d) { return animosityLineDraw2(d) })
-                .duration(1000)
+                .duration(200)
                 .ease("linear")
                 .attr("stroke-dashoffset", 0)
                 .attr("stroke-width", 3)

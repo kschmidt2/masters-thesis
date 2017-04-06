@@ -165,7 +165,6 @@ var scrollVis = function() {
 
   var xAxisLine2 = d3.svg.axis()
     .scale(xLineScale2)
-    .tickValues([1994,2016])
     .tickFormat(function (d) { return d; })
     .innerTickSize(5)
     .outerTickSize(0)
@@ -732,8 +731,10 @@ var scrollVis = function() {
     activateFunctions[29] = showCorruption;
     activateFunctions[30] = hideCorruption;
     activateFunctions[31] = blankSlide;
-    activateFunctions[32] = blankSlide;
-    activateFunctions[33] = blankSlide;
+    activateFunctions[32] = setMaxWidth;
+    activateFunctions[33] = removeMaxWidth;
+    activateFunctions[34] = blankSlide;
+
 
 
     // updateFunctions are called while
@@ -1614,7 +1615,7 @@ var scrollVis = function() {
       .transition()
         .delay(0)
         .attr("d", function(d) { return animosityLineDraw1(d) })
-        .duration(1000)
+        .duration(500)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
         .attr("stroke-width", 5)
@@ -1635,7 +1636,7 @@ var scrollVis = function() {
       .transition()
         .delay(0)
         .attr("d", function(d) { return animosityLineDraw2(d) })
-        .duration(1000)
+        .duration(500)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
         .attr("stroke-width", 5)
@@ -1789,6 +1790,14 @@ var scrollVis = function() {
       .attr("opacity", 1);
 
     $('#bridge-text').fadeTo(500,0).hide();
+  }
+
+  function setMaxWidth() {
+    $('#sections').css("max-width", 560);
+  }
+
+  function removeMaxWidth() {
+    $('#sections').css("max-width", 1080);
   }
 
   /**
@@ -1973,7 +1982,7 @@ var scrollVis = function() {
             .transition()
               .delay(0)
               .attr("d", function(d) { return animosityLineDraw1(d) })
-              .duration(500)
+              .duration(200)
               .ease("linear")
               .attr("stroke-dashoffset", 0)
               .attr("stroke-width", 5)
@@ -1990,7 +1999,7 @@ var scrollVis = function() {
               .transition()
                 .delay(0)
                 .attr("d", function(d) { return animosityLineDraw2(d) })
-                .duration(500)
+                .duration(200)
                 .ease("linear")
                 .attr("stroke-dashoffset", 0)
                 .attr("stroke-width", 5)
