@@ -169,7 +169,7 @@ strong {
 // }
 
 // #graphic section:last-of-type {
-//   margin-bottom: 200vh;
+//   margin-bottom: 500vh !important;
 // }
 
 #step7 { //header section
@@ -314,6 +314,8 @@ img {
 }
 
 #interactive-footer {
+  margin-top: 160vh;
+  background-color: $black;
   font-family: $sans-serif-font;
   & text {
     fill: white;
@@ -321,7 +323,7 @@ img {
   }
   color: white;
   position: relative;
-  z-index: 3;
+  z-index: 4;
   // color: white;
   .container {
     display: flex;
@@ -347,6 +349,9 @@ img {
   }
   .map-legend {
     min-height: 100px;
+    @include breakpoint(small-only) {
+      margin-bottom: 2rem;
+    };
   }
   #state-info {
     font-size: 13px;
@@ -414,7 +419,8 @@ img {
 
 .paper-table {
   height: 300px;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-size: 12px;
   margin-bottom: 2rem;
 }

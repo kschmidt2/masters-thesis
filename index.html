@@ -204,7 +204,7 @@
             <strong>Full-time statehouse reporters per ten legislators, 2014</strong>
             <div id="usmap"></div>
             <div class="row map-legend">
-              <div class="columns small-4">
+              <div class="columns small-12 medium-4">
                 0
                 <svg width="90" height="12" viewBox="0 0 90 12" xmlns="http://www.w3.org/2000/svg">
                   <defs>
@@ -218,7 +218,7 @@
                 </svg>
                 6
               </div>
-              <div class="columns small-8">
+              <div class="columns small-12 medium-8">
                 <div id="state-name"></div><div id="state-info"></div>
               </div>
             </div>
@@ -313,13 +313,13 @@
                     <td>
                       State
                     </td>
-                    <td>
+                    <td class="hide-for-small-only">
                       County
                     </td>
-                    <td>
+                    <td class="hide-for-small-only">
                       Days published
                     </td>
-                    <td>
+                    <td class="hide-for-small-only">
                       Weekday circulation
                     </td>
                   </tr>
@@ -330,9 +330,9 @@
                     <td>{{ paper.newspaper_name }}</td>
                     <td>{{ paper.city }}</td>
                     <td>{{ paper.state }}</td>
-                    <td>{{ paper.county }}</td>
-                    <td>{{ paper.days_published }}</td>
-                    <td>{{ paper.total_circulation | number }}</td>
+                    <td class="hide-for-small-only">{{ paper.county }}</td>
+                    <td class="hide-for-small-only">{{ paper.days_published }}</td>
+                    <td class="hide-for-small-only">{{ paper.total_circulation | number }}</td>
                   </tr>
                 </tbody>
           </table>

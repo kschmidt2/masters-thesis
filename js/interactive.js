@@ -195,6 +195,8 @@ function dropClick(d) {
             return d3.sum(v, function(d) {return d.total_circulation; })
           }).entries(data);
 
+          console.log(circData);
+
         y0.domain([0,1,2]);
         y1.domain([0,1]).rangeBands([0, y0.rangeBand()]);
         x.domain([0, d3.max(newspaperData, function(d) { return d3.max(d.values, function(d) { return d.values; }); })]);
@@ -211,6 +213,7 @@ function dropClick(d) {
           .selectAll("g")
           .data(newspaperData)
           .enter().append("g")
+            .attr("class", "newspaper-group")
             .attr("transform", function(d,i) { return "translate(0," + y0(i) + ")"; });
           var rect = g.selectAll("rect")
           .data(function(d) { return d.values; })
@@ -326,7 +329,7 @@ function dropClick(d) {
           .data(function(d) { return d.values; })
           .enter()
           .append("text")
-          .attr("class", "news-circt-number")
+          .attr("class", "news-circ-number")
           .text(function(d) { return ((d.values)/1000000).toFixed(1) + "M"; })
           .attr("x",function(d) { return x1(d.values) + 20 })
           .attr("dx", 15)
@@ -376,7 +379,7 @@ function updateData(selectState, stateClass) {
 
         data = data.filter(function (d) {return d.state_full == selectState});
 
-        var NEWnewspaperData = d3.nest()
+        var newspaperData = d3.nest()
         .key(function(d) { return d.rucc;})
         .sortKeys(d3.ascending)
         .key(function(d) { return d.year;})
@@ -395,15 +398,58 @@ function updateData(selectState, stateClass) {
         console.log(newspaperData);
         console.log(circData);
 
+
         x.domain([0, d3.max(newspaperData, function(d) { return d3.max(d.values, function(d) { return d.values; }); })]);
         x1.domain([0, d3.max(circData, function(d) { return d3.max(d.values, function(d) { return d.values; }); })]);
 
-        d3.selectAll(".newspaper-bars")
+        var groups = svg.selectAll(".newspaper-group")
+        .data(newspaperData);
+
+        groups.selectAll(".newspaper-bars")
+          .data(function(d) { return d.values })
+            .transition()
+            .delay(function(d,i) { return 100 * (i + 1);})
+            .duration(600)
+            .attr("width", function(d) { return x(d.values); });
+
+        groups.selectAll(".news-bar-number")
+          .data(function(d) { return d.values; })
           .transition()
           .delay(function(d,i) { return 100 * (i + 1);})
           .duration(600)
-          // .attr("class", function(d) { console.log(d)})
-          .attr("width", function(d) { console.log(d.values); });
+          .text(function(d) { return (d.values).toLocaleString(); })
+          .attr("x",function(d) { return x(d.values) + 20 });
+
+        var groups2 = svg2.selectAll(".circ-g")
+        .data(circData);
+
+        groups2.selectAll(".newspaper-circ-bars")
+          .data(function(d) { return d.values })
+            .transition()
+            .delay(function(d,i) { return 100 * (i + 1);})
+            .duration(600)
+            .attr("width", function(d) { return x1(d.values); });
+
+        groups2.selectAll(".news-circ-number")
+          .data(function(d) { return d.values; })
+          .transition()
+          .delay(function(d,i) { return 100 * (i + 1);})
+          .duration(600)
+          .text(function(d) { return (d.values).toLocaleString();})
+          .attr("x",function(d) {
+            if (x1(d.values) < 100) {
+              return x1(d.values) + 80
+            } else {
+              return x1(d.values) + 20
+            }
+           })
+           .style("fill", function(d) {
+             if (x1(d.values) < 100) {
+               return "white"
+             } else {
+               return "#323232"
+             }
+           });
       })
     }
 
