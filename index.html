@@ -286,11 +286,17 @@
             <div id="state-bars-2"></div>
           </div>
         </div>
-        <div class="row">
-          <div class="small-12 medium-6 top-margin">
+        <div class="row no-padding">
+          <div class="columns small-12 medium-8 top-margin">
             <strong>Find newspapers near you - </strong><span id="table-state">United States</span>
           </div>
-          <div class="small-12 medium-6 align-right">
+          <div class="columns small-12 medium-4">
+            <div class="input-group">
+              <span class="input-group-label"><i class="fa fa-search"></i></span>
+
+              <input type="text" class="form-control" placeholder="Search" ng-model="searchPapers">
+
+            </div>
           </div>
         </div>
         <div class="row table-wrapper">
@@ -319,7 +325,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="paper in newspaper.papers | filter:nameSearch | filter:myFilter">
+                  <tr ng-repeat="paper in newspaper.papers | filter:nameSearch | filter:myFilter | filter:searchPapers">
                     <!-- <td><img src="{{ player.images[0] }}" class="img-responsive"></td> -->
                     <td>{{ paper.newspaper_name }}</td>
                     <td>{{ paper.city }}</td>

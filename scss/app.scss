@@ -389,6 +389,19 @@ img {
   }
 }
 
+.no-padding .columns {
+  padding: 0;
+}
+
+.input-group {
+  margin: 20px 0 0;
+}
+
+.form-control {
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
 #table-state {
   color: $teal;
   font-weight: 700;
