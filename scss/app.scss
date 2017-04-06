@@ -318,6 +318,8 @@ img {
 }
 
 #interactive-footer {
+  max-width: 100vw;
+  overflow-x: hidden;
   margin-top: 160vh;
   @include breakpoint(medium) {
     margin-top: 70vh;

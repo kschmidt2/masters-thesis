@@ -593,6 +593,32 @@ var scrollVis = function() {
         .attr("opacity", 0)
         .attr("d", function(d) { return animosityLineDraw2(d) });
 
+      var animosityLineText = g.selectAll(".animosity-text").data(animosityData);
+      animosityLineText.enter()
+        .append("text")
+        .attr("class", "animosity-text")
+        .text("Unfavorable")
+        .attr("x", width)
+        .attr("dx", 15)
+        .attr("y", function(d) { return yLineScale2(d.rep_unfav[0]) })
+        .attr("dy", 20)
+        .style("font-size", "14px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
+      var animosityLineText1 = g.selectAll(".animosity-text-1").data(animosityData);
+      animosityLineText1.enter()
+        .append("text")
+        .attr("class", "animosity-text-1")
+        .text("Very unfavorable")
+        .attr("x", width)
+        .attr("dx", 15)
+        .attr("y", height-130)
+        .attr("dy", 20)
+        .style("font-size", "14px")
+        .attr("text-anchor", "end")
+        .attr("opacity", 0);
+
       var losAngelesBars = g.selectAll(".la-bar").data(losAngelesData);
       losAngelesBars.enter()
         .append("rect")
@@ -1584,6 +1610,16 @@ var scrollVis = function() {
         .attr("stroke-dashoffset", totalLength2)
         .attr("opacity", 0);
 
+    g.selectAll(".animosity-text")
+      .transition()
+      .duration(200)
+      .attr("opacity", 0);
+
+    g.selectAll(".animosity-text-1")
+      .transition()
+      .duration(200)
+      .attr("opacity", 0);
+
   }
 
   function showAnimosity() {
@@ -1615,7 +1651,7 @@ var scrollVis = function() {
       .transition()
         .delay(0)
         .attr("d", function(d) { return animosityLineDraw1(d) })
-        .duration(500)
+        .duration(200)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
         .attr("stroke-width", 5)
@@ -1636,12 +1672,24 @@ var scrollVis = function() {
       .transition()
         .delay(0)
         .attr("d", function(d) { return animosityLineDraw2(d) })
-        .duration(500)
+        .duration(200)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
         .attr("stroke-width", 5)
         .attr("fill", "none")
         .attr("stroke", "#e5e2ca");
+
+    g.selectAll(".animosity-text")
+      .transition()
+      .delay(1000)
+      .duration(500)
+      .attr("opacity", 1);
+
+    g.selectAll(".animosity-text-1")
+      .transition()
+      .delay(1000)
+      .duration(500)
+      .attr("opacity", 1);
 
   }
 
@@ -1667,6 +1715,16 @@ var scrollVis = function() {
         .ease("linear")
         .attr("stroke-dashoffset", totalLength2)
         .attr("opacity", 0);
+
+    g.selectAll(".animosity-text")
+      .transition()
+      .duration(200)
+      .attr("opacity", 0);
+
+    g.selectAll(".animosity-text-1")
+      .transition()
+      .duration(200)
+      .attr("opacity", 0);
   }
 
   function hideCincinnati() {
