@@ -388,9 +388,15 @@ img {
   }
   footer {
     font-family: $sans-serif-font;
-    font-size: 12px;
     border-top: 1px solid white;
     padding: 10px 0 0;
+    @include breakpoint(small) {
+      font-size: 12px;
+      margin-bottom: 2rem;
+    }
+    & p {
+      font-size: 12px;
+    }
   }
 }
 
