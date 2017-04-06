@@ -2102,6 +2102,11 @@ var scrollVis = function() {
         var topSpace = (windowHeight - height)/3;
         $('#step' + (i+1)).css('top', topSpace + 'px');
       }
+      $('.vis-small-container').css('left', function(){
+        var width = 780;
+        var windowWidth = $(window).width();
+        return (windowWidth - width)/2;
+      })
     });
     lastIndex = activeIndex;
   };

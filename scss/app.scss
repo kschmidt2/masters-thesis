@@ -221,6 +221,8 @@ img {
 }
 
 .vis-container {
+  @include centered;
+  width: 100vw;
   @include breakpoint(large) {
     display: flex;
     justify-content: center;
@@ -228,7 +230,9 @@ img {
 }
 
 #vis {
+  @include centered;
   position: fixed;
+  left: 0;
   bottom: 0vh;
   z-index: 1;
   height: 60vh;
@@ -315,6 +319,9 @@ img {
 
 #interactive-footer {
   margin-top: 160vh;
+  @include breakpoint(medium) {
+    margin-top: 70vh;
+  }
   background-color: $black;
   font-family: $sans-serif-font;
   & text {
