@@ -1,3 +1,7 @@
+$(window).load(function() {
+  $('body').addClass('loaded');
+});
+
 $(document).foundation();
 
 // adds navigation dots

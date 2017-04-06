@@ -13,6 +13,10 @@
     <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=58d98eafff66870012de32d6&product=sticky-share-buttons"></script>
   </head>
   <body>
+    <div id="loader-wrapper">
+      <div id="loader"></div>
+    </div>
+
     <div class="container">
 
       <div id="graphic">
@@ -283,7 +287,8 @@
             <div id="state-bars-2"></div>
           </div>
         </div>
-        <div class="row no-padding">
+        <p class="hide-for-large">Please visit this site on a computer to view a complete database of American newspapers.</p>
+        <div class="row no-padding show-for-large">
           <div class="columns small-12 medium-8 top-margin">
             <strong>Find newspapers near you - </strong><span id="table-state">United States</span>
           </div>
@@ -296,7 +301,7 @@
             </div>
           </div>
         </div>
-        <div class="row table-wrapper">
+        <div class="row table-wrapper show-for-large">
           <div class="paper-table">
             <table class="table table-bordered table-striped">
                 <thead>
@@ -324,19 +329,20 @@
                 <tbody>
                   <tr ng-repeat="paper in newspaper.papers | filter:nameSearch | filter:myFilter | filter:searchPapers">
                     <!-- <td><img src="{{ player.images[0] }}" class="img-responsive"></td> -->
-                    <td>{{ paper.newspaper_name }}</td>
-                    <td>{{ paper.city }}</td>
-                    <td>{{ paper.state }}</td>
-                    <td class="hide-for-small-only">{{ paper.county }}</td>
-                    <td class="hide-for-small-only">{{ paper.days_published }}</td>
-                    <td class="hide-for-small-only">{{ paper.total_circulation | number }}</td>
+
+                    <td>{{ ::paper.newspaper_name }}</td>
+                    <td>{{ ::paper.city }}</td>
+                    <td>{{ ::paper.state }}</td>
+                    <td>{{ ::paper.county }}</td>
+                    <td>{{ ::paper.days_published }}</td>
+                    <td>{{ ::paper.total_circulation | number }}</td>
                   </tr>
                 </tbody>
           </table>
           </div>
         </div>
         <footer>
-          <p>Data for state of the news industry interactive from <a href="http://newspaperownership.com/" target="_blank">The Rise of a New Media Baron and the Emerging Threat of News Deserts</a>, a study produced by the Center for Innovation and Sustainability in Local Media in the School of Media and Journalism at the University of North Carolina at Chapel Hill.</p>
+          <p>HelloWorldData for state of the news industry interactive from <a href="http://newspaperownership.com/" target="_blank">The Rise of a New Media Baron and the Emerging Threat of News Deserts</a>, a study produced by the Center for Innovation and Sustainability in Local Media in the School of Media and Journalism at the University of North Carolina at Chapel Hill.</p>
           <p>Researched, written, designed and developed by <a href="http://kierstenschmidt.com" target="_blank">Kiersten Schmidt</a> as a thesis project for completion of the Masters program in visual communication in the School of Media and Journalism at the University of North Carolina at Chapel Hill.</p>
           <p>Special thanks to my amazing thesis committee chair, <a href="https://twitter.com/rtburg" target="_blank">Ryan Thornburg</a>, and committee members, <a href="https://twitter.com/steven_king" target="_blank">Steven King</a> and <a href="https://twitter.com/hfairfield" target="_blank">Hannah Fairfield</a>. Also thanks to my boyfriend, family and friends for easing my grad school stress for the past two years and <a href="https://twitter.com/SchmidtKiersten/status/835945351395803140" target="_blank">my cat</a> for always knowing the most inopportune times to come sit on my keyboard.
         </footer>
@@ -353,9 +359,9 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/what-input/dist/what-input.js"></script>
     <script src="bower_components/foundation-sites/dist/js/foundation.js"></script>
-    <!-- <script src="js/angular.min.js"></script>
-    <script src="js/angular_app.js"></script> -->
     <script src="js/enquire.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular_app.js"></script>
     <script src="js/d3.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
     <script src="js/datamaps.usa.min.js"></script>
@@ -391,6 +397,7 @@
             match : function() {
                 // Load a desktop JS file
                 loadJS('sections.js');
+                // loadJS('angular_app.js');
             }
         });
 
