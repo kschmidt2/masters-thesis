@@ -832,6 +832,7 @@ var scrollVis = function() {
    */
   function showBridgeQuote2() {
     $('#vis').removeClass('vis-small-container');
+    $('#vis').addClass('vis-large-container');
 
     $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').delay(1500).fadeIn(1000);
     $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').delay(1500).fadeIn(1000);
@@ -869,6 +870,7 @@ var scrollVis = function() {
 
     $('#bridge-text').fadeTo(500,0).css("display", "none");
     $('#bridge_illo').hide();
+    $('#vis').removeClass('vis-large-container');
     $('#vis').addClass('vis-small-container');
 
     $('#vis').removeClass('vis-trigger');
@@ -2164,7 +2166,8 @@ var scrollVis = function() {
         var width = 780;
         var windowWidth = $(window).width();
         return (windowWidth - width)/2;
-      })
+      });
+      $('.vis-large-container').css('left', 0);
     });
     lastIndex = activeIndex;
   };
