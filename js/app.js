@@ -5,7 +5,7 @@ $(window).load(function() {
 $(document).foundation();
 
 // adds navigation dots
-var sections = $('.step').length - 1;
+var sections = $('.step').length;
 
 var addDots = "";
 for (var i=0; i < sections; i++) {

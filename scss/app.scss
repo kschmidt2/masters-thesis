@@ -67,6 +67,15 @@ $gray: #e5e2ca;
   margin-right: auto;
 }
 
+@mixin linearGradient($top, $bottom){
+    background: -moz-linear-gradient(top,  $top 0%, $bottom 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$top), color-stop(100%,$bottom)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  $top 0%,$bottom 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  $top 0%,$bottom 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  $top 0%,$bottom 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  $top 0%,$bottom 100%); /* W3C */
+}
+
 html, body {
     height: 100%;
     margin: 0;
@@ -413,7 +422,7 @@ img {
   }
 }
 
-#interactive-footer {
+.interactive-footer {
   max-width: 100vw;
   overflow-x: hidden;
   margin-top: 100vh;
@@ -428,7 +437,7 @@ img {
   }
   color: white;
   position: relative;
-  z-index: 4;
+  z-index: 3;
   // color: white;
   .container {
     display: flex;
@@ -491,16 +500,54 @@ img {
   .interactive-chart-hed {
     font-size: 14px;
   }
-  footer {
-    font-family: $sans-serif-font;
-    border-top: 1px solid white;
+}
+
+footer {
+  font-family: $sans-serif-font;
+  padding: 10px 5vw 0;
+  font-size: 12px;
+  margin-bottom: 20vh;
+  @include breakpoint(medium only) {
+    width: 70vw;
+    margin-bottom: 40vh;
+    @include centered;
+  }
+  @include breakpoint(large) {
+    margin-bottom: 1rem;
     padding: 10px 0 0;
-    @include breakpoint(small) {
-      font-size: 12px;
-      margin-bottom: 2rem;
-    }
-    & p {
-      font-size: 12px;
+    border-top: 1px solid white;
+  }
+  & p {
+    font-size: 12px;
+  }
+}
+
+.button {
+  @include linearGradient($teal, darken($teal, 30%));
+  width: 90vw;
+  margin-bottom: 10vh;
+  border: 1px solid darken($teal, 30%);
+  @include breakpoint(medium) {
+    width: 50vw;
+    margin-left: 5vw;
+  }
+}
+
+#back-button {
+  width: 100px;
+  margin-left: 0;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+#mobile-interactive {
+  & .interactive-footer {
+    margin-top: 0;
+  }
+  & .interactive-head {
+    text-align: center;
+    & h3 {
+      font-size: 1.8rem;
     }
   }
 }

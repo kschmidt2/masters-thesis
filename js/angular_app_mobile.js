@@ -9,11 +9,6 @@ app.controller('NewspaperController', function($http) {
 
 });
 
-enquire.register("screen and (min-width: 64em)", {
-    match : function() {
-        // Load a desktop JS file
-        // angular for newspaper table
-
         var app = angular.module('newspaper', [ ]);
 
         // set up controller
@@ -31,5 +26,3 @@ enquire.register("screen and (min-width: 64em)", {
               });
 
         });
-    }
-});
