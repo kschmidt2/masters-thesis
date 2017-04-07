@@ -547,8 +547,23 @@ footer {
   & .interactive-head {
     text-align: center;
     & h3 {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
     }
+  }
+}
+
+.scroll-down {
+  font-family: $sans-serif-font;
+  width: 100vw;
+  text-align: center;
+  position: fixed;
+  z-index: 5;
+  bottom: 20vh;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+  @include breakpoint(medium) {
+    bottom: 5vh;
   }
 }
 

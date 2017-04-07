@@ -19,7 +19,7 @@
 
     <div class="interactive-footer" ng-controller="NewspaperController as newspaper">
       <div class="container">
-        <a href="index.html" class="button" id="back-button"><i class="fa fa-chevron-left" aria-hidden="true"></i> BACK</a>
+        <a href="index.html#mobile-footer" class="button" id="back-button"><i class="fa fa-chevron-left" aria-hidden="true"></i> BACK</a>
         <div class="interactive-head">
           <h3>Explore the state of the newspaper industry</h3>
         </div>
@@ -110,7 +110,6 @@
             <div id="state-bars-2"></div>
           </div>
         </div>
-        <p class="hide-for-large">Please visit this site on a computer to view a complete database of American newspapers.</p>
         <div class="row no-padding">
           <div class="columns small-12 medium-8 top-margin">
             <strong>Look for newspapers in </strong><span id="table-state">United States</span>
@@ -156,9 +155,9 @@
                     <td>{{ ::paper.newspaper_name }}</td>
                     <td>{{ ::paper.city }}</td>
                     <td>{{ ::paper.state }}</td>
-                    <td>{{ ::paper.county }}</td>
-                    <td>{{ ::paper.days_published }}</td>
-                    <td>{{ ::paper.total_circulation | number }}</td>
+                    <td class="hide-for-small-only">{{ ::paper.county }}</td>
+                    <td class="hide-for-small-only">{{ ::paper.days_published }}</td>
+                    <td class="hide-for-small-only">{{ ::paper.total_circulation | number }}</td>
                   </tr>
                 </tbody>
           </table>

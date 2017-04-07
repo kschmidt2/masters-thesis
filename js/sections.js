@@ -816,6 +816,8 @@ var scrollVis = function() {
    */
   function showBridgeQuote() {
 
+    $('.scroll-down').fadeOut();
+
     $('#bridge-text').show();
     $('#bridge-text').delay(1500).fadeTo(500,1);
     $('.bridge-quote').hide().html('"Time for some traffic problems in Fort Lee."').fadeIn(1000);
