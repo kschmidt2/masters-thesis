@@ -1,6 +1,33 @@
 [
   {
-    "days_published": 2,
+    "days_published": 7,
+    "newspaper_name": "The Wall Street Journal",
+    "city": "New York",
+    "state": "N.Y.",
+    "total_circulation": 1230350,
+    "county": "New York",
+    "state_full": "New York"
+  },
+  {
+    "days_published": 5,
+    "newspaper_name": "USA Today",
+    "city": "McLean",
+    "state": "Va.",
+    "total_circulation": 839388,
+    "county": "Fairfax",
+    "state_full": "Virginia"
+  },
+  {
+    "days_published": 7,
+    "newspaper_name": "The New York Times",
+    "city": "New York",
+    "state": "N.Y.",
+    "total_circulation": 605717,
+    "county": "New York",
+    "state_full": "New York"
+  },
+  {
+    "days_published": 7,
     "newspaper_name": "View Neighborhood Newspapers",
     "city": "Las Vegas",
     "state": "Nev.",

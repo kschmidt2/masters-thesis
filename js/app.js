@@ -33,27 +33,39 @@ $.each($(".fa-circle-o"), function(index, value){
 })
 
 // scroll down on down arrow press
-function scrollDown(e){
-    var $next = $('.current').next('.step').next('.step');
-    var top = $next.offset().top;
+// function scrollDown(e){
+//     var $next = $('.current').next('.step').next('.step');
+//     var top = $next.offset().top;
+//
+//     $('body').animate({ scrollTop: top });
+// }
+// // scroll up on up arrow press
+// function scrollUp(e){
+//   var $prev = $('.current').prev('.step');
+//   var top = $prev.offset().top;
+//
+//   $('body').animate({ scrollTop: top });
+// }
+//
+// // call functions on arrow press
+// $(function () {
+//   $(document).keydown(function (evt) {
+//     if (evt.keyCode == 40) { // down arrow
+//       scrollDown();
+//     } else if (evt.keyCode == 38) {
+//       scrollUp();
+//     }
+//   });
+// });
 
-    $('body').animate({ scrollTop: top });
-}
-// scroll up on up arrow press
-function scrollUp(e){
-  var $prev = $('.current').prev('.step');
-  var top = $prev.offset().top;
-
-  $('body').animate({ scrollTop: top });
-}
-
-// call functions on arrow press
-$(function () {
-  $(document).keydown(function (evt) {
-    if (evt.keyCode == 40) { // down arrow
-      scrollDown();
-    } else if (evt.keyCode == 38) {
-      scrollUp();
-    }
-  });
+$('.vis-small-container').css('left', function(){
+  var width = 780;
+  var windowWidth = $(window).width();
+  return (windowWidth - width)/2;
 });
+$('#step9').css('left', function(){
+  var width = $('#step9').width();
+  var windowWidth = $(window).width();
+  return "-" + (windowWidth - width)/1.5;
+});
+$('.vis-large-container').css('left', 0);
