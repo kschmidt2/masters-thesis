@@ -257,7 +257,7 @@ var scrollVis = function() {
 
       xBarScale.domain([0,d3.max(govtCoverageData, function(d) { return d.big_city })]);
 
-      xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.articles })]);
+      xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.per_candidate })]);
 
       xBarScale2.domain(stateReportersData.map(function(d) { return d.state; }));
       yBarScale2.domain([0, d3.max(stateReportersData, function(d) { return d.per_ten_legislators; })]);
@@ -497,21 +497,8 @@ var scrollVis = function() {
       congressCoverageBarNumber.enter()
         .append("text")
         .attr("class", "congress-bar-number")
-        .text(function(d) { return (d.articles.toLocaleString()); })
-        .attr("x",function(d) { return xBarScale1(d.articles)+20; })
-        .attr("dx", 15)
-        .attr("y", function(d,i) { return yBarScale1(i);})
-        .attr("dy", yBarScale1.rangeBand() / 1.75)
-        .style("font-size", "20px")
-        .attr("text-anchor", "end")
-        .attr("opacity", 0);
-
-      var congressCoverageBarNumber1 = g.selectAll(".congress-bar-number-1").data(congressCoverageData);
-      congressCoverageBarNumber1.enter()
-        .append("text")
-        .attr("class", "congress-bar-number-1")
-        .text(function(d) { return (d.candidates); })
-        .attr("x",function(d) { return xBarScale1(d.candidates)+620; })
+        .text(function(d) { return ((d.per_candidate).toFixed(2)); })
+        .attr("x",function(d) { return xBarScale1(d.per_candidate)+20; })
         .attr("dx", 15)
         .attr("y", function(d,i) { return yBarScale1(i);})
         .attr("dy", yBarScale1.rangeBand() / 1.75)
@@ -695,7 +682,6 @@ var scrollVis = function() {
         .attr("text-anchor", "end")
         .attr("opacity", 0);
 
-
       // x axis
       g.append("g")
         .attr("class", "x axis")
@@ -709,6 +695,7 @@ var scrollVis = function() {
         .attr("transform", "translate(0,0)")
         .call(yAxisLine);
       g.select(".y.axis").style("opacity", 0);
+
 
   };
 
@@ -880,9 +867,8 @@ var scrollVis = function() {
         .style("fill", "#e7472e");
 
       g.selectAll(".record-after")
-        .transition("record")
+        .transition()
         .duration(0)
-        .attr("opacity", 1.0)
         .style("fill", "#7a3a30");
   }
 
@@ -920,30 +906,6 @@ var scrollVis = function() {
       .duration(0)
       .attr("opacity", 1);
 
-    g.selectAll(".chart-key-square")
-      .transition()
-      .duration(0)
-      .attr("opacity", 1);
-
-    g.selectAll(".square")
-      .transition("move-fills")
-      .duration(800)
-      .attr("x", function(d,i) {
-        return d.x;
-      })
-      .attr("y", function(d,i) {
-        return d.y;
-      });
-
-    hideAxis();
-
-    var totalLength = g.selectAll(".employee-line").node().getTotalLength();
-
-    g.selectAll(".employee-line")
-    .transition()
-      .duration(500)
-      .ease("linear")
-      .attr("stroke-dashoffset", totalLength);
   }
 
   function updateNational() {
@@ -1431,7 +1393,7 @@ var scrollVis = function() {
     showKey();
 
     g.selectAll(".chart-hed")
-      .text("Number of news stories mentioning Congressional candidates in major newspapers");
+      .text("Major newspapers articles per Congressional candidate");
 
     g.selectAll(".govt-bar")
       .transition()
@@ -1451,7 +1413,7 @@ var scrollVis = function() {
     g.selectAll(".congress-bar")
       .transition()
       .duration(600)
-      .attr("width", function(d) { return xBarScale1(d.articles); });
+      .attr("width", function(d) { return xBarScale1(d.per_candidate); });
 
     g.selectAll(".congress-bar-text")
       .transition()
@@ -1487,29 +1449,6 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 0);
-  }
-
-  function updateCongressCoverage() {
-
-      xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.candidates })])
-
-      g.selectAll(".chart-hed")
-        .text("Number of major-party Congressional candidates covered in major newspapers");
-
-      g.selectAll(".congress-bar")
-        .transition()
-        .duration(600)
-        .attr("width", function(d) { return xBarScale1(d.candidates); });
-
-      g.selectAll(".congress-bar-number")
-        .transition()
-        .duration(0)
-        .attr("opacity", 0);
-
-      g.selectAll(".congress-bar-number-1")
-        .transition()
-        .duration(600)
-        .attr("opacity", 1);
   }
 
   function showStateReporters () {
@@ -1719,7 +1658,7 @@ var scrollVis = function() {
       .transition()
         .delay(0)
         .attr("d", function(d) { return animosityLineDraw1(d) })
-        .duration(200)
+        .duration(800)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
         .attr("stroke-width", 5)
@@ -1740,7 +1679,7 @@ var scrollVis = function() {
       .transition()
         .delay(0)
         .attr("d", function(d) { return animosityLineDraw2(d) })
-        .duration(200)
+        .duration(800)
         .ease("linear")
         .attr("stroke-dashoffset", 0)
         .attr("stroke-width", 5)
@@ -1749,14 +1688,14 @@ var scrollVis = function() {
 
     g.selectAll(".animosity-text")
       .transition()
-      .delay(1000)
-      .duration(500)
+      .delay(800)
+      .duration(200)
       .attr("opacity", 1);
 
     g.selectAll(".animosity-text-1")
       .transition()
-      .delay(1000)
-      .duration(500)
+      .delay(800)
+      .duration(200)
       .attr("opacity", 1);
 
   }
@@ -1769,13 +1708,13 @@ var scrollVis = function() {
 
     g.selectAll(".animosity-text")
       .transition()
-      .delay(1000)
+      .delay(800)
       .duration(500)
       .attr("opacity", 1);
 
     g.selectAll(".animosity-text-1")
       .transition()
-      .delay(1000)
+      .delay(800)
       .duration(500)
       .attr("opacity", 1);
 
@@ -1792,7 +1731,7 @@ var scrollVis = function() {
           .transition()
             .delay(0)
             .attr("d", function(d) { return animosityLineDraw1(d) })
-            .duration(200)
+            .duration(800)
             .ease("linear")
             .attr("stroke-dashoffset", 0)
             .attr("stroke-width", 5)
@@ -1809,7 +1748,7 @@ var scrollVis = function() {
             .transition()
               .delay(0)
               .attr("d", function(d) { return animosityLineDraw2(d) })
-              .duration(200)
+              .duration(800)
               .ease("linear")
               .attr("stroke-dashoffset", 0)
               .attr("stroke-width", 5)
@@ -2060,6 +1999,7 @@ var scrollVis = function() {
     return rawData.map(function(d,i) {
       d.record_before = (d.record_before === "1") ? true : false;
       d.record_after = (d.record_after === "1") ? true : false;
+      d.national_before = (d.national_before === "1") ? true : false;
       d.national_after = (d.national_after === "1") ? true : false;
       // positioning for square visual
       // stored here to make it easier
@@ -2108,27 +2048,25 @@ var scrollVis = function() {
          activateFunctions[16] = showBigCities;
          activateFunctions[17] = showSuburbs;
          activateFunctions[18] = showCongressCoverage;
-         activateFunctions[19] = updateCongressCoverage;
-         activateFunctions[21] = showStateReporters;
-         activateFunctions[21] = hideStateReporters;
-         activateFunctions[22] = hideRepublican;
-         activateFunctions[23] = showRepublican;
-         activateFunctions[24] = showDemocrat;
-         activateFunctions[25] = showAnimosity;
-         activateFunctions[26] = updateAnimosity;
-         activateFunctions[27] = hideAnimosity;
-         activateFunctions[28] = blankSlide;
-         activateFunctions[29] = hideCincinnati;
-         activateFunctions[30] = showLosAngeles;
-         activateFunctions[31] = hideLosAngeles;
-         activateFunctions[32] = blankSlide;
+         activateFunctions[19] = showStateReporters;
+         activateFunctions[20] = hideStateReporters;
+         activateFunctions[21] = hideRepublican;
+         activateFunctions[22] = showRepublican;
+         activateFunctions[23] = showDemocrat;
+         activateFunctions[24] = showAnimosity;
+         activateFunctions[25] = updateAnimosity;
+         activateFunctions[26] = hideAnimosity;
+         activateFunctions[27] = blankSlide;
+         activateFunctions[28] = hideCincinnati;
+         activateFunctions[29] = showLosAngeles;
+         activateFunctions[30] = hideLosAngeles;
+         activateFunctions[31] = hideCorruption;
+         activateFunctions[32] = showCorruption;
          activateFunctions[33] = hideCorruption;
-         activateFunctions[34] = showCorruption;
-         activateFunctions[35] = hideCorruption;
-         activateFunctions[36] = blankSlide;
-         activateFunctions[37] = setMaxWidth;
-         activateFunctions[38] = removeMaxWidth;
-         activateFunctions[39] = blankSlide;
+         activateFunctions[34] = blankSlide;
+         activateFunctions[35] = setMaxWidth;
+         activateFunctions[36] = removeMaxWidth;
+         activateFunctions[37] = blankSlide;
 
 
 
@@ -2206,6 +2144,7 @@ var scrollVis = function() {
       d.year = +d.year;
       d.articles = +d.articles;
       d.candidates = +d.candidates;
+      d.per_candidate = +d.per_candidate;
     })
 
     stateReportersData.forEach(function(d){

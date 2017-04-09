@@ -6,46 +6,11 @@
 
 @include foundation-global-styles;
 @include foundation-grid;
-// @include foundation-flex-grid;
 @include foundation-typography;
 @include foundation-button;
 @include foundation-forms;
-// @include foundation-range-input;
-@include foundation-accordion;
-@include foundation-accordion-menu;
-@include foundation-badge;
-@include foundation-breadcrumbs;
-@include foundation-button-group;
-@include foundation-callout;
-@include foundation-card;
-@include foundation-close-button;
-@include foundation-menu;
-@include foundation-menu-icon;
-@include foundation-drilldown-menu;
-@include foundation-dropdown;
-@include foundation-dropdown-menu;
-@include foundation-responsive-embed;
-@include foundation-label;
-@include foundation-media-object;
-@include foundation-off-canvas;
-@include foundation-orbit;
-@include foundation-pagination;
-@include foundation-progress-bar;
-// @include foundation-progress-element;
-// @include foundation-meter-element;
-@include foundation-slider;
-@include foundation-sticky;
-@include foundation-reveal;
-@include foundation-switch;
-@include foundation-table;
-@include foundation-tabs;
-@include foundation-thumbnail;
-@include foundation-title-bar;
-@include foundation-tooltip;
-@include foundation-top-bar;
 @include foundation-visibility-classes;
 @include foundation-float-classes;
-// @include foundation-flex-classes;
 
 @include motion-ui-transitions;
 @include motion-ui-animations;
@@ -89,6 +54,33 @@ body {
   overflow-x: hidden;
 }
 
+p {
+  font-weight: 300;
+  max-width: 560px;
+  @include centered;
+  @include breakpoint(medium only) {
+    font-size: 20px;
+  }
+  @include breakpoint(small only) {
+    font-size: 15px;
+  }
+  & a {
+    color: white;
+    border-bottom: 1px solid white;
+    &:visited {
+      color: white;
+    }
+    &:hover {
+      color: $teal;
+      border-bottom: 1px solid $teal;
+    }
+  }
+}
+
+img {
+  max-width: 560px;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: $serif-font;
   color: white;
@@ -119,6 +111,7 @@ h2 {
   }
 }
 
+// animations for loading screen
 @-webkit-keyframes spin {
     0%   {
         -webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */
@@ -152,85 +145,83 @@ h2 {
     height: 100%;
     z-index: 1000;
     background-color: $black;
-}
-#loader {
-    display: block;
-    position: relative;
-    left: 50%;
-    top: 50%;
-    width: 150px;
-    height: 150px;
-    margin: -75px 0 0 -75px;
-    z-index: 1500;
-    border: 0px solid transparent;
-}
-#loader:before {
-    content: "";
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    right: 5px;
-    bottom: 5px;
-    border: 3px solid transparent;
-    border-top-color: $teal;
-    border-right-color: $teal;
-    border-left-color: $teal;
-    border-radius: 50%;
-    -webkit-animation: spin 1.5s linear infinite;
-    animation: spin 1.5s linear infinite;
-}
-#loader:after {
-    content: "";
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    right: 15px;
-    bottom: 15px;
-    border: 3px solid transparent;
-    border-top-color: $red;
-    border-right-color: $red;
-    border-radius: 50%;
-    -webkit-animation: spin 1s linear infinite;
-    animation: spin 1s linear infinite;
-}
-#loader-wrapper .loader-section {
-    position: fixed;
-    top: 0;
-    width: 51%;
-    height: 100%;
-    background: $black;
-    z-index: 999;
+    & #loader {
+        display: block;
+        position: relative;
+        left: 50%;
+        top: 50%;
+        width: 150px;
+        height: 150px;
+        margin: -75px 0 0 -75px;
+        z-index: 1500;
+        border: 0px solid transparent;
+    }
+    & #loader:before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border: 3px solid transparent;
+        border-top-color: $teal;
+        border-right-color: $teal;
+        border-left-color: $teal;
+        border-radius: 50%;
+        -webkit-animation: spin 1.5s linear infinite;
+        animation: spin 1.5s linear infinite;
+    }
+    & #loader:after {
+        content: "";
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border: 3px solid transparent;
+        border-top-color: $red;
+        border-right-color: $red;
+        border-radius: 50%;
+        -webkit-animation: spin 1s linear infinite;
+        animation: spin 1s linear infinite;
+    }
+    & .loader-section {
+        position: fixed;
+        top: 0;
+        width: 51%;
+        height: 100%;
+        background: $black;
+        z-index: 999;
+    }
 }
 
-.loaded #loader {
+.loaded {
+  & #loader-wrapper {
+      visibility: hidden;
+      opacity: 0;
+      -webkit-transition: all 1s 0.6s ease-out;
+              transition: all 1s 0.6s ease-out;
+  }
+  & #loader {
     opacity: 0;
     -webkit-transition: all 0.3s ease-out;
             transition: all 0.3s ease-out;
+  }
 }
 
-.loaded #loader-wrapper {
-    visibility: hidden;
-    opacity: 0;
-    -webkit-transition: all 1s 0.6s ease-out;
-            transition: all 1s 0.6s ease-out;
-}
-
-.interactive-head {
-  @include centered;
-  margin-bottom: 2rem;
-}
-
-strong {
-  font-weight: 700;
-  color: $teal;
-}
-
-.fixed {
+.scroll-down {
+  font-family: $sans-serif-font;
+  width: 100vw;
+  text-align: center;
   position: fixed;
-  z-index: 2;
-  top: 0;
-  opacity: 1;
-  transition: opacity .5s ease-in-out;
+  z-index: 5;
+  bottom: 20vh;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+  @include breakpoint(medium) {
+    bottom: 5vh;
+  }
 }
 
 .container {
@@ -245,58 +236,33 @@ strong {
   max-width: 1048px;
   margin: 0 auto;
   z-index: 2;
-}
-
-#graphic .step {
-  height: auto !important;
-  max-width: 92vw;
-  // top: -40vh;
-  @include breakpoint(medium) {
-    max-width: 560px;
-  }
-  @include breakpoint(large) {
-    margin: auto;
-  }
-  // margin-top: -30vh;
-  // opacity: 0;
-  z-index: 2;
-  & p {
-    background-color: rgba(50,50,50,0.6);
-  }
-}
-
-#fp-nav ul li a span {
-  background: white !important;
-  margin-top: 2px !important;
-}
-
-#fp-nav ul li a.active span {
-  top: 0px;
-}
-
-#fp-nav ul li {
-  height: 8px !important;
-}
-
-#fp-nav {
-  @include breakpoint(small only) {
-    display: none;
+  & .step {
+    height: auto !important;
+    max-width: 92vw;
+    @include breakpoint(medium) {
+      max-width: 560px;
+    }
+    @include breakpoint(large) {
+      margin: auto;
+    }
+    z-index: 2;
+    & p {
+      background-color: rgba(50,50,50,0.6);
+    }
+    & .space {
+      height: 55vh;
+      @include breakpoint(medium) {
+        height: 60vh;
+      }
+    }
+    .space-2 {
+      height: 45vh;
+      @include breakpoint(medium) {
+        height: 60vh;
+      }
+    }
   }
 }
-
-#fp-nav ul li a.active span, #fp-nav ul li:hover a.active span {
-  background: none !important;
-  border: 1px solid white !important;
-}
-
-// #step34 {
-//   margin-bottom: 0 !important;
-//   max-width: 80vw !important;
-// }
-
-// #graphic section:last-of-type {
-//   margin-bottom: 500vh !important;
-// }
 
 #step10 { //header section
   left: 0 !important;
@@ -311,6 +277,7 @@ strong {
   }
 }
 
+// increases width of #sections to accomodate header section
 .header-step {
   @include breakpoint(medium) {
     max-width: 780px !important;
@@ -322,33 +289,6 @@ strong {
   }
 }
 
-p {
-  font-weight: 300;
-  max-width: 560px;
-  @include centered;
-  @include breakpoint(medium only) {
-    font-size: 20px;
-  }
-  @include breakpoint(small only) {
-    font-size: 15px;
-  }
-  & a {
-    color: white;
-    border-bottom: 1px solid white;
-    &:visited {
-      color: white;
-    }
-    &:hover {
-      color: $teal;
-      border-bottom: 1px solid $teal;
-    }
-  }
-}
-
-img {
-  max-width: 560px;
-}
-
 .vis-container {
   @include centered;
   width: 100vw;
@@ -356,141 +296,123 @@ img {
     display: flex;
     justify-content: center;
   }
-}
-
-.space {
-  height: 55vh;
-  @include breakpoint(medium) {
-    height: 60vh;
-  }
-}
-
-.space-2 {
-  height: 45vh;
-  @include breakpoint(medium) {
-    height: 60vh;
-  }
-}
-
-#vis {
-  @include centered;
-  position: fixed;
-  left: 0;
-  bottom: 6vh;
-  z-index: 1;
-  height: 55vh;
-  width: 100vw;
-  @include breakpoint(medium only) {
-    bottom: 10vh;
-  }
-  @include breakpoint(medium) {
-    height: 60vh;
-  }
-  & > svg {
+  & #vis {
     @include centered;
+    position: fixed;
+    left: 0;
+    bottom: 6vh;
+    z-index: 1;
+    height: 55vh;
+    width: 100vw;
+    @include breakpoint(medium only) {
+      bottom: 10vh;
+    }
+    @include breakpoint(medium) {
+      height: 60vh;
+    }
+    & > svg {
+      @include centered;
+    }
+  }
+  & .vis-trigger {
+    height: 60vh !important;
+    @include breakpoint(medium) {
+      height: 80vh !important;
+    }
+  }
+  & .vis-small-container {
+    max-width: 560px !important;
+    bottom: 0vh;
+    @include centered;
+    @include breakpoint(medium) {
+      max-width: 780px !important;
+    }
+  }
+  & .bridge-container {
+    display: flex;
+    height: 80vh;
+    margin-bottom: -80vh;
+  }
+  & #bridge_illo {
+    fill: $teal;
+    width: 100vw;
+    align-self: center;
+    @include breakpoint(medium) {
+      align-self: flex-end;
+    }
+  }
+  & #newspaper_illo {
+    display: none;
+    margin-top: 20vh;
+    @include breakpoint(large) {
+      margin-top: 0;
+    }
+  }
+  & #bridge-text {
+    margin: 0 auto;
+    text-align: center;
+    font-family: $sans-serif-font;
+    width: 360px;
+    display: none;
+    position: relative;
+    z-index: 3;
+    @include breakpoint(medium) {
+      width: 700px;
+      margin: 20vh auto 0;
+    }
+  }
+  & .bridge-quote {
+    background-color: $red;
+    padding: 10px;
+    font-size: 2rem;
+    color: white;
+  }
+  & .bridge-attrib {
+    font-size: .8rem;
+    width: 360px;
+    margin: 10px auto 0;
+    @include breakpoint(medium) {
+      width: 400px;
+    }
   }
 }
 
-.vis-trigger {
-  height: 60vh !important;
-  @include breakpoint(medium) {
-    height: 80vh !important;
-  }
-}
-
-.vis-small-container {
-  max-width: 560px !important;
-  bottom: 0vh;
-  @include centered;
-  @include breakpoint(medium) {
-    max-width: 780px !important;
-  }
-}
-
-.bridge-container {
-  display: flex;
-  height: 80vh;
-  margin-bottom: -80vh;
-}
-
-#bridge_illo {
-  fill: $teal;
-  width: 100vw;
-  align-self: center;
-  @include breakpoint(medium) {
-    align-self: flex-end;
-  }
-}
-
-#newspaper_illo {
-  display: none;
-  margin-top: 20vh;
-  @include breakpoint(large) {
-    margin-top: 0;
-  }
-}
-
-#bridge-text {
-  margin: 0 auto;
-  text-align: center;
-  font-family: $sans-serif-font;
-  width: 360px;
-  display: none;
-  position: relative;
-  z-index: 3;
-  @include breakpoint(medium) {
-    width: 700px;
-    margin: 20vh auto 0;
-  }
-}
-
-.bridge-quote {
-  background-color: $red;
-  padding: 10px;
-  font-size: 2rem;
-  color: white;
-}
-
-.bridge-attrib {
-  font-size: .8rem;
-  width: 360px;
-  margin: 10px auto 0;
-  @include breakpoint(medium) {
-    width: 400px;
-  }
-}
-
+// styles for states of industry interactive
 .interactive-footer {
-  // display: none;
-  margin-top: 0vh;
+  margin-top: 0;
   max-width: 100vw;
   overflow-x: hidden;
   overflow-y: scroll;
   background-color: $black;
   font-family: $sans-serif-font;
-  & text {
-    fill: white;
-    font-weight: 300;
-  }
   color: white;
-  // position: relative;
   z-index: 3;
-  // color: white;
-  .container {
+  & .container {
     display: flex;
     flex-direction: column;
-    // justify-content: space-between;
     padding-top: 5vh;
     padding-bottom: 2vh;
   }
-  strong {
-    color: white;
+  & .interactive-head {
+    @include centered;
+    margin-bottom: 2rem;
+    text-align: center;
+    & h3 {
+      font-size: 1.5rem;
+      @include breakpoint(medium) {
+        font-size: 24px;
+      }
+    }
+  }
+  & text {
+    fill: white;
+    font-weight: 300;
   }
   & p {
     font-size: 12px;
     max-width: 5000px;
   }
-  #usmap {
+  & #usmap {
     width: 124%;
     margin-left: -12%;
     margin-bottom: 20px;
@@ -498,20 +420,20 @@ img {
       color: $black;
     }
   }
-  .map-legend {
+  & .map-legend {
     min-height: 100px;
     @include breakpoint(small only) {
       margin-bottom: 2rem;
     };
   }
-  #state-info {
+  & #state-info {
     font-size: 13px;
   }
-  .row {
+  & .row {
     margin-left: 0;
     margin-right: 0;
   }
-  .state-dropdown {
+  & .state-dropdown {
     color: $black;
     outline: 1px solid $teal;
     outline-offset: -1px;
@@ -524,18 +446,77 @@ img {
     padding-top: 0;
     padding-bottom: 0;
   }
-  #state-name-2 {
+  & #state-name-2 {
     font-size: 1.5rem;
   }
-  #state-bars {
+  & #state-bars {
     margin-top: 10px;
   }
-  .interactive-info {
+  & .interactive-info {
     font-size: 14px;
     margin-bottom: 0;
   }
-  .interactive-chart-hed {
+  & .interactive-chart-hed {
     font-size: 14px;
+  }
+  & .news-bar-text, .news-circ-text {
+    text-transform: capitalize;
+  }
+  & #state-key {
+    font-size: 12px;
+    margin-bottom: 2rem;
+    & .key-2004 {
+      color: $red;
+    }
+    & .key-2014 {
+      color: lighten($red, 20%);
+    }
+  }
+  & .no-padding .columns {
+    padding: 0;
+  }
+  & .input-group {
+    margin: 20px 0 0;
+  }
+  & .form-control {
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+  & #table-state {
+    color: $teal;
+    font-weight: 700;
+  }
+  & .top-margin {
+    margin-top: 2rem;
+    margin-bottom: .5rem;
+  }
+  & .sf {
+    color: $teal;
+    float: left;
+  }
+  & .teal {
+    font-weight: 700;
+    color: $teal;
+  }
+  & .paper-table {
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: 12px;
+    margin-bottom: 2rem;
+  }
+  & .table-striped > tbody > tr:nth-of-type(even), table thead {
+    background-color: $black;
+  }
+  & td {
+    padding: .5rem !important;
+    line-height: 1;
+  }
+  & .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: darken($teal, 20%);
+  }
+  & table thead {
+    color: white;
   }
 }
 
@@ -543,7 +524,6 @@ footer {
   font-family: $sans-serif-font;
   padding: 10px 0 0;
   font-size: 12px;
-  // margin-bottom: 20vh;
   @include breakpoint(medium only) {
     width: 70vw;
     margin-bottom: 40vh;
@@ -554,6 +534,12 @@ footer {
   }
   & p {
     font-size: 12px;
+  }
+  & .footer-img {
+    width: 300px;
+    height: auto;
+    margin-left: 130px;
+    margin-bottom: 30px;
   }
 }
 
@@ -574,13 +560,6 @@ a.button:hover {
   @include linearGradient(lighten($teal, 30%), darken($teal, 20%));
 }
 
-.footer-img {
-  width: 300px;
-  height: auto;
-  margin-left: 130px;
-  margin-bottom: 30px;
-}
-
 #back-button {
   width: 100px;
   margin-left: 0;
@@ -588,128 +567,10 @@ a.button:hover {
   font-weight: 700;
 }
 
-#mobile-interactive {
-  & .interactive-footer {
-    margin-top: 0;
-  }
-  & .interactive-head {
-    text-align: center;
-    & h3 {
-      font-size: 1.5rem;
-    }
-  }
-}
-
-.scroll-down {
-  font-family: $sans-serif-font;
-  width: 100vw;
-  text-align: center;
-  position: fixed;
-  z-index: 5;
-  bottom: 20vh;
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: 700;
-  @include breakpoint(medium) {
-    bottom: 5vh;
-  }
-}
-
-.no-padding .columns {
-  padding: 0;
-}
-
-.input-group {
-  margin: 20px 0 0;
-}
-
-.form-control {
-  border-radius: 0;
-  margin-bottom: 0;
-}
-
-#table-state {
-  color: $teal;
-  font-weight: 700;
-}
-
-.top-margin {
-  margin-top: 2rem;
-  margin-bottom: .5rem;
-}
-
-.paper-table {
-  height: 300px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  font-size: 12px;
-  margin-bottom: 2rem;
-}
-
-.table-striped > tbody > tr:nth-of-type(even), table thead {
-  background-color: $black;
-}
-
-td {
-  padding: .5rem !important;
-  line-height: 1;
-}
-
-.table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: darken($teal, 20%);
-}
-
-table thead {
-  color: white;
-}
-
-.sf {
-  color: $teal;
-  float: left;
-}
-
-.teal {
-  font-weight: 700;
-  color: $teal;
-}
-
-#dots-container {
-  position: fixed;
-  top: 10vh;
-  bottom: 10vh;
-  right: 2vw;
-  z-index:3 ;
-}
-
-#dots {
-  height: 80vh;
-  display: none;
-  @include breakpoint(medium) {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-  }
-  width: 1rem;
-}
-
-.fa-sm {
-  font-size: .6rem !important;
-  opacity: 0.5;
-  &:hover {
-    cursor: pointer;
-  }
-}
-
-.active-circle {
-  // color: $red;
-  opacity: 1;
-  font-size: .9rem !important;
-}
 
 // d3 styles
 
-/*styles to make the svg responsive*/
+// styles to make the svg responsive
 .svg-content-responsive {
   display: inline-block;
   position: absolute;
@@ -717,10 +578,11 @@ table thead {
   width: 100%;
   @include centered;
 }
+
 .svg-container {
   position: relative;
   width: 100%;
-  padding-bottom: 100%; /* aspect ratio */
+  padding-bottom: 100%; // aspect ratio
   @include breakpoint(large) {
     padding-bottom: 80%;
   }
@@ -734,11 +596,12 @@ table thead {
   }
   color: white;
 }
+
 .svg-container-state {
   display: inline-block;
   position: relative;
   width: 100%;
-  padding-bottom: 53%; /* aspect ratio */
+  padding-bottom: 53%; // aspect ratio
   vertical-align: top;
   overflow: hidden;
 }
@@ -800,8 +663,30 @@ table thead {
   text-transform: capitalize;
 }
 
-// social share styles
+// circle nav styles
+#fp-nav {
+  @include breakpoint(small only) {
+    display: none;
+  }
+  & ul li {
+    height: 6px !important;
+    & a span {
+      background: white !important;
+      margin-top: 2px !important;
+    }
+    & a.active span {
+      top: 0px;
+      background: none !important;
+      border: 1px solid white !important;
+    }
+    &:hover a.active span {
+      background: none !important;
+      border: 1px solid white !important;
+    }
+  }
+}
 
+// social share styles
 #st-2 {
   z-index: 2;
   & .st-btn {
