@@ -4,15 +4,6 @@ $(window).load(function() {
 
 $(document).foundation();
 
-// adds navigation dots
-var sections = $('.step').length;
-
-var addDots = "";
-for (var i=0; i < sections; i++) {
-  addDots += '<i class="fa fa-circle-o fa-sm" id="circle-' + (i+1) + '" aria-hidden="true"></i>'
-};
-$('#dots').html(addDots);
-
 
 // gives each step a sequential ID
 $.each($(".step"), function(index, value){
@@ -58,14 +49,26 @@ $.each($(".fa-circle-o"), function(index, value){
 //   });
 // });
 
-$('.vis-small-container').css('left', function(){
-  var width = 780;
-  var windowWidth = $(window).width();
-  return (windowWidth - width)/2;
+$('.step').css('margin-left', function(){
+  var width = $('.step').width();
+  var windowWidth = $('#sections').width();
+  var margin = (windowWidth - width)/2;
+  return margin;
 });
-$('#step9').css('left', function(){
-  var width = $('#step9').width();
-  var windowWidth = $(window).width();
-  return "-" + (windowWidth - width)/1.5;
+$('#step10').css('margin-left', function(){
+  var width = $('#step10').width();
+  var windowWidth = $('#sections').width();
+  var margin = (windowWidth - width)/2;
+  return margin;
 });
-$('.vis-large-container').css('left', 0);
+// $('.vis-large-container').css('left', 0);
+
+// $('#sections').fullpage({
+//    anchors: false,
+//    scrollingSpeed: 700,
+//    navigation: true,
+//    autoScrolling: false,
+//    normalScrollElementTouchThreshold: 6,
+//    fadingEffect: true,
+//    fadingEffectKey: 'a2llcnN0ZW5zY2htaWR0LmNvbV9NSUVabUZrYVc1blJXWm1aV04wdmZ'
+//  })

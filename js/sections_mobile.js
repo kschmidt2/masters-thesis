@@ -794,6 +794,36 @@ var scrollVis = function() {
       .attr("opacity", 0.0);
   }
 
+  function hideBridge() {
+
+    $('#bridge-text').fadeTo(500,0).css("display", "none");
+    $('#bridge_illo').hide();
+    $('#vis').removeClass('vis-large-container');
+    $('#vis').addClass('vis-small-container');
+
+    $('#vis').removeClass('vis-trigger');
+
+    g.selectAll(".square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
+
+    g.selectAll(".record-before")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
+
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
+
+    g.selectAll(".chart-key-square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 0.0);
+  }
+
   /**
    * showRecord - show Record employee grid
    *
@@ -808,6 +838,9 @@ var scrollVis = function() {
     $('#vis').addClass('vis-small-container');
 
     $('#vis').removeClass('vis-trigger');
+
+    g.selectAll(".chart-hed")
+      .text("Bergen record employees, after 2016 layoffs");
 
     g.selectAll(".square")
       .transition()
@@ -916,13 +949,54 @@ var scrollVis = function() {
 
   function updateNational() {
 
-      g.selectAll(".chart-hed")
-        .text("National newspaper employees, 2014");
+    g.selectAll(".square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 1.0)
+      .style("fill", "#e7472e");
 
-      g.selectAll(".national-after")
-        .transition("national")
-        .duration(0)
-        .style("fill", "#7a3a30");
+    g.selectAll(".chart-legend")
+      .transition()
+      .duration(600)
+      .text("= 100 employees");
+
+    g.selectAll(".chart-key")
+      .transition()
+      .duration(0)
+      .attr("opacity", 1);
+
+    g.selectAll(".chart-key-square")
+      .transition()
+      .duration(0)
+      .attr("opacity", 1);
+
+    g.selectAll(".square")
+      .transition("move-fills")
+      .duration(800)
+      .attr("x", function(d,i) {
+        return d.x;
+      })
+      .attr("y", function(d,i) {
+        return d.y;
+      });
+
+    g.selectAll(".chart-hed")
+      .text("National newspaper employees, 2014");
+
+    g.selectAll(".national-after")
+      .transition("national")
+      .duration(0)
+      .style("fill", "#7a3a30");
+
+    hideAxis();
+
+    var totalLength = g.selectAll(".employee-line").node().getTotalLength();
+
+    g.selectAll(".employee-line")
+    .transition()
+      .duration(500)
+      .ease("linear")
+      .attr("stroke-dashoffset", totalLength);
 
   }
 
@@ -1357,7 +1431,7 @@ var scrollVis = function() {
     showKey();
 
     g.selectAll(".chart-hed")
-      .text("Number of news stories mentioning Congressional candidates in major newspapers");
+      .text("Stories mentioning Congressional candidates");
 
     g.selectAll(".govt-bar")
       .transition()
@@ -1420,7 +1494,7 @@ var scrollVis = function() {
       xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.candidates })])
 
       g.selectAll(".chart-hed")
-        .text("Number of major-party Congressional candidates covered in major newspapers");
+        .text("Congressional candidates covered");
 
       g.selectAll(".congress-bar")
         .transition()
@@ -1629,6 +1703,9 @@ var scrollVis = function() {
         .ease("linear")
         .attr("stroke-dashoffset", totalLength)
         .attr("opacity", 0);
+
+    g.selectAll(".chart-hed")
+      .text("Republican attitudes about Democratic Party");
 
     var animosityLineDraw1 = d3.svg.line()
       .x(function(d) { return xLineScale2(d.year); })
@@ -2006,52 +2083,56 @@ var scrollVis = function() {
    chart.activate =
    	$('#sections').fullpage({
        anchors: false,
-       scrollingSpeed: 300,
+       scrollingSpeed: 700,
        navigation: true,
        autoScrolling: false,
        normalScrollElementTouchThreshold: 6,
+       fadingEffect: true,
+       fadingEffectKey: 'a2llcnN0ZW5zY2htaWR0LmNvbV9NSUVabUZrYVc1blJXWm1aV04wdmZ',
+       continuousVertical: false,
 
 
        onLeave: function(anchorLink, index){
          activateFunctions[0] = showBridge;
          activateFunctions[1] = showBridgeQuote;
          activateFunctions[2] = showBridgeQuote2;
-         activateFunctions[3] = showRecord;
-         activateFunctions[4] = updateRecord;
-         activateFunctions[5] = showNational;
-         activateFunctions[6] = updateNational;
-         activateFunctions[7] = showNationalTrend;
-         activateFunctions[8] = showNewspaper;
-         activateFunctions[9] = hideNewspaper;
-         activateFunctions[10] = blankSlide;
-         activateFunctions[11] = showCirculation;
-         activateFunctions[12] = showCircRevenue;
-         activateFunctions[13] = showAdRevenue;
-         activateFunctions[14] = showPapersClosed;
-         activateFunctions[15] = showBigCities;
-         activateFunctions[16] = showSuburbs;
-         activateFunctions[17] = showCongressCoverage;
-         activateFunctions[18] = updateCongressCoverage;
-         activateFunctions[19] = showStateReporters;
-         activateFunctions[20] = hideStateReporters;
-         activateFunctions[21] = hideRepublican;
-         activateFunctions[22] = showRepublican;
-         activateFunctions[23] = showDemocrat;
-         activateFunctions[24] = showAnimosity;
-         activateFunctions[25] = updateAnimosity;
-         activateFunctions[26] = hideAnimosity;
-         activateFunctions[27] = blankSlide;
-         activateFunctions[28] = hideCincinnati;
-         activateFunctions[29] = showLosAngeles;
-         activateFunctions[30] = hideLosAngeles;
-         activateFunctions[31] = blankSlide;
-         activateFunctions[32] = hideCorruption;
-         activateFunctions[33] = showCorruption;
-         activateFunctions[34] = hideCorruption;
-         activateFunctions[35] = blankSlide;
-         activateFunctions[36] = setMaxWidth;
-         activateFunctions[37] = removeMaxWidth;
-         activateFunctions[38] = blankSlide;
+         activateFunctions[3] = hideBridge;
+         activateFunctions[4] = showRecord;
+         activateFunctions[5] = updateRecord;
+         activateFunctions[6] = showNational;
+         activateFunctions[7] = updateNational;
+         activateFunctions[8] = showNationalTrend;
+         activateFunctions[9] = showNewspaper;
+         activateFunctions[10] = hideNewspaper;
+         activateFunctions[11] = blankSlide;
+         activateFunctions[12] = showCirculation;
+         activateFunctions[13] = showCircRevenue;
+         activateFunctions[14] = showAdRevenue;
+         activateFunctions[15] = showPapersClosed;
+         activateFunctions[16] = showBigCities;
+         activateFunctions[17] = showSuburbs;
+         activateFunctions[18] = showCongressCoverage;
+         activateFunctions[19] = updateCongressCoverage;
+         activateFunctions[21] = showStateReporters;
+         activateFunctions[21] = hideStateReporters;
+         activateFunctions[22] = hideRepublican;
+         activateFunctions[23] = showRepublican;
+         activateFunctions[24] = showDemocrat;
+         activateFunctions[25] = showAnimosity;
+         activateFunctions[26] = updateAnimosity;
+         activateFunctions[27] = hideAnimosity;
+         activateFunctions[28] = blankSlide;
+         activateFunctions[29] = hideCincinnati;
+         activateFunctions[30] = showLosAngeles;
+         activateFunctions[31] = hideLosAngeles;
+         activateFunctions[32] = blankSlide;
+         activateFunctions[33] = hideCorruption;
+         activateFunctions[34] = showCorruption;
+         activateFunctions[35] = hideCorruption;
+         activateFunctions[36] = blankSlide;
+         activateFunctions[37] = setMaxWidth;
+         activateFunctions[38] = removeMaxWidth;
+         activateFunctions[39] = blankSlide;
 
 
 
@@ -2059,23 +2140,22 @@ var scrollVis = function() {
        index = index - 1;
 
 
+
        activeIndex = index;
          var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
          var scrolledSections = d3.range(lastIndex + sign, activeIndex + sign, sign);
          scrolledSections.forEach(function(i) {
            activateFunctions[i]();
-           $('.step').fadeTo(0);
-           $('#step' + (i+1)).fadeTo(100);
            $('.vis-small-container').css('left', function(){
              var width = 780;
              var windowWidth = $(window).width();
              return (windowWidth - width)/2;
            });
-           $('#step9').css('left', function(){
-             var width = $('#step9').width();
-             var windowWidth = $(window).width();
-             return "-" + (windowWidth - width)/1.5;
-           });
+          //  $('#step9').css('left', function(){
+          //    var width = $('#step9').width();
+          //    var windowWidth = $(window).width();
+          //    return "-" + (windowWidth - width)/1.5;
+          //  });
            $('.vis-large-container').css('left', 0);
          });
          lastIndex = activeIndex;
