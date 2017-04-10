@@ -1,14 +1,7 @@
 console.log("this is mobile");
 
-/**
- * scrollVis - encapsulates
- * all the code for the visualization
- * using reusable charts pattern:
- * http://bost.ocks.org/mike/chart/
- */
 var scrollVis = function() {
-  // constants to define the size
-  // and margins of the vis area.
+
   var width = 340;
   var height = 230;
   var margin = {top:100, left:30, bottom:0, right:30};
@@ -197,11 +190,6 @@ var scrollVis = function() {
   // the activation function for that
   // section is called.
   var activateFunctions = [];
-  // If a section has an update function
-  // then it is called while scrolling
-  // through the section with the current
-  // progress through the section.
-  var updateFunctions = [];
 
   /**
    * chart
@@ -212,7 +200,6 @@ var scrollVis = function() {
    */
   var chart = function(selection) {
     selection.each(function(rawData) {
-      console.log('stateReportersData', stateReportersData);
     // create responsive svg
     svg = d3.select(this)
       .append("div")
@@ -226,8 +213,7 @@ var scrollVis = function() {
         .append("g")
         .classed("main-g", true);
 
-      // this group element will be used to contain all
-      // other elements.
+      // this group element will be used to contain all other elements.
       g = svg.select("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -255,18 +241,25 @@ var scrollVis = function() {
         });
       });
 
+      // government coverage chart domain
       xBarScale.domain([0,d3.max(govtCoverageData, function(d) { return d.big_city })]);
 
+      // congress coverage chart domain
       xBarScale1.domain([0,d3.max(congressCoverageData, function(d) { return d.per_candidate })]);
 
+      // statehouse reporters chart domain
       xBarScale2.domain(stateReportersData.map(function(d) { return d.year; }));
 
+      // partisanship chart domain
       xLineScale1.domain(d3.extent(partisanshipData, function(d) { return d.year }))
 
+      // animosity chart domain
       xLineScale2.domain(d3.extent(animosityData, function(d) { return d.year }))
 
+      // LA chart domain
       xBarScale3.domain(losAngelesData.map(function(d) { return d.paper; }));
 
+      // corruption chart domain
       xBarScale4.domain([0,d3.max(corruptionData, function(d) { return d.change})]);
 
       setupVis(squareData, employeeLineData, circulationData, papersClosedData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData, animosityData, losAngelesData, corruptionData);
@@ -276,11 +269,7 @@ var scrollVis = function() {
   };
 
 
-  /**
-   * setupVis - creates initial elements for all
-   * sections of the visualization.
-   *
-   */
+  // initializes visualization
   setupVis = function(squareData, employeeLineData, circulationData, papersClosedData, govtCoverageData, congressCoverageData, stateReportersData, partisanshipData, animosityData, losAngelesData, corruptionData) {
 
     var squares = g.selectAll(".square").data(squareData);
@@ -297,6 +286,7 @@ var scrollVis = function() {
       .attr("y", function(d) { return d.y;})
       .attr("opacity", 0);
 
+    // text for all charts
     var chartText = g.append("text")
         .attr("class", "chart-key chart-hed")
         .attr("x", 0)
@@ -699,42 +689,10 @@ var scrollVis = function() {
 
   };
 
-
-  /**
-   * ACTIVATE FUNCTIONS
-   *
-   * These will be called their
-   * section is scrolled to.
-   *
-   * General pattern is to ensure
-   * all content for the current section
-   * is transitioned in, while hiding
-   * the content for the previous section
-   * as well as the next section (as the
-   * user may be scrolling up or down).
-   *
-   */
-
-  /**
-   * showBridge - initial title
-   *
-   * hides: bridge quote 1
-   * (no previous step to hide)
-   * shows: bridge
-   *
-   */
   function showBridge() {
     $('#bridge-text').fadeTo(500,0).css("display", "none");
   }
 
-  /**
-   * showBridgeQuote - time for some traffic problems
-   *
-   * (no previous step to hide)
-   * hides: Christie drops out
-   * shows: traffic problems quote
-   *
-   */
   function showBridgeQuote() {
 
     $('.scroll-down').fadeOut();
@@ -745,14 +703,6 @@ var scrollVis = function() {
     $('.bridge-attrib').hide().html("Bridget Anne Kelly, deputy chief of staff in Christie's office in an email to Port Authority executive David Wildstein.").fadeIn(1000);
   }
 
-  /**
-   * showBridgeQuote1 - Christie drops out
-   *
-   * hides: traffic problems quote
-   * hides: square grid
-   * shows: Christie drops out
-   *
-   */
   function showBridgeQuote2() {
     $('#vis').removeClass('vis-small-container');
 
@@ -762,7 +712,6 @@ var scrollVis = function() {
     $('#bridge_illo').fadeTo(500,1);
     $('#bridge-text').show();
     $('#bridge-text').fadeTo(500,1);
-
     $('#vis').addClass('vis-trigger');
 
     g.selectAll(".square")
@@ -787,7 +736,6 @@ var scrollVis = function() {
     $('#bridge_illo').hide();
     $('#vis').removeClass('vis-large-container');
     $('#vis').addClass('vis-small-container');
-
     $('#vis').removeClass('vis-trigger');
 
     g.selectAll(".square")
@@ -811,19 +759,11 @@ var scrollVis = function() {
       .attr("opacity", 0.0);
   }
 
-  /**
-   * showRecord - show Record employee grid
-   *
-   * hides: christie drops out, bridge illustration
-   * hides: national employee squares
-   * shows: Record employee grid, updates on scroll
-   */
   function showRecord() {
 
     $('#bridge-text').fadeTo(500,0).css("display", "none");
     $('#bridge_illo').hide();
     $('#vis').addClass('vis-small-container');
-
     $('#vis').removeClass('vis-trigger');
 
     g.selectAll(".chart-hed")
@@ -849,10 +789,10 @@ var scrollVis = function() {
       .duration(0)
       .attr("opacity", 1.0)
       .style("fill", "#e7472e");
-
   }
 
   function updateRecord() {
+
       g.selectAll(".chart-hed")
         .text("Bergen record employees, after 2016 layoffs");
 
@@ -873,14 +813,6 @@ var scrollVis = function() {
         .style("fill", "#7a3a30");
   }
 
-  /**
-   * showNational - national employee grid
-   *
-   * hides: Record employee squares
-   * hides: national employee line chart
-   * shows: national employee squares
-   *
-   */
   function showNational() {
 
     g.selectAll(".record-before")
@@ -901,8 +833,6 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .text("= 100 employees");
-
-
   }
 
   function updateNational() {
@@ -955,17 +885,8 @@ var scrollVis = function() {
       .duration(500)
       .ease("linear")
       .attr("stroke-dashoffset", totalLength);
-
   }
 
-  /**
-   * showNationalTrend - shows national employee line graph
-   *
-   * hides: national employee squares
-   * hides: newspaper illustration
-   * shows: national employee line chart
-   *
-   */
   function showNationalTrend() {
 
     g.selectAll(".square")
@@ -1008,20 +929,10 @@ var scrollVis = function() {
         .attr("fill", "none")
         .attr("stroke", "#e7472e");
 
-
     $('#newspaper_illo').fadeTo(500,0).hide();
-    // $('#header').removeClass('fixed');
     $('#sections').removeClass('header-step');
-
   }
 
-  /**
-   * showNewspaper - show newspaper illustration
-   *
-   * hides: national employee line chart
-   * shows: newspaper illustration
-   *
-   */
   function showNewspaper() {
 
     hideAxis();
@@ -1041,31 +952,13 @@ var scrollVis = function() {
 
     $('#newspaper_illo').show().fadeTo(500,1);
     $('#sections').addClass('header-step');
-
-    // $('#header').addClass('fixed');
-
   }
 
-  /**
-   * hideNewspaper - blank slide
-   *
-   * hides: newspaper illustration
-   * shows: nothing
-   *
-   */
   function hideNewspaper() {
     $('#newspaper_illo').fadeTo(500,0).hide();
-    // $('#header').removeClass('fixed');
     $('#sections').removeClass('header-step');
   }
 
-  /**
-   * blankSlide - blank slide
-   *
-   * hides: circulation chart
-   * shows: nothing
-   *
-   */
   function blankSlide() {
 
     g.select(".x.axis")
@@ -1084,10 +977,10 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 0)
-
   }
 
   function showCirculation() {
+
     showXAxis(xAxisBar0, 600);
 
     g.select(".x.axis")
@@ -1119,7 +1012,6 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 0)
-
   }
 
   function showCircRevenue () {
@@ -1165,7 +1057,6 @@ var scrollVis = function() {
         } else {
           return yBarScale01(d.circulation) + 15;
         } });
-
   }
 
   function showAdRevenue () {
@@ -1200,7 +1091,6 @@ var scrollVis = function() {
           return yBarScale01(d.advertising);
         } });
 
-
     showXAxis(xAxisBar01, 0);
 
     g.selectAll(".arc")
@@ -1222,7 +1112,6 @@ var scrollVis = function() {
       .transition()
       .duration(0)
       .attr("opacity", 0);
-
   }
 
   function showPapersClosed () {
@@ -1280,7 +1169,6 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 1);
-
   }
 
   function showBigCities () {
@@ -1381,7 +1269,6 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 0);
-
   }
 
   function showCongressCoverage () {
@@ -1471,6 +1358,7 @@ var scrollVis = function() {
   }
 
   function showStateReporters () {
+
     g.selectAll(".congress-bar")
       .transition()
       .duration(600)
@@ -1539,7 +1427,6 @@ var scrollVis = function() {
       .transition()
       .duration(600)
       .attr("opacity", 0);
-
   }
 
   function hideRepublican() {
@@ -1556,7 +1443,6 @@ var scrollVis = function() {
       .ease("linear")
       .attr("stroke-dashoffset", totalLength)
       .attr("opacity", 0);
-
   }
 
   function showRepublican() {
@@ -1588,7 +1474,6 @@ var scrollVis = function() {
         .attr("stroke-width", 3)
         .attr("fill", "none")
         .attr("stroke", "#e7472e");
-
   }
 
   function showDemocrat() {
@@ -1644,7 +1529,6 @@ var scrollVis = function() {
       .transition()
       .duration(200)
       .attr("opacity", 0);
-
   }
 
   function showAnimosity() {
@@ -1691,7 +1575,7 @@ var scrollVis = function() {
       .y(function(d) { return yLineScale2(d.rep_very); })
       .defined(function(d) { return d; });
 
-      var totalLength2 = g.selectAll(".very-line").node().getTotalLength();
+    var totalLength2 = g.selectAll(".very-line").node().getTotalLength();
 
     g.selectAll(".very-line")
       .attr("stroke-dasharray", totalLength2 + " " + totalLength2)
@@ -1718,7 +1602,6 @@ var scrollVis = function() {
       .delay(800)
       .duration(200)
       .attr("opacity", 1);
-
   }
 
   function updateAnimosity() {
@@ -1739,42 +1622,42 @@ var scrollVis = function() {
       .duration(500)
       .attr("opacity", 1);
 
-      g.selectAll(".chart-hed")
-        .text("Democratic attitudes about Republican Party");
+    g.selectAll(".chart-hed")
+      .text("Democratic attitudes about Republican Party");
 
-        var animosityLineDraw1 = d3.svg.line()
-          .x(function(d) { return xLineScale2(d.year); })
-          .y(function(d) { return yLineScale2(d.dem_unfav); })
-          .defined(function(d) { return d; });
+    var animosityLineDraw1 = d3.svg.line()
+      .x(function(d) { return xLineScale2(d.year); })
+      .y(function(d) { return yLineScale2(d.dem_unfav); })
+      .defined(function(d) { return d; });
 
-        g.selectAll(".unfav-line")
-          .attr("opacity", 1)
-          .transition()
-            .delay(0)
-            .attr("d", function(d) { return animosityLineDraw1(d) })
-            .duration(800)
-            .ease("linear")
-            .attr("stroke-dashoffset", 0)
-            .attr("stroke-width", 5)
-            .attr("fill", "none")
-            .attr("stroke", "#52908b");
+    g.selectAll(".unfav-line")
+      .attr("opacity", 1)
+      .transition()
+        .delay(0)
+        .attr("d", function(d) { return animosityLineDraw1(d) })
+        .duration(800)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0)
+        .attr("stroke-width", 5)
+        .attr("fill", "none")
+        .attr("stroke", "#52908b");
 
-          var animosityLineDraw2 = d3.svg.line()
-            .x(function(d) { return xLineScale2(d.year); })
-            .y(function(d) { return yLineScale2(d.dem_very); })
-            .defined(function(d) { return d; });
+      var animosityLineDraw2 = d3.svg.line()
+        .x(function(d) { return xLineScale2(d.year); })
+        .y(function(d) { return yLineScale2(d.dem_very); })
+        .defined(function(d) { return d; });
 
-          g.selectAll(".very-line")
-            .attr("opacity", 1)
-            .transition()
-              .delay(0)
-              .attr("d", function(d) { return animosityLineDraw2(d) })
-              .duration(800)
-              .ease("linear")
-              .attr("stroke-dashoffset", 0)
-              .attr("stroke-width", 5)
-              .attr("fill", "none")
-              .attr("stroke", "#e5e2ca");
+      g.selectAll(".very-line")
+        .attr("opacity", 1)
+        .transition()
+          .delay(0)
+          .attr("d", function(d) { return animosityLineDraw2(d) })
+          .duration(800)
+          .ease("linear")
+          .attr("stroke-dashoffset", 0)
+          .attr("stroke-width", 5)
+          .attr("fill", "none")
+          .attr("stroke", "#e5e2ca");
   }
 
   function hideAnimosity() {
@@ -1836,6 +1719,7 @@ var scrollVis = function() {
   }
 
   function showLosAngeles() {
+
     g.selectAll(".chart-hed")
       .text("Those in L.A. who say they always vote, 2009");
 
@@ -1934,20 +1818,7 @@ var scrollVis = function() {
     $('#bridge-text').fadeTo(500,0).hide();
   }
 
-  function setMaxWidth() {
-
-  }
-
-  function removeMaxWidth() {
-
-  }
-
-  /**
-   * showAxis - helper function to
-   * display particular xAxis
-   *
-   * @param xAxis, yAxis - the axis to show, delay - how long to delay the transition
-   */
+  // show and hide axis helper functions
   function showAxis(xAxis, yAxis, delay) {
     g.select(".x.axis")
       .call(xAxis)
@@ -1980,6 +1851,7 @@ var scrollVis = function() {
       .style("opacity",0);
   }
 
+  // show and hide key helper functions
   function showKey() {
     g.selectAll(".chart-key")
       .transition()
@@ -1999,31 +1871,13 @@ var scrollVis = function() {
       .attr("opacity", 0.0);
   }
 
-  /**
-   * DATA FUNCTIONS
-   *
-   * Used to coerce the data into the
-   * formats we need to visualize
-   *
-   */
-
-  /**
-   * getSquares - maps raw data to
-   * array of data objects.
-   *
-   * This function converts some attributes into
-   * numbers and adds attributes used in the visualization
-   *
-   * @param rawData - data read in from squares file
-   */
+  // data functions
   function getSquares(rawData) {
     return rawData.map(function(d,i) {
       d.record_before = (d.record_before === "1") ? true : false;
       d.record_after = (d.record_after === "1") ? true : false;
       d.national_after = (d.national_after === "1") ? true : false;
-      // positioning for square visual
-      // stored here to make it easier
-      // to keep track of.
+      // positioning for square visual stored here to make it easier to keep track of.
       d.col = i % numPerRow;
       d.x = d.col * (squareSize + squarePad);
       d.row = Math.floor(i / numPerRow);
@@ -2032,12 +1886,7 @@ var scrollVis = function() {
     });
   }
 
-  /**
-   * activate -
-   *
-   * @param index - index of the activated section
-   */
-
+  // activates the chart on section change
    chart.activate =
    	$('#sections').fullpage({
        anchors: false,
@@ -2048,7 +1897,6 @@ var scrollVis = function() {
        fadingEffect: true,
        fadingEffectKey: 'a2llcnN0ZW5zY2htaWR0LmNvbV9NSUVabUZrYVc1blJXWm1aV04wdmZ',
        continuousVertical: false,
-
 
        onLeave: function(anchorLink, index){
          activateFunctions[0] = showBridge;
@@ -2086,39 +1934,26 @@ var scrollVis = function() {
          activateFunctions[32] = showCorruption;
          activateFunctions[33] = hideCorruption;
          activateFunctions[34] = blankSlide;
-         activateFunctions[35] = setMaxWidth;
-         activateFunctions[36] = removeMaxWidth;
+         activateFunctions[35] = blankSlide;
+         activateFunctions[36] = blankSlide;
          activateFunctions[37] = blankSlide;
 
+         var loadedSection = $(this);
+         index = index - 1;
 
-
-       var loadedSection = $(this);
-       index = index - 1;
-
-
-
-       activeIndex = index;
+         activeIndex = index;
          var sign = (activeIndex - lastIndex) < 0 ? -1 : 1;
          var scrolledSections = d3.range(lastIndex + sign, activeIndex + sign, sign);
          scrolledSections.forEach(function(i) {
            activateFunctions[i]();
-          //  $('#step9').css('left', function(){
-          //    var width = $('#step9').width();
-          //    var windowWidth = $(window).width();
-          //    return "-" + (windowWidth - width)/1.5;
-          //  });
            $('.vis-large-container').css('left', 0);
          });
          lastIndex = activeIndex;
-   	}
+     	  }
      });
 
 
-  /**
-   * setOtherData - brings in all data except the first file
-   * @param other - array of some other data you want to use
-   */
-
+  // brings in all other data besides first file
   chart.setOtherData = function(employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship, animosity, losangeles, corruption) {
     employeeLineData = employeeLine;
     circulationData = circulation;
@@ -2196,32 +2031,14 @@ var scrollVis = function() {
     })
   };
 
-  /**
-   * update
-   *
-   * @param index
-   * @param progress
-   */
-  chart.update = function(index, progress) {
-    updateFunctions[index](progress);
-  };
-
   // return chart function
   return chart;
 };
 
 
-/**
- * display - called once data
- * has been loaded.
- * sets up the scroller and
- * displays the visualization.
- *
- * @param data - loaded csv data
- */
+// display the visualization after data has been loaded
 function display(error, employeeSquares, employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship, animosity, losangeles, corruption) {
-  // create a new plot and
-  // display it
+  // create a new plot and display it
   var plot = scrollVis();
   plot.setOtherData(employeeLine, circulation, papers_closed, govt_coverage, congress_coverage, state_reporters, partisanship, animosity, losangeles, corruption);
   d3.select("#vis")

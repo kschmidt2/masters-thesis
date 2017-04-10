@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en" ng-app="newspaper">
+<html class="no-js" lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -275,11 +275,7 @@
     <script src="bower_components/what-input/dist/what-input.js"></script>
     <script src="bower_components/foundation-sites/dist/js/foundation.js"></script>
     <script src="js/enquire.min.js"></script>
-    <script src="js/angular.min.js"></script>
-    <script src="js/angular_app.js"></script>
     <script src="js/d3.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
-    <script src="js/datamaps.usa.min.js"></script>
     <script src="js/jquery.fullpage.extensions.min.js"></script>
     <script src="js/fullpage.fadingEffect.min.js"></script>
     <script src="js/queue.js"></script>
@@ -287,9 +283,9 @@
 
     <script type="text/javascript">
 
-    // This loads JS files in the head element
+    // This loads JS files in the body element
         function loadJS(url)  {
-            // adding the script tag to the head
+            // adding the script tag to the body
            var body = document.getElementsByTagName('body')[0];
            var script = document.createElement('script');
            script.type = 'text/javascript';

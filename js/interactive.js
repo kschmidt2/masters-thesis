@@ -1,6 +1,6 @@
 function buildMap (){
 
-
+  // gets map data
   var mapFile = "data/state_reporters.csv";
   d3.csv(mapFile,
       function(d) {
@@ -16,7 +16,6 @@ function buildMap (){
               if (error != null) {
                   console.log("Uh-oh, something went wrong. Try again?");
               } else {
-                  console.log("Just loaded " + data.length + " records.");
 
                   var usadata = d3.nest()
                     .rollup(function(v) {
@@ -33,9 +32,9 @@ function buildMap (){
 
       });
 
-
       var map_data = function(data, usadata) {
 
+        // hover info for USA
         function usaInfo() {
           $("#state-name").html('<strong>United States</strong>');
           var usaDetails = "Total statehouse reporters, 2014: <span class='teal'>" + usadata.total.toLocaleString();
@@ -57,12 +56,13 @@ function buildMap (){
             .domain([minValue,maxValue])
             .range(["#e5e2ca","#52908b"]);
 
-        series.forEach(function(d){ //
+        series.forEach(function(d){
             var iso = d.state,
                 value = d.per_ten_legislators;
                 dataset[iso] = { numberOfThings: value, fillColor: paletteScale(value) };
         });
 
+        // hover info
         function infoBox(selectState) {
           series.forEach(function(d){
             if (d.state == selectState) {
@@ -74,7 +74,7 @@ function buildMap (){
           });
         };
 
-
+        // creates map
         var map = new Datamap({
             element: document.getElementById('usmap'),
             scope: 'usa',
@@ -88,15 +88,7 @@ function buildMap (){
               highlightFillColor: "white",
             },
             done: function(datamap) {
-            datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography){
-              $('.datamaps-subunits').attr("ng-model", "nameSearch.state_full");
-              $this = this;
-              $(this).removeClass('datamaps-subunit');
-              var stateClass = $(this).attr('class');
-              var stateName = geography.properties.name;
-              updateData(stateName, stateClass);
-              infoBox(stateClass);
-            }).on('mouseover', function(geography){
+            datamap.svg.selectAll('.datamaps-subunit').on('mouseover', function(geography){
               $this = this;
               $(this).css('opacity', '0.4');
               $(this).removeClass('datamaps-subunit');
@@ -120,6 +112,7 @@ function buildMap (){
 
 buildMap();
 
+// creates states dropdown
 var dropDown = d3.select(".state-dropdown");
 
 dropDown.on("change", dropClick);
@@ -130,9 +123,7 @@ function dropClick(d) {
   updateData(selectedValue, stateClass);
 }
 
-// function buildBars(selectState) {
-  // console.log(selectState + " bars firing");
-
+  // bar chart setup
   var width = 300;
   var height = 120;
   var margin = {top:20, left:0, bottom:0, right:0};
@@ -141,7 +132,6 @@ function dropClick(d) {
       .rangeBands([0, height], .2);
 
   var y1 = d3.scale.ordinal();
-      // .rangeBands([0, y0.rangeBand()]);
 
   var x = d3.scale.linear()
       .range([0, width-40]);
@@ -175,6 +165,7 @@ function dropClick(d) {
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+  // loads data for bar charts
   function loadData() {
     d3.csv("data/newspaper_interactive.csv", function (error, data){
       if (error) throw error;
@@ -194,8 +185,6 @@ function dropClick(d) {
           .rollup(function(v) {
             return d3.sum(v, function(d) {return d.total_circulation; })
           }).entries(data);
-
-          console.log(circData);
 
         y0.domain([0,1,2]);
         y1.domain([0,1]).rangeBands([0, y0.rangeBand()]);
@@ -343,18 +332,15 @@ function dropClick(d) {
     })
   }
 
-  loadData();
+loadData();
 
-// }
-
+// updates data on dropdown change
 function updateData(selectState, stateClass) {
 
   var enterState = '<div class="sf sf-' + stateClass.toLowerCase() + '"></div> <strong>' + selectState + '</strong>';
 
   $('#state-name-2').html(enterState);
   $('#table-state').html(selectState);
-
-  console.log("hello" + selectState);
 
   function loadData(selectState) {
     d3.csv("data/newspaper_interactive.csv", function (error, data){
@@ -394,10 +380,7 @@ function updateData(selectState, stateClass) {
             return d3.sum(v, function(d) {return d.total_circulation; })
           }).entries(data);
 
-      }
-        console.log(newspaperData);
-        console.log(circData);
-
+        }
 
         x.domain([0, d3.max(newspaperData, function(d) { return d3.max(d.values, function(d) { return d.values; }); })]);
         x1.domain([0, d3.max(circData, function(d) { return d3.max(d.values, function(d) { return d.values; }); })]);
@@ -441,20 +424,16 @@ function updateData(selectState, stateClass) {
               return x1(d.values) + 80
             } else {
               return x1(d.values) + 20
-            }
-           })
+            }})
            .style("fill", function(d) {
              if (x1(d.values) < 100) {
                return "white"
              } else {
                return "#323232"
-             }
-           });
+             }});
       })
     }
 
     loadData(selectState);
 
 }
-
-// buildBars("United States");
