@@ -11,6 +11,9 @@
 @include foundation-forms;
 @include foundation-visibility-classes;
 @include foundation-float-classes;
+@include foundation-dropdown;
+@include foundation-dropdown-menu;
+@include dropdown-container;
 
 @include motion-ui-transitions;
 @include motion-ui-animations;
@@ -234,11 +237,14 @@ h2 {
 
 #sections {
   max-width: 1048px;
-  margin: 0 auto;
+  margin: 0 0 0 -5vw;
   z-index: 2;
+  @include breakpoint(medium) {
+    margin: 0 auto;
+  }
   & .step {
     height: auto !important;
-    max-width: 92vw;
+    max-width: 84vw;
     @include breakpoint(medium) {
       max-width: 560px;
     }
@@ -260,6 +266,9 @@ h2 {
       @include breakpoint(medium) {
         height: 60vh;
       }
+    }
+    &.centered {
+      text-align: center;
     }
   }
 }
@@ -302,7 +311,7 @@ h2 {
     left: 0;
     bottom: 6vh;
     z-index: 1;
-    height: 55vh;
+    height: 60vh;
     width: 100vw;
     @include breakpoint(medium only) {
       bottom: 10vh;
@@ -434,17 +443,51 @@ h2 {
     margin-right: 0;
   }
   & .state-dropdown {
+    width: 300px;
+    @include breakpoint(medium only) {
+      width: 200px;
+    }
+    background: white;
     color: $black;
     outline: 1px solid $teal;
     outline-offset: -1px;
-    border: 1px solid $red;
-    border-radius: 0;
-    border-bottom-left-radius: 0;
     font-size: 14px;
     margin-top: 20px;
     height: 1.7rem;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 2px 0 0 15px;
+    margin-left: 0;
+    list-style-type: none;
+    & ul {
+      padding: 0;
+    }
+    & a {
+      color: $teal;
+    }
+  }
+  .dropdown.menu>li.is-dropdown-submenu-parent>a::after {
+    top: 55%;
+    border-color: $teal transparent transparent;
+  }
+  .dropdown.menu>li.opens-right>.is-dropdown-submenu {
+    width: 300px;
+    @include breakpoint(medium only) {
+      width: 200px;
+    }
+    top: 1.5rem;
+    left: -34.5px;
+    border-color: $teal;
+    border-top:0;
+    height: 300px;
+    overflow-y: scroll;
+    & li {
+      padding: 5px 0 5px 15px;
+      &:hover {
+        background-color: $teal;
+        & a {
+          color: white;
+        }
+      }
+    }
   }
   & #state-name-2 {
     font-size: 1.5rem;
@@ -505,6 +548,9 @@ h2 {
     font-size: 12px;
     margin-bottom: 2rem;
   }
+  & table {
+    width: 100%;
+  }
   & .table-striped > tbody > tr:nth-of-type(even), table thead {
     background-color: $black;
   }
@@ -545,12 +591,14 @@ footer {
 
 .button {
   @include linearGradient($teal, darken($teal, 30%));
-  width: 90vw;
+  width: 85vw;
+  font-size: 14px;
   margin-bottom: 10vh;
   border: 1px solid darken($teal, 30%);
   @include breakpoint(medium) {
-    width: 350px;
-    margin-left: 105px;
+    width: 560px;
+    margin-bottom: 5vh;
+    font-size: 16px;
   }
   position: relative;
   z-index: 20;
@@ -666,7 +714,7 @@ a.button:hover {
 // circle nav styles
 #fp-nav {
   @include breakpoint(small only) {
-    display: none;
+    right: 5px !important;
   }
   & ul li {
     height: 6px !important;
@@ -690,7 +738,10 @@ a.button:hover {
 #st-2 {
   z-index: 2;
   & .st-btn {
-    background-color: rgba(255,255,255,0.6) !important;
+    background-color: $gray !important;
+    @include breakpoint(medium) {
+      background-color: rgba(255,255,255,0.6) !important;
+    }
     border-bottom: 1px solid $black;
     border-right: 1px solid $black;
     & .st-label {

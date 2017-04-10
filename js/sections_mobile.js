@@ -2,9 +2,9 @@ console.log("this is mobile");
 
 var scrollVis = function() {
 
-  var width = 340;
+  var width = 330;
   var height = 230;
-  var margin = {top:100, left:30, bottom:0, right:30};
+  var margin = {top:100, left:30, bottom:0, right:40};
 
   var employeeLineData = [];
   var circulationData = [];
@@ -293,6 +293,7 @@ var scrollVis = function() {
         .attr("y", -40)
         .text("Bergen Record employees, before 2016 layoffs")
         .style("font-weight", 700)
+        .style("font-size", "15px")
         .attr("opacity", 0);
       g.append("rect")
         .attr("width", squareSize)
@@ -698,21 +699,18 @@ var scrollVis = function() {
     $('.scroll-down').fadeOut();
 
     $('#bridge-text').show();
-    $('#bridge-text').delay(1000).fadeTo(500,1);
+    $('#bridge-text').delay(700).fadeTo(500,1);
     $('.bridge-quote').hide().html('"Time for some traffic problems in Fort Lee."').fadeIn(1000);
     $('.bridge-attrib').hide().html("Bridget Anne Kelly, deputy chief of staff in Christie's office in an email to Port Authority executive David Wildstein.").fadeIn(1000);
   }
 
   function showBridgeQuote2() {
-    $('#vis').removeClass('vis-small-container');
 
-    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').delay(1000).fadeIn(1000);
-    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').delay(1000).fadeIn(1000);
+    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').delay(700).fadeIn(1000);
+    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').delay(700).fadeIn(1000);
 
-    $('#bridge_illo').fadeTo(500,1);
     $('#bridge-text').show();
     $('#bridge-text').fadeTo(500,1);
-    $('#vis').addClass('vis-trigger');
 
     g.selectAll(".square")
       .transition()
@@ -732,11 +730,12 @@ var scrollVis = function() {
 
   function hideBridge() {
 
+    $('#bridge_illo').fadeTo(500,1);
+    $('#vis').removeClass('vis-small-container');
+    $('#vis').addClass('vis-large-container');
+    $('#vis').addClass('vis-trigger');
+
     $('#bridge-text').fadeTo(500,0).css("display", "none");
-    $('#bridge_illo').hide();
-    $('#vis').removeClass('vis-large-container');
-    $('#vis').addClass('vis-small-container');
-    $('#vis').removeClass('vis-trigger');
 
     g.selectAll(".square")
       .transition()
@@ -761,9 +760,10 @@ var scrollVis = function() {
 
   function showRecord() {
 
-    $('#bridge-text').fadeTo(500,0).css("display", "none");
     $('#bridge_illo').hide();
+    $('#vis').removeClass('vis-large-container');
     $('#vis').addClass('vis-small-container');
+
     $('#vis').removeClass('vis-trigger');
 
     g.selectAll(".chart-hed")
@@ -1893,7 +1893,7 @@ var scrollVis = function() {
        scrollingSpeed: 700,
        navigation: true,
        autoScrolling: false,
-       normalScrollElementTouchThreshold: 6,
+       normalScrollElementTouchThreshold: 1,
        fadingEffect: true,
        fadingEffectKey: 'a2llcnN0ZW5zY2htaWR0LmNvbV9NSUVabUZrYVc1blJXWm1aV04wdmZ',
        continuousVertical: false,

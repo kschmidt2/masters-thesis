@@ -30,7 +30,7 @@
     <div class="interactive-footer" ng-controller="NewspaperController as newspaper">
       <div class="container">
         <a href="index.html" class="button" id="back-button"><i class="fa fa-chevron-left" aria-hidden="true"></i> BACK</a>
-        <span style="margin:-3rem 0 2rem 120px;">No News is Bad News</span>
+        <span style="margin:-3.25rem 0 2rem 120px;">No News is Bad News</span>
         <div class="interactive-head">
           <h3>Explore the state of the newspaper industry</h3>
         </div>
@@ -62,60 +62,67 @@
             <p class="interactive-info">
               Select a state from the dropdown below to view information about newspapers in that state.
             </p>
-            <select class="state-dropdown" ng-model="nameSearch.state_full">
-              <option ng-click="myFilter = {}">United States</option>
-              <option ng-click="myFilter = {state_full: 'Alabama'}">Alabama</option>
-              <option ng-click="myFilter = {state_full: 'Alaska'}">Alaska</option>
-              <option ng-click="myFilter = {state_full: 'Arizona'}">Arizona</option>
-              <option ng-click="myFilter = {state_full: 'Arkansas'}">Arkansas</option>
-              <option ng-click="myFilter = {state_full: 'California'}">California</option>
-              <option ng-click="myFilter = {state_full: 'Colorado'}">Colorado</option>
-              <option ng-click="myFilter = {state_full: 'Connecticut'}">Connecticut</option>
-              <option ng-click="myFilter = {state_full: 'Delaware'}">Delaware</option>
-              <option ng-click="myFilter = {state_full: 'District of Columbia'}">District of Columbia</option>
-              <option ng-click="myFilter = {state_full: 'Florida'}">Florida</option>
-              <option ng-click="myFilter = {state_full: 'Georgia'}">Georgia</option>
-              <option ng-click="myFilter = {state_full: 'Hawaii'}">Hawaii</option>
-              <option ng-click="myFilter = {state_full: 'Idaho'}">Idaho</option>
-              <option ng-click="myFilter = {state_full: 'Illinois'}">Illinois</option>
-              <option ng-click="myFilter = {state_full: 'Indiana'}">Indiana</option>
-              <option ng-click="myFilter = {state_full: 'Iowa'}">Iowa</option>
-              <option ng-click="myFilter = {state_full: 'Kansas'}">Kansas</option>
-              <option ng-click="myFilter = {state_full: 'Kentucky'}">Kentucky</option>
-              <option ng-click="myFilter = {state_full: 'Louisiana'}">Louisiana</option>
-              <option ng-click="myFilter = {state_full: 'Maine'}">Maine</option>
-              <option ng-click="myFilter = {state_full: 'Maryland'}">Maryland</option>
-              <option ng-click="myFilter = {state_full: 'Massachusetts'}">Massachusetts</option>
-              <option ng-click="myFilter = {state_full: 'Michigan'}">Michigan</option>
-              <option ng-click="myFilter = {state_full: 'Minnesota'}">Minnesota</option>
-              <option ng-click="myFilter = {state_full: 'Mississippi'}">Mississippi</option>
-              <option ng-click="myFilter = {state_full: 'Missouri'}">Missouri</option>
-              <option ng-click="myFilter = {state_full: 'Montana'}">Montana</option>
-              <option ng-click="myFilter = {state_full: 'Nebraska'}">Nebraska</option>
-              <option ng-click="myFilter = {state_full: 'Nevada'}">Nevada</option>
-              <option ng-click="myFilter = {state_full: 'New Hampshire'}">New Hampshire</option>
-              <option ng-click="myFilter = {state_full: 'New Jersey'}">New Jersey</option>
-              <option ng-click="myFilter = {state_full: 'New Mexico'}">New Mexico</option>
-              <option ng-click="myFilter = {state_full: 'New York'}">New York</option>
-              <option ng-click="myFilter = {state_full: 'North Carolina'}">North Carolina</option>
-              <option ng-click="myFilter = {state_full: 'North Dakota'}">North Dakota</option>
-              <option ng-click="myFilter = {state_full: 'Ohio'}">Ohio</option>
-              <option ng-click="myFilter = {state_full: 'Oklahoma'}">Oklahoma</option>
-              <option ng-click="myFilter = {state_full: 'Oregon'}">Oregon</option>
-              <option ng-click="myFilter = {state_full: 'Pennsylvania'}">Pennsylvania</option>
-              <option ng-click="myFilter = {state_full: 'Rhode Island'}">Rhode Island</option>
-              <option ng-click="myFilter = {state_full: 'South Carolina'}">South Carolina</option>
-              <option ng-click="myFilter = {state_full: 'South Dakota'}">South Dakota</option>
-              <option ng-click="myFilter = {state_full: 'Tennessee'}">Tennessee</option>
-              <option ng-click="myFilter = {state_full: 'Texas'}">Texas</option>
-              <option ng-click="myFilter = {state_full: 'Utah'}">Utah</option>
-              <option ng-click="myFilter = {state_full: 'Vermont'}">Vermont</option>
-              <option ng-click="myFilter = {state_full: 'Virginia'}">Virginia</option>
-              <option ng-click="myFilter = {state_full: 'Washington'}">Washington</option>
-              <option ng-click="myFilter = {state_full: 'West Virginia'}">West Virginia</option>
-              <option ng-click="myFilter = {state_full: 'Wisconsin'}">Wisconsin</option>
-              <option ng-click="myFilter = {state_full: 'Wyoming'}">Wyoming</option>
-            </select>
+            <div class="row no-padding columns expanded">
+                <ul class="state-dropdown dropdown menu" data-dropdown-menu data-options="data-close-on-click">
+                  <li>
+                    <a href="#">Select a state</a>
+                    <ul class="menu" id="state-menu">
+                      <li ng-click="myFilter = {}"><a href="#">United States</a></li>
+                      <li ng-click="myFilter = {state_full: 'Alabama'}"><a href="#">Alabama</a></li>
+                      <li ng-click="myFilter = {state_full: 'Alaska'}"><a href="#">Alaska</a></li>
+                      <li ng-click="myFilter = {state_full: 'Arizona'}"><a href="#">Arizona</a></li>
+                      <li ng-click="myFilter = {state_full: 'Arkansas'}"><a href="#">Arkansas</a></li>
+                      <li ng-click="myFilter = {state_full: 'California'}"><a href="#">California</a></li>
+                      <li ng-click="myFilter = {state_full: 'Colorado'}"><a href="#">Colorado</a></li>
+                      <li ng-click="myFilter = {state_full: 'Connecticut'}"><a href="#">Connecticut</a></li>
+                      <li ng-click="myFilter = {state_full: 'Delaware'}"><a href="#">Delaware</a></li>
+                      <li ng-click="myFilter = {state_full: 'District of Columbia'}"><a href="#">District of Columbia</a></li>
+                      <li ng-click="myFilter = {state_full: 'Florida'}"><a href="#">Florida</a></li>
+                      <li ng-click="myFilter = {state_full: 'Georgia'}"><a href="#">Georgia</a></li>
+                      <li ng-click="myFilter = {state_full: 'Hawaii'}"><a href="#">Hawaii</a></li>
+                      <li ng-click="myFilter = {state_full: 'Idaho'}"><a href="#">Idaho</a></li>
+                      <li ng-click="myFilter = {state_full: 'Illinois'}"><a href="#">Illinois</a></li>
+                      <li ng-click="myFilter = {state_full: 'Indiana'}"><a href="#">Indiana</a></li>
+                      <li ng-click="myFilter = {state_full: 'Iowa'}"><a href="#">Iowa</a></li>
+                      <li ng-click="myFilter = {state: 'Kan.'}"><a href="#">Kansas</a></li>
+                      <li ng-click="myFilter = {state_full: 'Kentucky'}"><a href="#">Kentucky</a></li>
+                      <li ng-click="myFilter = {state_full: 'Louisiana'}"><a href="#">Louisiana</a></li>
+                      <li ng-click="myFilter = {state_full: 'Maine'}"><a href="#">Maine</a></li>
+                      <li ng-click="myFilter = {state_full: 'Maryland'}"><a href="#">Maryland</a></li>
+                      <li ng-click="myFilter = {state_full: 'Massachusetts'}"><a href="#">Massachusetts</a></li>
+                      <li ng-click="myFilter = {state_full: 'Michigan'}"><a href="#">Michigan</a></li>
+                      <li ng-click="myFilter = {state_full: 'Minnesota'}"><a href="#">Minnesota</a></li>
+                      <li ng-click="myFilter = {state_full: 'Mississippi'}"><a href="#">Mississippi</a></li>
+                      <li ng-click="myFilter = {state_full: 'Missouri'}"><a href="#">Missouri</a></li>
+                      <li ng-click="myFilter = {state_full: 'Montana'}"><a href="#">Montana</a></li>
+                      <li ng-click="myFilter = {state_full: 'Nebraska'}"><a href="#">Nebraska</a></li>
+                      <li ng-click="myFilter = {state_full: 'Nevada'}"><a href="#">Nevada</a></li>
+                      <li ng-click="myFilter = {state_full: 'New Hampshire'}"><a href="#">New Hampshire</a></li>
+                      <li ng-click="myFilter = {state_full: 'New Jersey'}"><a href="#">New Jersey</a></li>
+                      <li ng-click="myFilter = {state_full: 'New Mexico'}"><a href="#">New Mexico</a></li>
+                      <li ng-click="myFilter = {state_full: 'New York'}"><a href="#">New York</a></li>
+                      <li ng-click="myFilter = {state_full: 'North Carolina'}"><a href="#">North Carolina</a></li>
+                      <li ng-click="myFilter = {state_full: 'North Dakota'}"><a href="#">North Dakota</a></li>
+                      <li ng-click="myFilter = {state_full: 'Ohio'}"><a href="#">Ohio</a></li>
+                      <li ng-click="myFilter = {state_full: 'Oklahoma'}"><a href="#">Oklahoma</a></li>
+                      <li ng-click="myFilter = {state_full: 'Oregon'}"><a href="#">Oregon</a></li>
+                      <li ng-click="myFilter = {state_full: 'Pennsylvania'}"><a href="#">Pennsylvania</a></li>
+                      <li ng-click="myFilter = {state_full: 'Rhode Island'}"><a href="#">Rhode Island</a></li>
+                      <li ng-click="myFilter = {state_full: 'South Carolina'}"><a href="#">South Carolina</a></li>
+                      <li ng-click="myFilter = {state_full: 'South Dakota'}"><a href="#">South Dakota</a></li>
+                      <li ng-click="myFilter = {state_full: 'Tennessee'}"><a href="#">Tennessee</a></li>
+                      <li ng-click="myFilter = {state_full: 'Texas'}"><a href="#">Texas</a></li>
+                      <li ng-click="myFilter = {state_full: 'Utah'}"><a href="#">Utah</a></li>
+                      <li ng-click="myFilter = {state_full: 'Vermont'}"><a href="#">Vermont</a></li>
+                      <li ng-click="myFilter = {state: 'Va.'}"><a href="#">Virginia</a></li>
+                      <li ng-click="myFilter = {state_full: 'Washington'}"><a href="#">Washington</a></li>
+                      <li ng-click="myFilter = {state_full: 'West Virginia'}"><a href="#">West Virginia</a></li>
+                      <li ng-click="myFilter = {state_full: 'Wisconsin'}"><a href="#">Wisconsin</a></li>
+                      <li ng-click="myFilter = {state_full: 'Wyoming'}"><a href="#">Wyoming</a></li>
+                    </ul>
+                  </li>
+                </ul>
+            </div>
             <div id="state-name-2"><strong>United States</strong></div>
             <div id="state-bars"></div>
             <div id="state-bars-2"></div>
@@ -166,8 +173,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="paper in newspaper.papers | filter:nameSearch | filter:myFilter | filter:searchPapers">
-                    <!-- <td><img src="{{ player.images[0] }}" class="img-responsive"></td> -->
+                  <tr ng-repeat="paper in newspaper.papers | filter:myFilter | filter:searchPapers">
 
                     <td>{{ ::paper.newspaper_name }}</td>
                     <td>{{ ::paper.city }}</td>
@@ -189,7 +195,8 @@
 
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/what-input/dist/what-input.js"></script>
-    <script src="bower_components/foundation-sites/dist/js/foundation.js"></script>
+    <script src="bower_components/foundation-sites/dist/js/foundation.min.js"></script>
+    <script src="bower_components/foundation-sites/dist/js/plugins/foundation.dropdown.min.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular_app.js"></script>
     <script src="js/d3.js"></script>
@@ -202,6 +209,11 @@
       $(window).load(function() {
         $('body').addClass('loaded');
       });
+
+      // loads foundation
+      $(document).ready(function() {
+            $(document).foundation();
+         })
     </script>
   </body>
 </html>

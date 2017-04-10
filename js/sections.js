@@ -539,12 +539,12 @@ var scrollVis = function() {
       var animosityLineDraw1 = d3.svg.line()
         .x(function(d) { return xLineScale2(d.year); })
         .y(function(d) { return yLineScale2(d.rep_unfav); })
-        .defined(function(d) { return d; });;
+        .defined(function(d) { return d; });
 
       var animosityLineDraw2 = d3.svg.line()
         .x(function(d) { return xLineScale2(d.year); })
         .y(function(d) { return yLineScale2(d.rep_very); })
-        .defined(function(d) { return d; });;
+        .defined(function(d) { return d; });
 
       var animosityLineChart = g.selectAll(".animosity-line").data([animosityData]);
       animosityLineChart.enter()
@@ -702,7 +702,7 @@ var scrollVis = function() {
     $('.scroll-down').fadeOut();
 
     $('#bridge-text').show();
-    $('#bridge-text').delay(1000).fadeTo(500,1);
+    $('#bridge-text').delay(700).fadeTo(500,1);
     $('.bridge-quote').hide().html('"Time for some traffic problems in Fort Lee."').fadeIn(1000);
     $('.bridge-attrib').hide().html("Bridget Anne Kelly, deputy chief of staff in Christie's office in an email to Port Authority executive David Wildstein.").fadeIn(1000);
 
@@ -714,28 +714,23 @@ var scrollVis = function() {
   }
 
   function showBridgeQuote2() {
-    $('#vis').removeClass('vis-small-container');
-    $('#vis').addClass('vis-large-container');
 
-    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').delay(1000).fadeIn(1000);
-    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').delay(1000).fadeIn(1000);
+    $('.bridge-quote').hide().html('"Chris Christie Drops Out of Presidential Race After New Hampshire Flop"').delay(700).fadeIn(1000);
+    $('.bridge-attrib').hide().html('Headline in The New York Times after Christie received only 7 percent of the vote in the New Hampshire primary and dropped out of the race.').delay(700).fadeIn(1000);
 
-    $('#bridge_illo').fadeTo(500,1);
     $('#bridge-text').show();
     $('#bridge-text').fadeTo(500,1);
-
-    $('#vis').addClass('vis-trigger');
 
   }
 
   function hideBridge() {
 
-    $('#bridge-text').fadeTo(500,0).css("display", "none");
-    $('#bridge_illo').hide();
-    $('#vis').removeClass('vis-large-container');
-    $('#vis').addClass('vis-small-container');
+    $('#bridge_illo').fadeTo(500,1);
+    $('#vis').removeClass('vis-small-container');
+    $('#vis').addClass('vis-large-container');
+    $('#vis').addClass('vis-trigger');
 
-    $('#vis').removeClass('vis-trigger');
+    $('#bridge-text').fadeTo(500,0).css("display", "none");
 
     g.selectAll(".square")
       .transition()
@@ -760,6 +755,12 @@ var scrollVis = function() {
   }
 
   function showRecord() {
+
+    $('#bridge_illo').hide();
+    $('#vis').removeClass('vis-large-container');
+    $('#vis').addClass('vis-small-container');
+
+    $('#vis').removeClass('vis-trigger');
 
     g.selectAll(".chart-hed")
       .text("Bergen record employees, after 2016 layoffs");
@@ -1440,26 +1441,26 @@ var scrollVis = function() {
     g.selectAll(".chart-hed")
       .text("Share of Republicans who consider themselves conservative");
 
-    var partisanLineDraw = d3.svg.line()
-      .x(function(d) { return xLineScale1(d.year); })
-      .y(function(d) { return yLineScale1(d.rep); })
-      .defined(function(d) { return d; });
-
-    var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
-
-    g.selectAll(".partisan-line")
-      .attr("stroke-dasharray", totalLength + " " + totalLength)
-      .attr("stroke-dashoffset", totalLength)
-      .attr("opacity", 1)
-      .transition()
-        .delay(0)
-        .attr("d", function(d) { return partisanLineDraw(d) })
-        .duration(1000)
-        .ease("linear")
-        .attr("stroke-dashoffset", 0)
-        .attr("stroke-width", 5)
-        .attr("fill", "none")
-        .attr("stroke", "#e7472e");
+    // var partisanLineDraw = d3.svg.line()
+    //   .x(function(d) { return xLineScale1(d.year); })
+    //   .y(function(d) { return yLineScale1(d.rep); })
+    //   .defined(function(d) { return d; });
+    //
+    // var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
+    //
+    // g.selectAll(".partisan-line")
+    //   .attr("stroke-dasharray", totalLength + " " + totalLength)
+    //   .attr("stroke-dashoffset", totalLength)
+    //   .attr("opacity", 1)
+    //   .transition()
+    //     .delay(0)
+    //     .attr("d", function(d) { return partisanLineDraw(d) })
+    //     .duration(1000)
+    //     .ease("linear")
+    //     .attr("stroke-dashoffset", 0)
+    //     .attr("stroke-width", 5)
+    //     .attr("fill", "none")
+    //     .attr("stroke", "#e7472e");
 
   }
 
@@ -1623,13 +1624,13 @@ var scrollVis = function() {
         .attr("opacity", 1)
         .transition()
           .delay(0)
-          .attr("d", function(d) { return animosityLineDraw1(d) })
-          .duration(800)
+          .duration(300)
           .ease("linear")
           .attr("stroke-dashoffset", 0)
           .attr("stroke-width", 5)
           .attr("fill", "none")
-          .attr("stroke", "#52908b");
+          .attr("stroke", "#52908b")
+          .attr("d", function(d) { return animosityLineDraw1(d) });
 
       var animosityLineDraw2 = d3.svg.line()
         .x(function(d) { return xLineScale2(d.year); })
@@ -1640,13 +1641,13 @@ var scrollVis = function() {
         .attr("opacity", 1)
         .transition()
           .delay(0)
-          .attr("d", function(d) { return animosityLineDraw2(d) })
-          .duration(800)
+          .duration(300)
           .ease("linear")
           .attr("stroke-dashoffset", 0)
           .attr("stroke-width", 5)
           .attr("fill", "none")
-          .attr("stroke", "#e5e2ca");
+          .attr("stroke", "#e5e2ca")
+          .attr("d", function(d) { return animosityLineDraw2(d) });
   }
 
   function hideAnimosity() {

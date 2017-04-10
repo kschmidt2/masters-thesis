@@ -11,7 +11,6 @@ app.controller('NewspaperController', function($http) {
     $http.get('data/newspaper_interactive.json')
       .success(function(data){
         _this.papers = data;
-        console.log("data loaded!");
       })
       .error(function(msg) {
       });
