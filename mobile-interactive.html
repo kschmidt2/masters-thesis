@@ -155,26 +155,13 @@
                     <td>
                       State
                     </td>
-                    <td class="hide-for-small-only">
-                      County
-                    </td>
-                    <td class="hide-for-small-only">
-                      Days published
-                    </td>
-                    <td class="hide-for-small-only">
-                      Weekday circulation
-                    </td>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="paper in newspaper.papers | filter:myFilter | filter:searchPapers">
-
+                  <tr ng-repeat="paper in newspaper.papers | filter:nameSearch | filter:searchPapers">
                     <td>{{ ::paper.newspaper_name }}</td>
                     <td>{{ ::paper.city }}</td>
                     <td>{{ ::paper.state }}</td>
-                    <td class="hide-for-small-only">{{ ::paper.county }}</td>
-                    <td class="hide-for-small-only">{{ ::paper.days_published }}</td>
-                    <td class="hide-for-small-only">{{ ::paper.total_circulation | number }}</td>
                   </tr>
                 </tbody>
           </table>

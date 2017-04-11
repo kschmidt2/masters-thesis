@@ -15,4 +15,8 @@ app.controller('NewspaperController', function($http) {
       .error(function(msg) {
       });
 
+      $http.nameSearch = function() {
+          $http.first = "";
+      }
+
 });

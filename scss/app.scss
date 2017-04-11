@@ -225,6 +225,9 @@ h2 {
   @include breakpoint(medium) {
     bottom: 5vh;
   }
+  &.hide-for-large {
+    bottom: 10vh;
+  }
 }
 
 .container {
@@ -269,6 +272,9 @@ h2 {
     }
     &.centered {
       text-align: center;
+      @include breakpoint(small only) {
+        text-align: left;
+      }
     }
   }
 }
@@ -314,9 +320,10 @@ h2 {
     height: 60vh;
     width: 100vw;
     @include breakpoint(medium only) {
-      bottom: 10vh;
+      bottom: 25vh;
+      height: 50vh;
     }
-    @include breakpoint(medium) {
+    @include breakpoint(large) {
       height: 60vh;
     }
     & > svg {
@@ -442,51 +449,17 @@ h2 {
     margin-right: 0;
   }
   & .state-dropdown {
-    width: 300px;
-    @include breakpoint(medium only) {
-      width: 200px;
-    }
-    background: white;
     color: $black;
     outline: 1px solid $teal;
     outline-offset: -1px;
+    border: 1px solid $red;
+    border-radius: 0;
+    border-bottom-left-radius: 0;
     font-size: 14px;
     margin-top: 20px;
     height: 1.7rem;
-    padding: 2px 0 0 15px;
-    margin-left: 0;
-    list-style-type: none;
-    & ul {
-      padding: 0;
-    }
-    & a {
-      color: $teal;
-    }
-  }
-  .dropdown.menu>li.is-dropdown-submenu-parent>a::after {
-    top: 55%;
-    border-color: $teal transparent transparent;
-  }
-  .dropdown.menu>li.opens-right>.is-dropdown-submenu {
-    width: 300px;
-    @include breakpoint(medium only) {
-      width: 200px;
-    }
-    top: 1.5rem;
-    left: -34.5px;
-    border-color: $teal;
-    border-top:0;
-    height: 300px;
-    overflow-y: scroll;
-    & li {
-      padding: 5px 0 5px 15px;
-      &:hover {
-        background-color: $teal;
-        & a {
-          color: white;
-        }
-      }
-    }
+    padding-top: 0;
+    padding-bottom: 0;
   }
   & #state-name-2 {
     font-size: 1.5rem;
@@ -567,11 +540,10 @@ h2 {
 
 footer {
   font-family: $sans-serif-font;
-  padding: 10px 0 0;
+  padding: 10px 0 5vh;
   font-size: 12px;
   @include breakpoint(medium only) {
-    width: 70vw;
-    margin-bottom: 40vh;
+    margin-bottom: 20vh;
     @include centered;
   }
   @include breakpoint(large) {
@@ -590,8 +562,7 @@ footer {
 
 .button {
   @include linearGradient($teal, darken($teal, 30%));
-  width: 85vw;
-  font-size: 14px;
+  width: 90vw;
   margin-bottom: 10vh;
   border: 1px solid darken($teal, 30%);
   @include breakpoint(medium) {

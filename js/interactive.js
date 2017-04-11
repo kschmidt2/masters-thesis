@@ -113,23 +113,22 @@ function buildMap (){
 buildMap();
 
 // creates states dropdown
-var dropDown = d3.selectAll("#state-menu li");
-
-dropDown.on("click", function() {
+d3.selectAll("#state-menu li").on("click", function() {
   $this = this;
   currentState = $(this).text();
   var stateClass = currentState.replace(/\s+/g, '-');
   updateData(currentState, stateClass);
 });
 
-// function dropClick(d) {
-//   $this = $this;
-//   currentState = $this.text();
-//   console.log($this);
-//   var selectedValue = d3.event.target.value;
-//
-//   console.log(d);
-// }
+var dropDown = d3.select(".state-dropdown");
+
+dropDown.on("change", dropClick);
+
+function dropClick(d) {
+  var selectedValue = d3.event.target.value;
+  var stateClass = selectedValue.replace(/\s+/g, '-');
+  updateData(selectedValue, stateClass);
+}
 
   // bar chart setup
   var width = 300;

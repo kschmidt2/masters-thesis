@@ -136,7 +136,21 @@ var scrollVis = function() {
   var xAxisLine1 = d3.svg.axis()
     .scale(xLineScale1)
     .tickValues([1994,1999,2004,2011,2014,2015])
-    .tickFormat(function (d) { return d; })
+    .tickFormat(function (d) {
+      if (d == 1994) {
+        return "'94"
+      } else if (d == 1999) {
+        return "'99"
+      } else if (d == 2004) {
+        return "'04";
+      } else if (d == 2011) {
+        return "'11"
+      } else if (d == 2014) {
+        return "'14"
+      } else {
+        return "'15";
+      }
+    })
     .innerTickSize(5)
     .outerTickSize(0)
     .orient("bottom");
