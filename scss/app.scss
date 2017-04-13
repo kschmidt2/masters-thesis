@@ -240,14 +240,14 @@ h2 {
 
 #sections {
   max-width: 1048px;
-  margin: 0 0 0 -5vw;
+  margin: 0 auto;
   z-index: 2;
   @include breakpoint(medium) {
     margin: 0 auto;
   }
   & .step {
     height: auto !important;
-    max-width: 84vw;
+    max-width: 92vw;
     @include breakpoint(medium) {
       max-width: 560px;
     }
@@ -536,12 +536,13 @@ h2 {
   & table thead {
     color: white;
   }
+  & .placeholder {
+    margin-bottom: 2rem;
+  }
 }
 
 footer {
-  font-family: $sans-serif-font;
   padding: 10px 0 5vh;
-  font-size: 12px;
   @include breakpoint(medium only) {
     margin-bottom: 20vh;
     @include centered;
@@ -549,26 +550,34 @@ footer {
   @include breakpoint(large) {
     margin-bottom: 1rem;
   }
-  & p {
-    font-size: 12px;
+  #full-interactive & {
+    border-top: 1px solid white;
+    & p {
+      font-size: 12px;
+    }
+  }
+  #promo-footer & {
+    text-align: center;
   }
   & .footer-img {
+    // margin-left: 20px;
     width: 300px;
     height: auto;
-    margin-left: 130px;
-    margin-bottom: 30px;
+    @include breakpoint(medium) {
+      margin-left: 0px;
+    }
   }
 }
 
 .button {
+  font-family: $sans-serif-font;
+  width: 92vw;
   @include linearGradient($teal, darken($teal, 30%));
-  width: 90vw;
-  margin-bottom: 10vh;
+  margin-bottom: 2vh;
   border: 1px solid darken($teal, 30%);
   @include breakpoint(medium) {
     width: 560px;
     margin-bottom: 5vh;
-    font-size: 16px;
   }
   position: relative;
   z-index: 20;
@@ -684,7 +693,7 @@ a.button:hover {
 // circle nav styles
 #fp-nav {
   @include breakpoint(small only) {
-    right: 5px !important;
+    display: none;
   }
   & ul li {
     height: 6px !important;

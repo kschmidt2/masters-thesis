@@ -131,7 +131,7 @@ var scrollVis = function() {
 
   var yLineScale1 = d3.scale.linear()
     .range([height, 0])
-    .domain([25,65]);
+    .domain([0,100]);
 
   var xAxisLine1 = d3.svg.axis()
     .scale(xLineScale1)
@@ -215,7 +215,7 @@ var scrollVis = function() {
 
       // national employee line chart domain
       var employeeLineMax = d3.max(employeeLineData, function (d) { return d.total });
-      yLineScale.domain([30000,employeeLineMax])
+      yLineScale.domain([0,employeeLineMax])
       xLineScale.domain(d3.extent(employeeLineData, function(d) { return d.year }));
 
       // circulation bar chart domain
@@ -1441,26 +1441,26 @@ var scrollVis = function() {
     g.selectAll(".chart-hed")
       .text("Share of Republicans who consider themselves conservative");
 
-    // var partisanLineDraw = d3.svg.line()
-    //   .x(function(d) { return xLineScale1(d.year); })
-    //   .y(function(d) { return yLineScale1(d.rep); })
-    //   .defined(function(d) { return d; });
-    //
-    // var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
-    //
-    // g.selectAll(".partisan-line")
-    //   .attr("stroke-dasharray", totalLength + " " + totalLength)
-    //   .attr("stroke-dashoffset", totalLength)
-    //   .attr("opacity", 1)
-    //   .transition()
-    //     .delay(0)
-    //     .attr("d", function(d) { return partisanLineDraw(d) })
-    //     .duration(1000)
-    //     .ease("linear")
-    //     .attr("stroke-dashoffset", 0)
-    //     .attr("stroke-width", 5)
-    //     .attr("fill", "none")
-    //     .attr("stroke", "#e7472e");
+    var partisanLineDraw = d3.svg.line()
+      .x(function(d) { return xLineScale1(d.year); })
+      .y(function(d) { return yLineScale1(d.rep); })
+      .defined(function(d) { return d; });
+
+    var totalLength = g.selectAll(".partisan-line").node().getTotalLength();
+
+    g.selectAll(".partisan-line")
+      .attr("stroke-dasharray", totalLength + " " + totalLength)
+      .attr("stroke-dashoffset", totalLength)
+      .attr("opacity", 1)
+      .transition()
+        .delay(0)
+        .attr("d", function(d) { return partisanLineDraw(d) })
+        .duration(1000)
+        .ease("linear")
+        .attr("stroke-dashoffset", 0)
+        .attr("stroke-width", 5)
+        .attr("fill", "none")
+        .attr("stroke", "#e7472e");
 
   }
 

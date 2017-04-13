@@ -21,7 +21,7 @@
 
     <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=58d98eafff66870012de32d6&product=sticky-share-buttons"></script>
   </head>
-  <body id="mobile-interactive">
+  <body id="full-interactive">
 
     <div id="loader-wrapper">
       <div id="loader"></div>
@@ -36,22 +36,22 @@
         </div>
         <div class="row" id="states-interactive">
           <div class="columns small-12 medium-8">
-            <strong>Full-time statehouse reporters per 10 legislators, 2014</strong>
+            <strong>Percent change in number of newspapers, 2004 to 2016</strong>
             <div id="usmap"></div>
             <div class="row map-legend">
               <div class="columns small-12 medium-4">
-                0
-                <svg width="90" height="12" viewBox="0 0 90 12" xmlns="http://www.w3.org/2000/svg">
+                -40%
+                <svg width="80" height="12" viewBox="0 0 80 12" xmlns="http://www.w3.org/2000/svg">
                   <defs>
                       <linearGradient id="MyGradient">
-                          <stop offset="5%"  stop-color="#e5e2ca"/>
-                          <stop offset="95%" stop-color="#52908b"/>
+                          <stop offset="5%"  stop-color="#52908b"/>
+                          <stop offset="95%" stop-color="#fff"/>
                       </linearGradient>
                   </defs>
 
-                  <rect fill="url(#MyGradient)" x="0" y="0" width="90" height="12"/>
+                  <rect fill="url(#MyGradient)" x="0" y="0" width="80" height="12"/>
                 </svg>
-                6
+                40%
               </div>
               <div class="columns small-12 medium-8">
                 <div id="state-name"></div><div id="state-info"></div>
@@ -128,7 +128,10 @@
             </div>
           </div>
         </div>
-        <div class="row no-padding">
+        <div class="hide-for-large placeholder">
+          Please view this application on a computer to view a database of American newspapers.
+        </div>
+        <div class="row no-padding show-for-large">
           <div class="columns small-12 medium-8 top-margin">
             <strong>Look for newspapers in </strong><span id="table-state">United States</span>
           </div>
@@ -141,7 +144,7 @@
             </div>
           </div>
         </div>
-        <div class="row table-wrapper">
+        <div class="row table-wrapper show-for-large">
           <div class="paper-table">
             <table class="table table-bordered table-striped">
                 <thead>
@@ -155,26 +158,26 @@
                     <td>
                       State
                     </td>
-                    <td class="hide-for-small-only">
+                    <td class="show-for-large">
                       County
                     </td>
-                    <td class="hide-for-small-only">
+                    <td class="show-for-large">
                       Days published
                     </td>
-                    <td class="hide-for-small-only">
+                    <td class="show-for-large">
                       Weekday circulation
                     </td>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr ng-repeat="paper in newspaper.papers | filter:myFilter | filter:searchPapers">
+                  <tr ng-repeat="paper in newspaper.papers | filter:nameSearch | filter:searchPapers">
 
                     <td>{{ ::paper.newspaper_name }}</td>
                     <td>{{ ::paper.city }}</td>
                     <td>{{ ::paper.state }}</td>
-                    <td class="hide-for-small-only">{{ ::paper.county }}</td>
-                    <td class="hide-for-small-only">{{ ::paper.days_published }}</td>
-                    <td class="hide-for-small-only">{{ ::paper.total_circulation | number }}</td>
+                    <td class="show-for-large">{{ ::paper.county }}</td>
+                    <td class="show-for-large">{{ ::paper.days_published }}</td>
+                    <td class="show-for-large">{{ ::paper.total_circulation | number }}</td>
                   </tr>
                 </tbody>
           </table>
@@ -182,7 +185,8 @@
         </div>
         <footer>
           <p>Data for state of the news industry interactive from <a href="http://newspaperownership.com/" target="_blank">The Rise of a New Media Baron and the Emerging Threat of News Deserts</a>, a study produced by the Center for Innovation and Sustainability in Local Media in the School of Media and Journalism at the University of North Carolina at Chapel Hill.</p>
-          <p><a href="index.html">No News is Bad News</a> was researched, written, designed and developed by <a href="http://kierstenschmidt.com" target="_blank">Kiersten Schmidt</a> as a thesis project for completion of the Masters program in visual communication in the School of Media and Journalism at the University of North Carolina at Chapel Hill.</p>
+          <p>No News is Bad News was researched, written, designed and developed by <a href="http://kierstenschmidt.com" target="_blank">Kiersten Schmidt</a> as a thesis project for completion of the Masters program in visual communication in the School of Media and Journalism at the University of North Carolina at Chapel Hill.</p>
+          <p>Special thanks to my amazing thesis committee chair, <a href="https://twitter.com/rtburg" target="_blank">Ryan Thornburg</a>, and committee members, <a href="https://twitter.com/steven_king" target="_blank">Steven King</a> and <a href="https://twitter.com/hfairfield" target="_blank">Hannah Fairfield</a>. Also thanks to my boyfriend, family and friends for easing my grad school stress for the past two years and <a href="https://twitter.com/SchmidtKiersten/status/835945351395803140" target="_blank">my cat</a> for always knowing the most inopportune times to come sit on my keyboard.</p>
         </footer>
       </div>
     </div>
@@ -191,6 +195,7 @@
     <script src="bower_components/what-input/dist/what-input.js"></script>
     <script src="bower_components/foundation-sites/dist/js/foundation.min.js"></script>
     <script src="bower_components/foundation-sites/dist/js/plugins/foundation.dropdown.min.js"></script>
+    <script src="js/enquire.min.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular_app.js"></script>
     <script src="js/d3.js"></script>

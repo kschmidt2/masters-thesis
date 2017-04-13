@@ -1,15 +1,14 @@
 function buildMap (){
 
   // gets map data
-  var mapFile = "data/state_reporters.csv";
+  var mapFile = "data/state_map.csv";
   d3.csv(mapFile,
       function(d) {
           return {
               state: d.state,
-              reporters: +d.reporters,
-              legislators: +d.legislators,
-              per_ten_legislators: +d.per_ten_legislators,
-              total: +d.total
+              year2004: +d.year2004,
+              year2016: +d.year2016,
+              percent_change: +d.percent_change
           };
       },
       function(error, data) {
@@ -17,14 +16,9 @@ function buildMap (){
                   console.log("Uh-oh, something went wrong. Try again?");
               } else {
 
-                  var usadata = d3.nest()
-                    .rollup(function(v) {
-                     return {
-                       total: d3.sum(v, function(d) {return d.total; }),
-                       full_time: d3.sum(v, function(d) {return d.reporters; }),
-                       legis: d3.sum(v, function(d) {return d.legislators; })
-                     };
-                    }).entries(data);
+                  var usadata = data;
+
+                  console.log(usadata);
 
                   map_data(data, usadata)
               }
@@ -37,9 +31,9 @@ function buildMap (){
         // hover info for USA
         function usaInfo() {
           $("#state-name").html('<strong>United States</strong>');
-          var usaDetails = "Total statehouse reporters, 2014: <span class='teal'>" + usadata.total.toLocaleString();
-          usaDetails += "</span></br>Full-time statehouse reporters, 2014: <span class='teal'>" + usadata.full_time.toLocaleString();
-          usaDetails += "</span></br>Full-time statehouse reporters per ten legislators, 2014: <span class='teal'>" + ((usadata.legis/10)/usadata.full_time).toLocaleString();
+          var usaDetails = "Total newspapers, 2004: <span class='teal'>8,583";
+          usaDetails += "</span></br>Total newspapers, 2016: <span class='teal'>7,826";
+          usaDetails += "</span></br>Percent change in newspapers, 2004 to 2014: <span class='teal'>-8.8%";
           $("#state-info").html(usaDetails);
         };
 
@@ -48,27 +42,29 @@ function buildMap (){
         var series = data;
         var dataset = {};
 
-        var onlyValues = series.map(function(d){ return d.per_ten_legislators; });
+        var onlyValues = series.map(function(d){ return d.percent_change*100; });
         var minValue = Math.min.apply(null, onlyValues),
             maxValue = Math.max.apply(null, onlyValues);
 
         var paletteScale = d3.scale.linear()
             .domain([minValue,maxValue])
-            .range(["#e5e2ca","#52908b"]);
+            .range(["#52908b", "#fff"]);
 
         series.forEach(function(d){
             var iso = d.state,
-                value = d.per_ten_legislators;
+                value = d.percent_change*100;
                 dataset[iso] = { numberOfThings: value, fillColor: paletteScale(value) };
         });
+
+        console.log(maxValue);
 
         // hover info
         function infoBox(selectState) {
           series.forEach(function(d){
             if (d.state == selectState) {
-              var stateDetails = "Total statehouse reporters, 2014: <span class='teal'>" + d.total;
-              stateDetails += "</span></br>Full-time statehouse reporters, 2014: <span class='teal'>" + d.reporters;
-              stateDetails += "</span></br>Full-time statehouse reporters per ten legislators, 2014: <span class='teal'>" + d.per_ten_legislators;
+              var stateDetails = "Total newspapers, 2004: <span class='teal'>" + d.year2004;
+              stateDetails += "</span></br>Total newspapers, 2016: <span class='teal'>" + d.year2016;
+              stateDetails += "</span></br>Percent change in number of newspapers, 2004 to 2016: <span class='teal'>" + ((d.percent_change)*100).toFixed(1) + '%';
               $("#state-info").html(stateDetails);
             }
           });
